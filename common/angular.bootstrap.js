@@ -5,7 +5,7 @@
 /** rfTokenFactory
  * @desc used in loginfactory and bootstrap
  * do not use in html: ng-app="app" (this would also bootstrap the app)
- * @version 0.1.2
+ * @version 0.1.3
  */
 var rfTokenFactory = {
 
@@ -51,8 +51,14 @@ var rfTokenFactory = {
 
             // other apps: delete token if there has one been saved by accident
             } else {
-               rfTokenFactory.removeTokenFromUrl();
                rfTokenFactory.deleteToken();
+
+               // remove a url token if there is one
+               if (urlToken) {
+                  setTimeout(function () { // prevent interference with ui router (wait till url is set to prevent loops)
+                     rfTokenFactory.removeTokenFromUrl();
+                  }, 500);
+               }
             }
 
             // console.log('got everything', rfTokenFactory.config );
