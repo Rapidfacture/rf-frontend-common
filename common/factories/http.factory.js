@@ -204,6 +204,9 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
                   // Token could not be refreshed
                   reject(new Error('login'));
                }
+            } else if (status === 401 && data === 'No session found!') {
+               console.log('No Session found - Logout');
+               loginFactory.logout();
             } else {
                // There was an error response for the request
                reject(new Error('error'));
