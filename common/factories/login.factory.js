@@ -7,7 +7,7 @@
  * @event loggedIn
  * @event loggedOut
  *
- * @version 0.2.2
+ * @version 0.2.3
  */
 
 /* globals rfTokenFactory */
@@ -109,6 +109,9 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
          setUserSettings: _setUserSettings
       };
 
+
+      // TODO: move those functions to rfTokenFactory
+
       function _run (token) {
          token = token || $location.search().token;
 
@@ -120,7 +123,6 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
          }
          rfTokenFactory.refreshConfig(config, function () {
             $rootScope.$broadcast('loggedIn'); // give http or ws factory the signal to fetch the new token
-            _removeTokenFromUrl();
          });
 
       }
@@ -129,9 +131,6 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
          rfTokenFactory.login();
       }
 
-      /**
-       * Redirect user to logout page
-      */
       function _logout () { // Send logout to server and remove session from db
          config.session = {};
          rfTokenFactory.logout();
@@ -140,6 +139,11 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
       function _getLoggedIn () {
          return !!rfTokenFactory.getToken();
       }
+
+      function _getToken () {
+         return rfTokenFactory.getToken();
+      }
+
 
       /**
        * Call a refresh function if login data changes
@@ -157,10 +161,6 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
       }
 
       /* -------------  login data  -------------- */
-
-      function _getToken () {
-         return rfTokenFactory.getToken();
-      }
 
       function _getUserData () {
          return config.user || {};
@@ -212,7 +212,6 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
                   if (('' + err).indexOf('No session ID') !== -1) {
                      // Token set but no session
                      _clearLoginData();
-                     _removeTokenFromUrl();
                   }
                   reject();
                });
@@ -288,13 +287,6 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
          if (url.search('#') === -1) url += '#/';
 
          return url + '?token=' + config.token;
-      }
-
-      /**
-       * Redirect without token parameter in the url
-      */
-      function _removeTokenFromUrl () {
-         rfTokenFactory.removeTokenFromUrl();
       }
 
       /* -------------  settings  -------------- */
