@@ -9,6 +9,7 @@
   cursor: pointer;
   user-select: none;
   @include noselect;
+  text-align: center;
 
   &.rf-btn-border {
     border-width: 1px;
