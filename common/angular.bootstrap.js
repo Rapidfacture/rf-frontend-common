@@ -70,10 +70,14 @@ var rfTokenFactory = {
                rfTokenFactory.login();
             }
          })
-         // could not post, rf-acl not present => bootstrap without login
+         // could not post
          .error(function (err) {
-            console.log(err);
-            if (callback) callback(baseConfig);
+            console.log('[rfTokenFactory] error:', err);
+            if (err === 'No session found!') {
+               rfTokenFactory.logout();
+            } else if (callback) { // rf-acl not present => bootstrap without login
+               callback(baseConfig);
+            }
          });
    },
 
