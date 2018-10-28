@@ -32,7 +32,7 @@ var rfTokenFactory = {
       var initInjector = angular.injector(['ng']),
          $http = initInjector.get('$http');
 
-      console.log('query', query);
+      // console.log('query', query);
 
       $http.post(baseConfig.serverURL + 'basic-config', query)
          .success(function (response) {
