@@ -5,7 +5,7 @@
 /** rfTokenFactory
  * @desc used in loginfactory and bootstrap
  * do not use in html: ng-app="app" (this would also bootstrap the app)
- * @version 0.1.3
+ * @version 0.1.4
  */
 var rfTokenFactory = {
 
@@ -32,10 +32,12 @@ var rfTokenFactory = {
       var initInjector = angular.injector(['ng']),
          $http = initInjector.get('$http');
 
-      // console.log('query', query);
+      console.log('query', query);
 
       $http.post(baseConfig.serverURL + 'basic-config', query)
          .success(function (response) {
+
+                        console.log('got response', response );
 
             // transfer keys, but leave old ones
             for (var key in response) {
@@ -51,7 +53,7 @@ var rfTokenFactory = {
 
             // other apps: delete token if there has one been saved by accident
             } else {
-               rfTokenFactory.deleteToken();
+               rfTokenFactory.deleteStorageToken();
 
                // remove a url token if there is one
                if (urlToken) {
@@ -61,7 +63,7 @@ var rfTokenFactory = {
                }
             }
 
-            // console.log('got everything', rfTokenFactory.config );
+            console.log('got everything', rfTokenFactory.config );
 
             if (urlToken || rfTokenFactory.isInternal() || rfTokenFactory.isLoginApp()) {
                if (callback) callback(baseConfig);
@@ -101,8 +103,12 @@ var rfTokenFactory = {
       window.localStorage.token = token;
    },
 
-   deleteToken: function _deleteToken () {
+   deleteToken: function () {
       delete this.config.token;
+      window.localStorage.removeItem('token');
+   },
+
+   deleteStorageToken: function () {
       window.localStorage.removeItem('token');
    },
 
