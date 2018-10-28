@@ -37,8 +37,6 @@ var rfTokenFactory = {
       $http.post(baseConfig.serverURL + 'basic-config', query)
          .success(function (response) {
 
-                        console.log('got response', response );
-
             // transfer keys, but leave old ones
             for (var key in response) {
                baseConfig[key] = response[key];
@@ -63,7 +61,7 @@ var rfTokenFactory = {
                }
             }
 
-            console.log('got everything', rfTokenFactory.config );
+            // console.log('got everything', rfTokenFactory.config );
 
             if (urlToken || rfTokenFactory.isInternal() || rfTokenFactory.isLoginApp()) {
                if (callback) callback(baseConfig);
