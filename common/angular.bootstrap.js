@@ -100,6 +100,7 @@ var rfTokenFactory = {
    },
 
    deleteToken: function _deleteToken () {
+      delete this.config.token;
       window.localStorage.removeItem('token');
    },
 
