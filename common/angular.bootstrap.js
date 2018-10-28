@@ -71,9 +71,11 @@ var rfTokenFactory = {
             }
          })
          // could not post
-         .error(function (err) {
-            console.log('[rfTokenFactory] error:', err);
-            if (err === 'No session found!') {
+         .error(function (baseConfig) { // err function
+
+            // on any error (except "no session found" - this will still return basicConfig) we will do a logout
+            if (baseConfig.err) {
+               console.log('[rfTokenFactory] error:', baseConfig.err);
                rfTokenFactory.logout();
             } else if (callback) { // rf-acl not present => bootstrap without login
                callback(baseConfig);
