@@ -7,7 +7,7 @@
  * @event loggedIn
  * @event loggedOut
  *
- * @version 0.2.3
+ * @version 0.2.4
  */
 
 /* globals rfTokenFactory */
@@ -58,6 +58,9 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
          // user data
          getUserName: function () {
             return _getUserAttribute('email');
+         },
+         getUserFullName: function () {
+            return _getUserAttribute('firstName') + ' ' + _getUserAttribute('lastName');
          },
          getUserId: function () {
             return _getUserAttribute('_id');
