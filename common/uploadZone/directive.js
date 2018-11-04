@@ -20,28 +20,31 @@
 app.directive('rfUploadZoneTest', ['langFactory', function (langFactory) {
    return {
       restrict: 'E', // called on element "rfUploadZoneTest"
-      templateUrl: 'global/directives/uploadZone/template.html',
+      // templateUrl: 'global/directives/uploadZone/template.html',
       scope: {
          onUpload: '='
       },
       link: function ($scope, elem, attr) {
          $scope.lang = langFactory.getCurrentDictionary();
 
-         var hiddenInput = angular.element(elem[0].querySelector('input.hidden'))[0];
-         var uploadZone = angular.element(elem[0].querySelector('.upload-section'));
-
+         var uploadZone = elem[0];
+         var hiddenInput = document.createElement('input');
+         hiddenInput.type = 'file';
+         hiddenInput.classList.add('hidden');
 
          // listen to: drag & drop upload
          initializeDragAndDrop(uploadZone[0], readFilesAndPassThem);
 
-
-         // listen to: file upload via click (=> open upload dialog)
-         uploadZone.on('click', function () {
-            hiddenInput.click();
-         });
+         // On file upload by click on the upload zone
          hiddenInput.addEventListener('change', function () {
             var files = hiddenInput.files;
             readFilesAndPassThem(files);
+         });
+
+
+         uploadZone.appendChild(hiddenInput);
+         uploadZone.addEventListener('click', function () {
+            hiddenInput.click();
          });
 
 
