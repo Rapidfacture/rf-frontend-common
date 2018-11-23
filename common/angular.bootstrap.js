@@ -63,7 +63,7 @@ var rfTokenFactory = {
 
             // console.log('got everything', rfTokenFactory.config );
 
-            if (urlToken || rfTokenFactory.isInternal() || rfTokenFactory.isLoginApp()) {
+            if (urlToken || rfTokenFactory.isInternal() || (baseConfig && baseConfig.token) || rfTokenFactory.isLoginApp()) {
                if (callback) callback(baseConfig);
 
             } else {
