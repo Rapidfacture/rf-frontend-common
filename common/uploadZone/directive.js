@@ -30,6 +30,7 @@ app.directive('rfUploadZoneTest', ['langFactory', function (langFactory) {
          var uploadZone = elem[0];
          var hiddenInput = document.createElement('input');
          hiddenInput.type = 'file';
+         if (attr.multiple) hiddenInput.multiple = 'true';
          hiddenInput.classList.add('hidden');
 
          // listen to: drag & drop upload
