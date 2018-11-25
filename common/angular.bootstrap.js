@@ -5,7 +5,7 @@
 /** rfTokenFactory
  * @desc used in loginfactory and bootstrap
  * do not use in html: ng-app="app" (this would also bootstrap the app)
- * @version 0.1.4
+ * @version 0.1.5
  */
 var rfTokenFactory = {
 
