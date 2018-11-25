@@ -7,7 +7,7 @@
  * @event loggedIn
  * @event loggedOut
  *
- * @version 0.2.4
+ * @version 0.2.5
  */
 
 /* globals rfTokenFactory */
@@ -170,6 +170,7 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
       }
 
       function _getUserAccount () {
+         config.user = config.user || {};
          return config.user.account || {};
       }
 
