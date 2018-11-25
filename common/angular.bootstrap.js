@@ -5,7 +5,7 @@
 /** rfTokenFactory
  * @desc used in loginfactory and bootstrap
  * do not use in html: ng-app="app" (this would also bootstrap the app)
- * @version 0.1.5
+ * @version 0.1.6
  */
 var rfTokenFactory = {
 
@@ -19,7 +19,7 @@ var rfTokenFactory = {
 
    config: {},
 
-   refreshConfig: function (baseConfig, callback) {
+   refreshConfig: function (baseConfig, callback, preventLoggin) {
 
       // console.log('refreshConfig');
       // console.log('baseConfig', baseConfig);
@@ -67,7 +67,11 @@ var rfTokenFactory = {
                if (callback) callback(baseConfig);
 
             } else {
-               rfTokenFactory.login();
+               if (preventLoggin) {
+                  if (callback) callback(baseConfig);
+               } else {
+                  rfTokenFactory.login();
+               }
             }
          })
          .error(function (response) { // err function
@@ -189,9 +193,13 @@ var rfTokenFactory = {
 /**
  * @desc bootstrap angular application
  * do not use in html: ng-app="app" (this would also bootstrap the app)
- * @version 0.1.1
+ * @version 0.1.2
  */
-function startAngularApp () {
+
+
+/* eslint no-unused-vars: "off" */
+
+function startAngularApp (preventLoggin) {
    var origin = window.location.origin;
 
    if (!origin) { // IE 11 and below
@@ -210,7 +218,7 @@ function startAngularApp () {
 
    // we always fetch the login url from backend to prevent errors, when the url changes
 
-   rfTokenFactory.refreshConfig(baseConfig, bootstrapApplication);
+   rfTokenFactory.refreshConfig(baseConfig, bootstrapApplication, preventLoggin);
 
 
    function bootstrapApplication (baseConfig) {
@@ -221,4 +229,4 @@ function startAngularApp () {
    }
 }
 
-startAngularApp();
+// startAngularApp();
