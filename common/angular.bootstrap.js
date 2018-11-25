@@ -71,12 +71,14 @@ var rfTokenFactory = {
             }
          })
          .error(function (response) { // err function
-            if (response.err) { // "no session found", still return basicConfig => we will do a logout
-               // still copy keys to config to provide the logout url
+
+            // on any error (except "no session found" - this will still return basicConfig) we will do a logout
+            if (response.err) {
+               console.log('[rfTokenFactory] error:', response.err);
+               // on error => still copy keys to config to provide the logout url
                for (var key in response) {
-                  baseConfig[key] = response[key];
+                  rfTokenFactory.config[key] = response[key];
                }
-               console.log('[rfTokenFactory] error:', baseConfig.err);
                rfTokenFactory.logout();
             } else if (callback) { // rf-acl not present => bootstrap without login
                callback(response);
