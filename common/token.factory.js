@@ -175,7 +175,7 @@ function initTokenFactory () {
          return value;
       },
 
-      removeTokenFromUrl () {
+      removeTokenFromUrl: function () {
          var href = window.location.href;
          // Regex is: ([\?\&])token=[^\?\&]*([\?\&]|$) but eslint needs unicodes because of bad escaping error
          var re = new RegExp('([\u003F\u0026])token=[^\u003F\u0026]*([\u003F\u0026]|$)');
