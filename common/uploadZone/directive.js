@@ -1,78 +1,167 @@
-/** rfUploadZone
- * @desc a drag & drop upload zone that also opens the upload dialog on click
+/** rf-upload-zone-custom
  *
- * @version 0.1.0, 07.10.2018
+ * get all files in one array after the upload
  *
- * @example  <rf-upload-zone onupload="upload"></rf-upload-zone>
+ * @example
+ *          <rf-upload-zone on-upload="onUpload" multiple="true">
+               <div class="rf-btn">
+                  <i class="fa fa-plus"></i>
+               </div>
+            </rf-upload-zone>
  *
- * @return array of files:
-  * [{
- *    content (contentUint8Array)
- *    name
- *    type
- *    size
- *    extension
- *  }]
+ * @example
+ *             <rf-upload-zone on-upload="onUpload" multiple="true" drag="true" fileselect="true" data="additionalDataToPass">
+                <div class="col-sm-12 add">
+                  <i class="fa fa-plus"></i>
+                  <span>
+                     <b>{{lang.importOrRequestButtonHeadline}}</b>
+                     <br>
+                     <small>{{lang.importOrRequestButtonSubheader}}</small>
+                     <br>
+                  </span>
+                </div>
+             </rf-upload-zone>
+ *
+ *  @version 0.0.6
+ *
  */
 
-/* global initializeDragAndDrop readFileIntoMemory  */
-
-app.directive('rfUploadZoneTest', ['langFactory', function (langFactory) {
+app.directive('rfUploadZone', ['langFactory', function (langFactory) {
    return {
-      restrict: 'E', // called on element "rfUploadZoneTest"
-      // templateUrl: 'global/directives/uploadZone/template.html',
+      restrict: 'E', // called on class "uploadDirective"
+      // templateUrl: 'global/directives/uploadZoneCustom/template.html',
       scope: {
-         onUpload: '='
+         onUpload: '=',
+         data: '='
       },
       link: function ($scope, elem, attr) {
          $scope.lang = langFactory.getCurrentDictionary();
+         // when the user clicks anywhere, open the file dialog
+         // console.log('uploadZone');
 
          var uploadZone = elem[0];
          var hiddenInput = document.createElement('input');
+         hiddenInput.multiple = !!attr.multiple || false;
          hiddenInput.type = 'file';
-         if (attr.multiple) hiddenInput.multiple = 'true';
          hiddenInput.classList.add('hidden');
-
-         // listen to: drag & drop upload
-         initializeDragAndDrop(uploadZone[0], readFilesAndPassThem);
-
-         // On file upload by click on the upload zone
-         hiddenInput.addEventListener('change', function () {
-            var files = hiddenInput.files;
-            readFilesAndPassThem(files);
-         });
-
-
          uploadZone.appendChild(hiddenInput);
-         uploadZone.addEventListener('click', function () {
-            hiddenInput.click();
-         });
 
 
-         // transfer files from inputs in one array in memory; then pass it to callback
-         function readFilesAndPassThem (files) {
-            var i = 0;
-            var fileInfos = [];
-
-            function readNextFile () {
-               if (i < files.length) {
-                  readFileIntoMemory(files[i], function (fileInfo) {
-                     addFileExtension(fileInfo);
-                     fileInfos.push(fileInfo);
-                     i++;
-                     readNextFile();
-                  });
-               } else { // when ready, pass the array to callback
-                  $scope.onUpload(fileInfos);
-               }
-            }
-            readNextFile();
+         if (!attr.fileselect && !attr.drag) { // noting configured?
+            console.log('rfUploadZone: no attributes defined. enabling drag&drop and fileselect');
+            attr.fileselect = true;
+            attr.drag = true;
          }
 
-         function addFileExtension (file) {
-            var array = file.name.split('.');
-            var lastElement = array[array.length - 1];
-            if (lastElement) file.extension = lastElement;
+         if (attr.fileselect) {
+            // console.log('Initializing upload button ...');
+            hiddenInput.addEventListener('change', function () {
+               upload(hiddenInput.files);
+            });
+            uploadZone.addEventListener('click', function () {
+               hiddenInput.click();
+            });
+         }
+
+
+         if (attr.drag) {
+            // console.log('Initializing upload zone ...');
+            initializeDragAndDrop(uploadZone, upload);
+         }
+
+
+         function upload (files) {
+            var fileInfos = [];
+            for (var i = 0; i < files.length; i++) {
+               fileIntoMemory(files[i], i, function (fileInfo, index) {
+                  // Call callback
+
+                  if (fileInfo && fileInfo.size > 10000000) { // 10 MB
+                     return $scope.$emit('note_warning', 'filesizeLimitedTo10Mb');
+                  }
+
+                  fileInfos.push(fileInfo);
+
+                  // last file finished?
+                  if (index === (files.length - 1)) {
+                     $scope.onUpload(fileInfos, $scope.data);
+                  }
+               });
+            }
+         }
+
+
+         // Sources:
+         // https://techoverflow.net/2018/03/30/how-to-add-js-drag-drop-file-upload-without-any-dependencies/
+         // https://techoverflow.net/2018/03/30/reading-an-uploaded-file-into-memory-using-pure-javascript/
+
+
+         /**
+          * Initialize drag & drop event handling for a DOM element.
+          * The DOM element does not have to be empty in order to do this.
+          * @param elem The DOM element where files can be dragged & dropped
+          * @param callback The callback(files) function that gets passed a list of files
+          * when files are dragged and dropped.
+          *
+          * Basic usage example:
+          *
+          *  initializeDragAndDrop(elem, function(files) {
+          *     for (var i = 0; i < files.length; i++) {
+          *        readAndAddFile(files[i]);
+          *     }
+          *  })
+          */
+         // eslint-disable-next-line no-unused-vars
+         function initializeDragAndDrop (elem, callback) {
+            elem.addEventListener('drop', function (event) {
+               _dragndropPreventDefault(event);
+               callback(event.dataTransfer.files);
+            }, false);
+            elem.addEventListener('dragover', _dragndropPreventDefault, false);
+            elem.addEventListener('dragdrop', _dragndropPreventDefault, false);
+            elem.addEventListener('dragenter', _dragndropPreventDefault, false);
+            elem.addEventListener('dragleave', _dragndropPreventDefault, false);
+         }
+
+
+         /**
+          * Internal utility function to prevent default
+          * handling for a given event.
+          */
+         // eslint-disable-next-line no-unused-vars
+         function _dragndropPreventDefault (event) {
+            event.stopPropagation();
+            event.preventDefault();
+         }
+
+
+         /**
+          * Utility function that can be used as handler wrapper
+          * for initializeDragAndDrop.
+          * This reads the entire file into memory
+          *
+          * The handler function gets passed an array of objects:
+          * {
+          *     name: filename as string,
+          *     size: size in bytes as number,
+          *     type: MIME type as string,
+          *     content: file content as Uint8Array
+          * }
+          * @param file The file to read
+          * @param handler
+          */
+         function fileIntoMemory (file, index, callback) {
+            // eslint-disable-next-line no-undef
+            var reader = new FileReader();
+            reader.onload = function () {
+               callback({
+                  filename: file.name,
+                  size: file.size,
+                  mimetype: file.type,
+                  content: new Uint8Array(this.result)
+               }, index);
+            };
+            reader.readAsArrayBuffer(file);
          }
 
       }
