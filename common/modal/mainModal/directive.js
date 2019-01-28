@@ -2,7 +2,7 @@
  * @desc Gloabal dialog box. Can be triggered from anywhere by event.
  * manages animated box and quit function
  *
- * @version 0.1.2
+ * @version 0.1.4
  *
  * place this in the index html:
  * <rf-modal></rf-modal>
