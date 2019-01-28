@@ -8,7 +8,6 @@ rf-modal {
       text-align: center;
       margin: 0 auto;
       @include transition(0.15s);
-      opacity: 0;
       -webkit-box-shadow: none;
       -moz-box-shadow: none;
       box-shadow: none;
@@ -143,7 +142,6 @@ rf-modal {
    .active {
       .box {
          @include transition(0.15s);
-         opacity: 1;
          top: 15%;
 
          &.medium, &.large {
