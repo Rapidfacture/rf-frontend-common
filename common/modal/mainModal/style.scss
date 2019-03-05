@@ -7,7 +7,6 @@ rf-modal {
       display: block;
       text-align: center;
       margin: 0 auto;
-      @include transition(0.15s);
       -webkit-box-shadow: none;
       -moz-box-shadow: none;
       box-shadow: none;
@@ -138,12 +137,10 @@ rf-modal {
       top: 0;
       background-color: grey;
       opacity: 0;
-      @include transition(0.15s);
    }
 
    .active {
       .box {
-         @include transition(0.15s);
          top: 15%;
 
          &.medium, &.large {
@@ -159,7 +156,6 @@ rf-modal {
       }
 
       .grey-layer {
-         @include transition(0.15s);
          opacity: 0.8;
       }
    }
