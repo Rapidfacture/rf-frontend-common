@@ -10,7 +10,13 @@
             </rf-upload-zone>
  *
  * @example
- *             <rf-upload-zone on-upload="onUpload" multiple="true" drag="true" fileselect="true" data="additionalDataToPass">
+ *             <rf-upload-zone
+                  on-upload="onUpload"
+                  multiple="true"
+                  drag="true"
+                  fileselect="true"
+                  data="additionalDataToPass"
+                  file-size-limit="10">
                 <div class="col-sm-12 add">
                   <i class="fa fa-plus"></i>
                   <span>
@@ -22,7 +28,7 @@
                 </div>
              </rf-upload-zone>
  *
- *  @version 0.0.6
+ *  @version 0.1.0
  *
  */
 
@@ -45,6 +51,7 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
          hiddenInput.type = 'file';
          hiddenInput.classList.add('hidden');
          uploadZone.appendChild(hiddenInput);
+         var fileSizeLimit = attr.fileSizeLimit ? parseInt(attr.fileSizeLimit) : null;
 
 
          if (!attr.fileselect && !attr.drag) { // noting configured?
@@ -76,7 +83,7 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
                fileIntoMemory(files[i], i, function (fileInfo, index) {
                   // Call callback
 
-                  if (fileInfo && fileInfo.size > 10000000) { // 10 MB
+                  if (fileSizeLimit && fileInfo && fileInfo.size > fileSizeLimit * 1000000) {
                      return $scope.$emit('note_warning', 'filesizeLimitedTo10Mb');
                   }
 
