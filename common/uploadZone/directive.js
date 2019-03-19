@@ -84,7 +84,8 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
                   // Call callback
 
                   if (fileSizeLimit && fileInfo && fileInfo.size > fileSizeLimit * 1000000) {
-                     return $scope.$emit('note_warning', 'filesizeLimitedTo10Mb');
+                     console.log('filesizeLimited to ' + fileSizeLimit + 'MB, aborting.');
+                     return $scope.$emit('note_warning', 'filesizeLimited');
                   }
 
                   fileInfos.push(fileInfo);
