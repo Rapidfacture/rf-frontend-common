@@ -13,7 +13,7 @@ app.directive('rfPolicyLink', ['http', 'langFactory', 'config', function (http, 
    return {
       restrict: 'E',
       scope: '=',
-      templateUrl: 'global/common/policyLink/template.html',
+      templateUrl: 'global/common/directives/policyLink/template.html',
       link: function ($scope, elem, attr, ctrl) {
          $scope.termsAndPolicyLink = config.termsAndPolicyLink;
       }
