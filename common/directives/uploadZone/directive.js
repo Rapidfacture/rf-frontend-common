@@ -2,21 +2,23 @@
  *
  * get all files in one array after the upload
  *
- * @example
+ * @example simple
  *          <rf-upload-zone on-upload="onUpload" multiple="true">
                <div class="rf-btn">
                   <i class="fa fa-plus"></i>
                </div>
             </rf-upload-zone>
  *
- * @example
+ * @example all options
+ *
  *             <rf-upload-zone
-                  on-upload="onUpload"
+                  on-upload="onUpload"          uploadFunction(files, additionalDataToPass)
                   multiple="true"
-                  drag="true"
-                  fileselect="true"
-                  data="additionalDataToPass"
-                  file-size-limit="10">
+                  drag="true"                   drag files
+                  fileselect="true"             click to open upload window
+                  data="additionalDataToPass"   passed as second parameter to the on-upload function
+                  file-size-limit="10"          limit in MB
+                  readAsText="true">            otherwise read as arrayBuffer
                 <div class="col-sm-12 add">
                   <i class="fa fa-plus"></i>
                   <span>
@@ -28,7 +30,7 @@
                 </div>
              </rf-upload-zone>
  *
- *  @version 0.1.0
+ *  @version 0.1.1
  *
  */
 
@@ -52,6 +54,7 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
          hiddenInput.classList.add('hidden');
          uploadZone.appendChild(hiddenInput);
          var fileSizeLimit = attr.fileSizeLimit ? parseInt(attr.fileSizeLimit) : null;
+         var asText = !!attr.readAsText;
 
 
          if (!attr.fileselect && !attr.drag) { // noting configured?
@@ -162,14 +165,20 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
             // eslint-disable-next-line no-undef
             var reader = new FileReader();
             reader.onload = function () {
+               var content = asText ? this.result : new Uint8Array(this.result);
                callback({
                   filename: file.name,
                   size: file.size,
                   mimetype: file.type,
-                  content: new Uint8Array(this.result)
+                  content: content
                }, index);
             };
-            reader.readAsArrayBuffer(file);
+            if (asText) {
+               reader.readAsText(file);
+            } else {
+               reader.readAsArrayBuffer(file);
+            }
+
          }
 
       }
