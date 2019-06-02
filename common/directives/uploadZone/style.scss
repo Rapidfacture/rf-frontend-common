@@ -4,4 +4,13 @@ rf-upload-zone{
    }
    display: block;
    width: 100%;
+
+   &.default-style{
+      border: dashed 2px $grey;
+      border-radius: 15px;
+      .files-elect{
+         color: $main_color;
+         cursor: pointer;
+      }
+   }
 }

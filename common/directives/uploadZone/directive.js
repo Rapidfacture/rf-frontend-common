@@ -4,18 +4,24 @@
  *
  * @example simple
  *          <rf-upload-zone on-upload="onUpload" multiple="true">
-               <div class="rf-btn">
-                  <i class="fa fa-plus"></i>
-               </div>
-            </rf-upload-zone>
+ *              <div class="rf-btn">
+ *                <i class="fa fa-plus"></i>
+ *              </div>
+ *          </rf-upload-zone>
  *
- * @example all options
+ * @example combined: drag and drop and upload link; use predefied style
+ *          <rf-upload-zone on-upload="onUpload" multiple="true" class="default-style">
+ *             Drag files here or
+ *             <a class="file-select">click here</a>
+ *             to upload.
+ *          </rf-upload-zone>
  *
+ * @example further options
  *             <rf-upload-zone
                   on-upload="onUpload"          uploadFunction(files, additionalDataToPass)
                   multiple="true"
                   drag="true"                   drag files
-                  fileselect="true"             click to open upload window
+                  fileselect="true"             click to this element to open upload window
                   data="additionalDataToPass"   passed as second parameter to the on-upload function
                   file-size-limit="10"          limit in MB
                   readAsText="true">            otherwise read as arrayBuffer
@@ -30,7 +36,7 @@
                 </div>
              </rf-upload-zone>
  *
- *  @version 0.1.1
+ *  @version 0.1.2
  *
  */
 
@@ -48,6 +54,7 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
          // console.log('uploadZone');
 
          var uploadZone = elem[0];
+         var fileselectElement = uploadZone.getElementsByClassName('file-select')[0];
          var hiddenInput = document.createElement('input');
          hiddenInput.multiple = !!attr.multiple || false;
          hiddenInput.type = 'file';
@@ -58,19 +65,30 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
 
 
          if (!attr.fileselect && !attr.drag) { // noting configured?
-            console.log('rfUploadZone: no attributes defined. enabling drag&drop and fileselect');
+            // console.log('rfUploadZone: no attributes defined. enabling drag&drop and fileselect');
             attr.fileselect = true;
             attr.drag = true;
          }
 
-         if (attr.fileselect) {
+         if (attr.fileselect || fileselectElement) {
             // console.log('Initializing upload button ...');
             hiddenInput.addEventListener('change', function () {
                upload(hiddenInput.files);
             });
-            uploadZone.addEventListener('click', function () {
-               hiddenInput.click();
-            });
+
+            // specific html element to open upload dialog?
+            if (fileselectElement) {
+               fileselectElement.addEventListener('click', function () {
+                  hiddenInput.click();
+               });
+            // otherwise take whole element
+            } else {
+               uploadZone.addEventListener('click', function () {
+                  hiddenInput.click();
+               });
+            }
+
+
          }
 
 
