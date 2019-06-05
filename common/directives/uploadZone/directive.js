@@ -11,7 +11,7 @@
  *
  * @example combined: drag and drop and upload link; use predefied style
  *          <rf-upload-zone on-upload="onUpload" multiple="true" class="default-style">
- *             Drag files here or
+ *             Drop files here or
  *             <a class="file-select">click here</a>
  *             to upload.
  *          </rf-upload-zone>
