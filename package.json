@@ -18,8 +18,8 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "grunt": "1.0.1",
-    "grunt-eslint": "20.1.0"
+    "grunt": "1.0.4",
+    "grunt-eslint": "21.0.0"
   },
   "scripts": {
     "prepublish": "npm test",
