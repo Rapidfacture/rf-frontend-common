@@ -19,7 +19,7 @@ app.directive('rfCopyToClipBoard', [function () {
       },
       link: function ($scope, elem, attr, ctrl) {
 
-         function copyToClipboard() {
+         function copyToClipboard () {
             var string = $scope.rfCopyToClipBoard || elem[0].innerText;
             copyStringToClipboard(string); // eslint-disable-line no-undef
             $scope.$emit('note_info', {message: 'copiedToClipboard', timeout: 1});
