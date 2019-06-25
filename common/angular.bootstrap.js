@@ -34,12 +34,11 @@ function startAngularApp (preventLoggin, noACL) {
       'wsUrl': servURL.replace('http', 'ws')
    };
 
-   // we always fetch the login url from backend to prevent errors, when the url changes
-
+   rfTokenFactory = initTokenFactory();
    if (noACL) {
       bootstrapApplication(baseConfig);
    } else {
-      rfTokenFactory = initTokenFactory();
+      // we always fetch the login url from backend to prevent errors, when the url changes
       rfTokenFactory.refreshConfig(baseConfig, bootstrapApplication, preventLoggin);
    }
 
