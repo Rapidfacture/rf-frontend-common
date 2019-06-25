@@ -1,7 +1,14 @@
 /**
  * @desc bootstrap angular application
  * do not use in html: ng-app="app" (this would also bootstrap the app)
- * @version 0.1.2
+ * @version 0.1.3
+ *
+ * How to integrate in your app
+ * @example without acl
+ *   startAngularApp(null, true);
+ *
+ * @example standard: app with login and acl
+ *   startAngularApp();
  */
 
 
@@ -9,9 +16,7 @@
 /* eslint no-unused-vars: "off" */
 /* eslint no-global-assign: "off" */
 
-function startAngularApp (preventLoggin) {
-
-   rfTokenFactory = initTokenFactory();
+function startAngularApp (preventLoggin, noACL) {
 
    var origin = window.location.origin;
 
@@ -31,7 +36,12 @@ function startAngularApp (preventLoggin) {
 
    // we always fetch the login url from backend to prevent errors, when the url changes
 
-   rfTokenFactory.refreshConfig(baseConfig, bootstrapApplication, preventLoggin);
+   if (noACL) {
+      bootstrapApplication(baseConfig);
+   } else {
+      rfTokenFactory = initTokenFactory();
+      rfTokenFactory.refreshConfig(baseConfig, bootstrapApplication, preventLoggin);
+   }
 
 
    function bootstrapApplication (baseConfig) {
@@ -42,4 +52,4 @@ function startAngularApp (preventLoggin) {
    }
 }
 
-// startAngularApp();
+// startAngularApp(null, true);
