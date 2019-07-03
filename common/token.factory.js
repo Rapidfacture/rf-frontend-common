@@ -132,8 +132,9 @@ function initTokenFactory () {
          var origin = window.location.origin.replace('localhost', '127.0.0.1'),
             // For dev replace localhost always by ip
             loginUri = this.config.loginMainUrl.replace('localhost', '127.0.0.1');
+         var pathname = window.location.pathname;
 
-         return (origin === loginUri);
+         return (origin === loginUri) || (pathname === loginUri);
       },
 
       getLoginAppUrl: function (page, redirect, param) {
