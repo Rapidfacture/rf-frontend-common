@@ -133,8 +133,12 @@ function initTokenFactory () {
             // For dev replace localhost always by ip
             loginUri = this.config.loginMainUrl.replace('localhost', '127.0.0.1');
          var pathname = window.location.pathname;
+         // Also match "/login/" to "login"
+         var filteredPathname = pathname.replace(/\//g, '');
+         var filteredLoginURI = loginUri.replace(/\//g, '');
 
-         return (origin === loginUri) || (pathname === loginUri);
+         return (origin === loginUri) ||
+            (filteredPathname = filteredLoginURI);
       },
 
       getLoginAppUrl: function (page, redirect, param) {
