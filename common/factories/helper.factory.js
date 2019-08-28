@@ -1,7 +1,7 @@
 /**
  * @module helperFactory
  * @desc common functions
- * @version 0.1.1
+ * @version 0.1.2
  */
 
 app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootScope) {
@@ -10,6 +10,7 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
       saveCheck: _saveCheck,
       twoDecimals: _twoDecimals,
       round: _round,
+      moveUpDown: _moveUpDown,
       checkFileVersion: _checkFileVersion
    };
 
@@ -113,6 +114,14 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
       var rounded = (Math.round(num + 'e+' + dec) + 'e-' + dec);
       rounded = isNaN(rounded) ? 0 : rounded;
       return parseFloat(rounded);
+   }
+
+   // move an item up/down in an array
+   function _moveUpDown (arr, index, direction) {
+      const copy = arr.slice();
+      const toIdx = (direction === 'up') ? index - 1 : index + 1;
+      copy.splice(toIdx, 0, copy.splice(index, 1)[0]);
+      return copy;
    }
 
    function _checkFileVersion (filename) {
