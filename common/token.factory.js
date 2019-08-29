@@ -137,8 +137,7 @@ function initTokenFactory () {
          var filteredPathname = pathname.replace(/\//g, '');
          var filteredLoginURI = loginUri.replace(/\//g, '');
 
-         return (origin === loginUri) ||
-            (filteredPathname = filteredLoginURI);
+         return (origin === loginUri) || (filteredPathname === filteredLoginURI);
       },
 
       getLoginAppUrl: function (page, redirect, param) {
