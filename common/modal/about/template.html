@@ -1,14 +1,22 @@
+<br>
+<br>
+<img src="common/img/icon-grey-lg.svg"/>
+
 <h3>{{app.name}}, Version {{app.version}}</h3>
 
 <h4>License</h4>
-{{app.license}}
+[2014] - [2019] Rapidfacture GmbH. All Rights Reserved.
+<br>
+<br>
+All information, intellectual and technical concepts contained herein are
+property of Rapidfacture GmbH and are protected by trade secret or copyright law.
+Dissemination of this information or reproduction of this material is strictly
+forbidden unless prior written permission is obtained from Rapidfacture GmbH.
+<br>
+<br>
+<a href="mailto:info@rapidfacture.com">info@rapidfacture.com</a>
 
 <h4>Dependecys</h4>
 <div ng-repeat="(name, version) in app.packageJson.dependencies">
-   {{name}} {{version}}
-</div>
-
-<h4>Peer Dependecys</h4>
-<div ng-repeat="(name, version) in app.packageJson.peerDependencies">
    {{name}} {{version}}
 </div>
