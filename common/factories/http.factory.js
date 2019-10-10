@@ -1,7 +1,7 @@
 /**
  * @module http factory
  * @desc backend middleware with methods get and post, error handling included
- * @version 0.1.3
+ * @version 0.2.0
  */
 
 // Source: https://stackoverflow.com/a/901144/2597135
@@ -20,7 +20,7 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
    var debugMode = false;
 
    function errorFunction (data, status, headers, conf, errFunc, url) {
-      console.log('%c http error on url:' + config.serverURL + url + ', status ' + status, 'background: red; color: white');
+      console.log('%c http error on url:' + _getUrl + ', status ' + status, 'background: red; color: white');
       console.log(data);
       if (errFunc) errFunc(data, status, headers, conf);
       if (debugMode) {
@@ -45,6 +45,12 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
       }
    }
 
+   function _getUrl (url) {
+      if (url[0] !== '/') url = '/' + url;
+      var apiPrefix = 'api';
+      return config.serverURL + apiPrefix + url;
+   }
+
    // acl: set headers, when token present after login
    $rootScope.$on('loggedIn', function (event, token) {
       _setHeaderToken(token);
@@ -59,8 +65,11 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
 
       retryCount: 0,
 
+      getUrl: _getUrl,
+
       post: function (url, data, successFunc, errFunc) {
          var self = this;
+         url = _getUrl(url);
          // post without data argument
          if (typeof data === 'function' && !successFunc && !errFunc) {
             successFunc = data;
@@ -70,14 +79,14 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
          data = data || {};
          var requestId = data.requestId || '';
 
-         $http.post(config.serverURL + url, {data: data})
+         $http.post(url, {data: data})
          // {data: data} - always parse as json, prevent body-parser errors in node backend
             .success(function (response) {
                self.retryCount = 0; // Reset retry count on every request, ToDo: Maybe this is a problem if you make multiple invalid requests in a row
                successFunction('POST', url, successFunc, response, requestId);
             })
-            .error(function (data, status, headers, config) {
-               self.handleErrorResponse(data, status, headers, config)
+            .error(function (data, status, headers, conf) {
+               self.handleErrorResponse(data, status, headers, conf)
                   .then(function () {
                      self.post(url, data, successFunc, errFunc);
                   })
@@ -85,7 +94,7 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
                      if (e.message === 'login') {
                         loginFactory.login();
                      } else {
-                        errorFunction(data, status, headers, config, errFunc, url);
+                        errorFunction(data, status, headers, conf, errFunc, url);
                      }
                   });
             });
@@ -93,7 +102,7 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
 
       get: function (url, data, successFunc, errFunc) {
          var self = this;
-
+         url = _getUrl(url);
          data = data || null;
          // call without data, maximum tree arguments => skip parameter "data"
          if (typeof data === 'function') {
@@ -113,13 +122,13 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
             internalQueryPart = (dataQueryPart ? '&' : '?') + 'internal=' + internalToken;
          }
 
-         $http.get(config.serverURL + url + dataQueryPart + internalQueryPart)
+         $http.get(url + dataQueryPart + internalQueryPart)
             .success(function (response) {
                self.retryCount = 0; // Reset retry count on every request, ToDo: Maybe this is a problem if you make multiple invalid requests in a row
                successFunction('GET', url, successFunc, response, requestId);
             })
-            .error(function (data, status, headers, config) {
-               self.handleErrorResponse(data, status, headers, config)
+            .error(function (data, status, headers, conf) {
+               self.handleErrorResponse(data, status, headers, conf)
                   .then(function () {
                      self.get(url, data, successFunc, errFunc);
                   })
@@ -127,7 +136,7 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
                      if (e.message === 'login') {
                         loginFactory.login();
                      } else {
-                        errorFunction(data, status, headers, config, errFunc, url);
+                        errorFunction(data, status, headers, conf, errFunc, url);
                      }
                   });
             });
@@ -135,7 +144,8 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
 
       mail: function (url, data, successFunc, errFunc) {
          $rootScope.$emit('overlay', 'open', 'sendingMail');
-         $http.post(config.serverURL + url, {
+         url = _getUrl(url);
+         $http.post(url, {
             data: data
          })
             .success(function (response) {
@@ -143,20 +153,21 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
                $rootScope.$emit('note_info', 'mailSent');
                successFunction('POST', url, successFunc, response);
             })
-            .error(function (data, status, headers, config) {
+            .error(function (data, status, headers, conf) {
                $rootScope.$emit('overlay', 'close');
                $rootScope.$emit('note_error', 'couldNotSendMail');
-               errorFunction(data, status, headers, config, errFunc, url);
+               errorFunction(data, status, headers, conf, errFunc, url);
             });
       },
 
       fileSave: function (url, data, successFunc, errFunc) {
          var headers = data.headers || {};
+         url = _getUrl(url);
          headers['Content-type'] = 'application/octet-stream';
          headers.preview = (data.mimetype === 'application/pdf') ? 'true' : 'false';
          $http({
             method: 'POST',
-            url: config.serverURL + url,
+            url: url,
             data: data.content,
             headers: headers,
             transformRequest: []
@@ -164,29 +175,30 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
             .success(function (response) {
                successFunction('PUT', url, successFunc, response);
             })
-            .error(function (data, status, headers, config) {
-               errorFunction(data, status, headers, config, errFunc, url);
+            .error(function (data, status, headers, conf) {
+               errorFunction(data, status, headers, conf, errFunc, url);
             });
       },
 
       fileDownload: function (url, data, successFunc, errFunc) {
+         url = _getUrl(url);
          $http({
             method: 'POST',
-            url: config.serverURL + 'drawingbinary',
+            url: url + 'drawingbinary',
             data: {data: data},
             responseType: 'arraybuffer'
          })
             .success(function (response) {
                successFunction('PUT', url, successFunc, response);
             })
-            .error(function (data, status, headers, config) {
-               errorFunction(data, status, headers, config, errFunc, url);
+            .error(function (data, status, headers, conf) {
+               errorFunction(data, status, headers, conf, errFunc, url);
             });
       },
 
       setHeaderToken: _setHeaderToken,
 
-      handleErrorResponse: function (data, status, headers, config) {
+      handleErrorResponse: function (data, status, headers, conf) {
          var self = this;
          return $q(function (resolve, reject) {
             if (status === 401 && $http.defaults.headers.common['x-access-token']) { // if 401 and a token was presented then its exired
