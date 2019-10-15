@@ -1,7 +1,7 @@
 /**
  * @module http factory
  * @desc backend middleware with methods get and post, error handling included
- * @version 0.2.0
+ * @version 0.2.1
  */
 
 // Source: https://stackoverflow.com/a/901144/2597135
@@ -20,7 +20,7 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
    var debugMode = false;
 
    function errorFunction (data, status, headers, conf, errFunc, url) {
-      console.log('%c http error on url:' + _getUrl + ', status ' + status, 'background: red; color: white');
+      console.log('%c http error on url:' + url + ', status ' + status, 'background: red; color: white');
       console.log(data);
       if (errFunc) errFunc(data, status, headers, conf);
       if (debugMode) {
