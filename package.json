@@ -1,7 +1,7 @@
 {
   "name": "rf-frontend-common",
   "description": "Common frontend components for Rapidfacture apps: style, images, AngularJS files",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "license": "MIT",
   "repository": {
     "type": "git",
