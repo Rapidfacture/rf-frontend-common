@@ -88,17 +88,14 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
 
    // first get main language, load other languages after that
    function _initLanguage (lang) {
-      console.log('_initLanguage', lang);
+      // console.log('_initLanguage', lang);
       // set main language
       _setLanguage(lang, function () {
          // now fetch other languages
          var activeLangIndex = Services.supportedLang.indexOf(lang);
-         console.log(Services.supportedLang.slice(), activeLangIndex);
-         console.log(Services.supportedLang.slice().splice(activeLangIndex, 1));
          var otherLanguages = Services.supportedLang.slice();
          otherLanguages.splice(activeLangIndex, 1); // remove current lang
          var otherLangIndex = 0;
-         console.log('otherLanguages', otherLanguages);
          loadNextLang();
 
          function loadNextLang () {
