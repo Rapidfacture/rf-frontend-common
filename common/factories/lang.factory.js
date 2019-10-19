@@ -34,21 +34,30 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
 
    function _translate (key, lang) {
       lang = lang || Services.currentLang;
-      if (Services.supportedLang.indexOf(lang) !== -1) { // tranlation available => look for key
+
+      var bestOtherTranslation = (dictionary.en && dictionary.en[key]) ? dictionary.en[key] : key;
+
+      // tranlation available
+      if (Services.supportedLang.indexOf(lang) === -1) {
+         return bestOtherTranslation;
+      }
+
+      if (dictionary[lang]) {
          if (dictionary[lang][key]) { // tranlation available => return it
             return dictionary[lang][key];
 
          // show to the developer, if a translation is missing
          } else if (key) {
             console.log("error: lang key '" + key + "' does not exist");
-            return key; // still return the key => better than nothing
+            return bestOtherTranslation;
          }
          // else: key is null or undefined => do nothing
          // => sometimes (before lloading is complete) there my be me requests with undefined values, but we do not care
 
       } else if (lang) {
+         _fetch(lang);
          console.log("error: translation for lang.'" + lang + "' was not fetched yet");
-         return key; // still return the key => better than nothing
+         return bestOtherTranslation;
       }
    }
 
