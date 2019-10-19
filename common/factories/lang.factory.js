@@ -1,7 +1,7 @@
 /**
  * @module langFactory
  * @desc fetch language as json data from server, provide current language
- * @version 0.1.1
+ * @version 0.1.2
  *
  * TODO:
  *  * unify language factory in every project
@@ -29,7 +29,9 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
 
       setLanguage: _setLanguage, // setLanguage("de")
 
-      extendLang: _extendLang
+      extendLang: _extendLang,
+
+      initLanguage: _initLanguage
    };
 
    function _translate (key, lang) {
@@ -74,29 +76,64 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
       return dictionary[Services.currentLang];
    }
 
-   function _setLanguage (lang) {
+   function _setLanguage (lang, callback) {
+      callback = callback || function () {};
+      _checkLanguage(lang, function (lang) {
+         Services.currentLang = lang;
+         Services.languageSet = true;
+         $rootScope.$broadcast('languageSet', lang);
+         callback(lang);
+      });
+   }
+
+   // first get main language, load other languages after that
+   function _initLanguage (lang) {
+      console.log('_initLanguage', lang);
+      // set main language
+      _setLanguage(lang, function () {
+         // now fetch other languages
+         var activeLangIndex = Services.supportedLang.indexOf(lang);
+         console.log(Services.supportedLang.slice(), activeLangIndex);
+         console.log(Services.supportedLang.slice().splice(activeLangIndex, 1));
+         var otherLanguages = Services.supportedLang.slice();
+         otherLanguages.splice(activeLangIndex, 1); // remove current lang
+         var otherLangIndex = 0;
+         console.log('otherLanguages', otherLanguages);
+         loadNextLang();
+
+         function loadNextLang () {
+            _checkLanguage(otherLanguages[otherLangIndex], function () {
+               otherLangIndex++;
+               if (otherLanguages[otherLangIndex]) {
+                  setTimeout(function () {
+                     loadNextLang();
+                  }, 100);
+               }
+            });
+         }
+      });
+   }
+
+   function _checkLanguage (lang, callback) {
+      callback = callback || function () {};
+
       if (dictionary[lang]) { // data already fetched => take it
-         setLang(lang);
+         callback(lang);
       } else {
          if (Services.supportedLang.indexOf(lang) !== -1) {
             // console.log("no data for " + lang + " in factory  =>  fetch from server");
             _fetch(lang,
                function (lang) { // then
-                  setLang(lang);
+                  callback(lang);
                });
          } else {
             var guessedLang = _getFirstBrowserLanguage(); // from browser or default
             console.log('error language ' + lang + ' not supported, try to guess language: ', guessedLang);
-            setLang(guessedLang);
+            callback(guessedLang);
          }
       }
-
-      function setLang (lang) {
-         Services.currentLang = lang;
-         Services.languageSet = true;
-         $rootScope.$broadcast('languageSet', lang);
-      }
    }
+
 
    // merge a tranlation object into current dictionary
    function _extendLang (translations) { // translations: {"de": {...}, "en": {...}}
