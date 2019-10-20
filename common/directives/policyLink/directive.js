@@ -2,7 +2,7 @@
  * @desc
  *  display the rapidfacture policy link
  *
- * @version 0.0.5
+ * @version 0.1.0
  *
  * @example
  *     <rf-policy-link></rf-policy-link>
@@ -13,7 +13,8 @@ app.directive('rfPolicyLink', ['http', 'langFactory', 'config', function (http, 
    return {
       restrict: 'E',
       scope: '=',
-      templateUrl: 'global/common/directives/policyLink/template.html',
+      // NOTE: we load this template here as it throws an error in the login process otherwise
+      template: '<div class="privacy-info"><i class="fa fa-lock"></i><a href="{{termsAndPolicyLink}}" target="_blank" rel="noopener">{{lang.privacyPolicy}}</a></div>',
       link: function ($scope, elem, attr, ctrl) {
          $scope.termsAndPolicyLink = config.termsAndPolicyLink;
       }
