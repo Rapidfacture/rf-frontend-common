@@ -7,7 +7,7 @@
  * @event loggedIn
  * @event loggedOut
  *
- * @version 0.2.5
+ * @version 0.3.0
  */
 
 /* globals rfTokenFactory */
@@ -314,7 +314,7 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
 
       function postToLogin (subUrl, data, options) {
          return $q(function (resolve, reject) {
-            var url = config.loginMainUrl + '/' + subUrl;
+            var url = config.loginMainUrl + '/api/' + subUrl;
             options = options || {};
 
             if (config.token) { // If a token is available set it on every request
