@@ -1,6 +1,6 @@
 /** fileFactory
  * @desc deal with attached files to json meta data
- * @version 0.0.6
+ * @version 0.0.7
  */
 
 app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http, loginFactory, $rootScope) {
@@ -19,9 +19,9 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
 
       getFileUrl: _getFileUrl, // fileFactory.getFileUrl(endPointUrl, file, metaDoc, forceDownload)
 
-      getCadUrl: _getCadUrl, // fileFactory.getCadUrl(drawing)
+      unit8ToArray: _unit8ToArray,
 
-      unit8ToArray: _unit8ToArray
+      getFirstUsableFile: _getFirstUsableFile
    };
 
    function _saveFile (endPointUrl, files, metaDoc, filetype, successFunc, errFunction) {
@@ -69,15 +69,27 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
 
 
 
-   function _removeFile (endPointUrl, file, successFunc) {
-      $rootScope.$emit('modal', 'confirm', 'removeFile', {
+   function _removeFile (endPointUrl, file, successFunc, opts) {
+      var modalname = 'confirm';
+      var modalData = {
          onSuccess: function () {
             http.post(endPointUrl, file.fileId,
                function (response) {
                   if (successFunc) successFunc(response);
                });
+         },
+         onFailure: function () {
+            console.log('fail');
          }
-      });
+      };
+
+      opts = opts || {};
+      if (opts.confirmText) {
+         modalname = 'confirm-input';
+         modalData.confirmText = opts.confirmText;
+      }
+
+      $rootScope.$emit('modal', modalname, 'removeFile', modalData);
    }
 
    function _downloadFile (endPointUrl, data) {
@@ -87,10 +99,9 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
 
    function _openFileIframe (endPointUrl, file, metaDoc, successFunc) { // open in an iframe
       var url = _getFileUrl(endPointUrl, file, metaDoc, false);
-      var downloadURL = _getFileUrl(endPointUrl, file, metaDoc, 'download');
       if (url) { // only if it can be opened
-         $rootScope.$broadcast('modal', 'iframe', null, {data:
-            {url: url, downloadURL: downloadURL, metaDoc: metaDoc}});
+         $rootScope.$broadcast('modal', 'file-viewer', null, {data:
+            {endPointUrl: endPointUrl, file: file, metaDoc: metaDoc}});
       }
    }
 
@@ -113,6 +124,11 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
    }
 
    function _getFileUrl (endPointUrl, file, metaDoc, forceDownload, noWarning) {
+
+      // remove data binding, as we don't want to change anything here
+      file = JSON.parse(JSON.stringify(file));
+      metaDoc = JSON.parse(JSON.stringify(metaDoc));
+
       if (file.mimetype === 'application/json') {
          return _getCadUrl(metaDoc);
       } if (file.mimetype === 'model/stl' || file.mimetype === 'model/x.stl-binary' || file.mimetype === 'application/sla' || file.extension === 'stl') {
@@ -138,7 +154,28 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
       var tokenURL = loginFactory.getToken();
       data.forceDownload = !!forceDownload;
       var dataURL = encodeURIComponent(JSON.stringify(data));
-      return endPointUrl + '?data=' + dataURL + '&token=' + tokenURL;
+      return http.getUrl(endPointUrl) + '?data=' + dataURL + '&token=' + tokenURL;
+   }
+
+   function _getFirstUsableFile (meta) {
+      var i = 0;
+      var files = meta.files || [];
+      var firstUsableFile = null;
+      // console.log('_getFirstUsableFile', meta);
+
+      // see if one of the file can be opened
+      while (i < files.length && !fileCanBeOpened(firstUsableFile)) {
+         // console.log('iteration', i, files[i]);
+         firstUsableFile = files[i];
+         i++;
+      }
+
+      function fileCanBeOpened (file) {
+         if (!file) return false;
+         return _getFileUrl('drawing-file', file, meta, null, 'noWarning');
+      }
+
+      return firstUsableFile;
    }
 
    function _getCadUrl (drawing) {
