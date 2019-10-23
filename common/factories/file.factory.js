@@ -137,7 +137,7 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
          } else { // Not force download
             // Opens the viewer in an iframe which will
             // in turn load the actual STL file using our token
-            return _getFileDownloadUrl('3d.html', file, false);
+            return _getFileDownloadUrl('3d.html', file, false).replace('/api', '');
          }
       } else {
          var m = file ? file.mimetype : '';
