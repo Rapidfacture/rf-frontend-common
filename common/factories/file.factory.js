@@ -19,6 +19,8 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
 
       getFileUrl: _getFileUrl, // fileFactory.getFileUrl(endPointUrl, file, metaDoc, forceDownload)
 
+      getFileDownloadUrl: _getFileDownloadUrl,
+
       unit8ToArray: _unit8ToArray,
 
       getFirstUsableFile: _getFirstUsableFile
