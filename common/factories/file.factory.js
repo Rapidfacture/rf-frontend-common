@@ -51,7 +51,7 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
    function _saveSingleFile (endPointUrl, file, metaDoc, filetype, successFunc, errFunction) {
       file.filename = file.filename || file.name; // try to prevent missing file.filename
       var headers = {
-         _id: metaDoc._id,
+         fileId: metaDoc._id,
          filename: encodeURIComponent(file.filename),
          extension: file.extension || file.filename.split('.').pop(),
          mimetype: file.mimetype
