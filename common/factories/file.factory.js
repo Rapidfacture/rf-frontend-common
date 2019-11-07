@@ -1,6 +1,6 @@
 /** fileFactory
  * @desc deal with attached files to json meta data
- * @version 0.0.7
+ * @version 0.0.8
  */
 
 app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http, loginFactory, $rootScope) {
@@ -154,6 +154,7 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
 
    function _getFileDownloadUrl (endPointUrl, data, forceDownload) {
       var tokenURL = loginFactory.getToken();
+      data = JSON.parse(JSON.stringify(data)); // prevent modification of the original obj
       data.forceDownload = !!forceDownload;
       var dataURL = encodeURIComponent(JSON.stringify(data));
       return http.getUrl(endPointUrl) + '?data=' + dataURL + '&token=' + tokenURL;
