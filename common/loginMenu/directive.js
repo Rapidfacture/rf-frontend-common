@@ -20,7 +20,7 @@ app.directive('rfLoginMenu', ['$rootScope', 'loginFactory', '$state', 'config',
                $scope.userName = loginFactory.getUserName();
                $scope.isAdmin = loginFactory.isLoginAdmin();
 
-               var urls = loginFactory.getAppUrls('rf-app-login');
+               var urls = loginFactory.getAppUrls('rf-app-erp');
                if (urls.main && urls.profile) {
                   $scope.profileUrl = urls.main + urls.profile;
                   $scope.adminAreaUrl = urls.main + urls.adminArea;
