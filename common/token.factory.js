@@ -1,7 +1,7 @@
 /** rfTokenFactory
  * @desc used in loginfactory and bootstrap
  * do not use in html: ng-app="app" (this would also bootstrap the app)
- * @version 0.1.6
+ * @version 0.1.8
  */
 
 /* globals initTokenFactory */
@@ -46,13 +46,15 @@ function initTokenFactory () {
                // store obj for internal use in service
                service.config = baseConfig;
 
+               // console.log(baseConfig.serverURL);
+               // console.log(service.config);
+
                // login app: store the token
                if (service.isLoginApp() && service.config.token) {
                   service.storeToken(service.config.token);
 
-                  // other apps: delete token if there has one been saved by accident
+               // other apps
                } else {
-                  service.deleteStorageToken();
 
                   // remove a url token if there is one
                   if (urlToken) {
@@ -63,16 +65,10 @@ function initTokenFactory () {
                }
 
                // console.log('got everything', service.config );
-
-               if (urlToken || service.isInternal() || (baseConfig && baseConfig.token) || service.isLoginApp()) {
+               if (preventLoggin || urlToken || service.isInternal() || (baseConfig && baseConfig.token) || service.isLoginApp()) {
                   if (callback) callback(baseConfig);
-
                } else {
-                  if (preventLoggin) {
-                     if (callback) callback(baseConfig);
-                  } else {
-                     service.login();
-                  }
+                  service.login();
                }
             })
             .error(function (response) { // err function
