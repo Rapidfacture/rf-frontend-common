@@ -14,7 +14,7 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
 
    var Services = {
 
-      supportedLang: ['en', 'de'],
+      supportedLang: config.globalSettings.availableLanguages || ['en', 'de'],
 
       currentLang: null,
 
