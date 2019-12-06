@@ -1,7 +1,7 @@
 /**
  * @module langFactory
  * @desc fetch language as json data from server, provide current language
- * @version 0.1.2
+ * @version 0.1.3
  *
  * TODO:
  *  * unify language factory in every project
@@ -11,6 +11,8 @@
 app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($http, $q, $rootScope, config) {
    var dictionary = {},
       defaultLanguage = 'en';
+
+   config.globalSettings = config.globalSettings || {};
 
    var Services = {
 
