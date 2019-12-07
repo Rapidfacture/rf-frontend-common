@@ -7,7 +7,7 @@
  * @event loggedIn
  * @event loggedOut
  *
- * @version 0.3.0
+ * @version 0.4.0
  */
 
 /* globals rfTokenFactory */
@@ -36,9 +36,6 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
       // appSettings
       // userSettings
       // };
-
-
-      var refreshRunning = false;
 
       var Services = {
 
@@ -150,9 +147,9 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
 
       /**
        * Call a refresh function if login data changes
-      * This is needed for directive refresh
-      * @param {*} callback
-      */
+       * This is needed for directive refresh
+       * @param {*} callback
+       */
       function _initAndRefreshOnLogin (callback) {
          callback(config, _getLoggedIn());
          $rootScope.$on('loggedIn', function () {
@@ -177,61 +174,56 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
 
       /**
        * Verify the token
-      */
+       */
       function _verifyToken () {
          return $q(function (resolve, reject) {
-            postToLogin('verify', {}, {}).then(function (data) {
-               console.log('[loginFactory] token verified!');
-               resolve();
-            }, function (err) {
-               console.log('[loginFactory] ', err);
-               reject();
+            postToLogin('verify', {}, function (err, data) {
+               if (err) {
+                  console.log('[loginFactory] ', err);
+                  reject();
+               } else {
+                  console.log('[loginFactory] token verified!');
+                  resolve();
+               }
             });
          });
       }
 
       /**
        * Retrive a new token with the old one
-      */
+       */
       function _refreshToken (sessionId) {
          return $q(function (resolve, reject) {
-            if (!refreshRunning) { // If there is already a refresh running then wait for it
-               refreshRunning = true;
-               postToLogin('refresh', {
-                  app: config.app.name,
-                  sessionId: sessionId || null // optional add a sessionId to refresh to find old sessions with already refreshed tokens
-               }, {}).then(function (res) {
-                  console.log('[loginFactory] Token refreshed!');
-                  config.token = res.token;
-                  rfTokenFactory.refreshConfig(config, function () {
-                     refreshRunning = false;
-                     $rootScope.$broadcast('tokenrefreshed', res.token);
-                     resolve(res.token);
-                  });
-               }, function (err) {
-                  refreshRunning = false;
+            postToLogin('refresh', {
+               app: config.app.name,
+               sessionId: sessionId || null // optional add a sessionId to refresh to find old sessions with already refreshed tokens
+            }, function (err, res) {
+               if (err) {
                   $rootScope.$broadcast('tokenrefreshed');
                   console.log('[loginFactory] Token refresh failed: ', err);
                   // Break infinite login loop
                   if (('' + err).indexOf('No session ID') !== -1) {
                      // Token set but no session
                      _clearLoginData();
+                  } else {
+                     setTimeout(function () {
+                        _refreshToken(sessionId);
+                     }, 3000);
                   }
                   reject();
-               });
-            } else {
-               console.log('[loginFactory] Refresh is running ...');
-               var listener = $rootScope.$on('tokenrefreshed', function (token) {
-                  console.log('[loginFactory] tokenrefreshed event fired!');
-                  listener(); // Unsubscribe listener
-                  resolve(token); // and resolve promise to re-request
-               });
-            }
+               } else {
+                  console.log('[loginFactory] Token refreshed!');
+                  config.token = res.token;
+                  rfTokenFactory.refreshConfig(config, function () {
+                     $rootScope.$broadcast('tokenrefreshed', res.token);
+                     resolve(res.token);
+                  });
+               }
+            });
          });
       }
 
       function _clearLoginData () {
-
          // remove all keys from config, except serverURLs
          for (var key in config) {
             if (key !== 'wsUrl' && key !== 'serverURL') {
@@ -248,14 +240,14 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
 
       function _hasAppRight (app, section, access, range) {
          if (config.rights && config.rights[app] &&
-          config.rights[app][section] &&
-          config.rights[app][section][access]) {
+            config.rights[app][section] &&
+            config.rights[app][section][access]) {
 
             // range (all, own) specified => check if included
             if (range) {
                return (config.rights[app][section][access].indexOf(range) !== -1);
 
-            // no range => return all
+               // no range => return all
             } else {
                return config.rights[app][section][access];
             }
@@ -302,40 +294,32 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
          postToLogin('settings/app/user', {
             name: config.app.name,
             settings: userSettings
-         }, {})
-            .then(function (settings) {
-               if (callback) callback(settings);
-            }, function (err) {
-               console.log(err);
-            });
+         }, callback);
       }
 
       /* ------------- helper functions --------------- */
 
-      function postToLogin (subUrl, data, options) {
-         return $q(function (resolve, reject) {
-            var url = config.loginMainUrl + '/api/' + subUrl;
-            options = options || {};
+      function postToLogin (url, data, callback) {
+         var options = {};
 
-            if (config.token) { // If a token is available set it on every request
-               options.headers = {
-                  'x-access-token': config.token
-               };
-            }
+         if (config.token) { // If a token is available set it on every request
+            options.headers = {
+               'x-access-token': config.token
+            };
+         }
 
-            $http.post(url, {
-               data: data
-            }, options)
+         $http.post(config.loginMainUrl + '/api/' + url, {
+            data: data
+         }, options)
             // {data: data} - always parse as json, prevent body-parser errors in node backend
-               .success(function (response) {
-                  console.log('successfull posted to /' + url);
-                  resolve(response);
-               })
-               .error(function (err, status, headers, config) {
-                  console.log('%c http error on url:' + url + ', status ' + status, 'background: red; color: white');
-                  reject(err, status, headers, config);
-               });
-         });
+            .success(function (response) {
+               console.log('successfull posted to /' + url);
+               callback(null, response);
+            })
+            .error(function (err, status, headers, config) {
+               console.log('%c http error on url:' + url + ', status ' + status, 'background: red; color: white');
+               callback(err, status, headers, config);
+            });
       }
 
       return Services;
