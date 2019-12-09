@@ -13,7 +13,7 @@
  * });
 */
 
-app.directive('rfModalConfirmInput', ['langfactory', function (langfactory) {
+app.directive('rfModalConfirmInput', ['langFactory', function (langFactory) {
    return {
       restrict: 'E',
       templateUrl: 'global/common/modal/confirmInput/template.html',
@@ -21,7 +21,7 @@ app.directive('rfModalConfirmInput', ['langfactory', function (langfactory) {
       link: function ($scope, elem, attr, ctrl) {
          $scope.modal.onSuccess = $scope.modal.onSuccess || function () {};
          $scope.confirmText = $scope.modal.confirmText || 'CONFIRM';
-         $scope.warningText = langfactory.translate($scope.modal.warningText || 'cantBeUndone');
+         $scope.warningText = langFactory.translate($scope.modal.warningText || 'cantBeUndone');
       }
    };
 }]);
