@@ -4,7 +4,7 @@
 <div class="row">
    <div class="col-xs-12">
       <div class="alert alert-danger">
-         {{lang.cantBeUndone}}
+         {{warningText}}
       </div>
    </div>
 </div>
@@ -14,7 +14,7 @@
    <div class="col-xs-12">
       <form>
          <div class="form-group">
-            <label>{{lang.toConfirm}} <em>{{confirmText}}</em> {{lang.toConfirmField}}</label>
+            {{lang.toConfirm}} <b>{{confirmText}}</b> {{lang.toConfirmField}}
             <input type="text" class="form-control" ng-model="userInputText">
          </div>
       </form>
@@ -24,15 +24,14 @@
 
 <div class="row">
    <div class="col-xs-6">
+      <button class="rf-btn rf-btn-background col-xs-12" ng-click="modal.quit();">{{lang.cancel}}</button>
+   </div>
+   <div class="col-xs-6">
       <div ng-if="userInputText !== confirmText">
          <button class="rf-btn rf-btn-disabled col-xs-12">{{lang.yes}}</button>
       </div>
       <div ng-show="userInputText === confirmText">
          <button class="rf-btn rf-btn-red col-xs-12" ng-click="modal.quit(modal.onSuccess);">{{lang.yes}}</button>
       </div>
-   </div>
-
-   <div class="col-xs-6">
-      <button class="rf-btn rf-btn-background col-xs-12" ng-click="modal.quit();">{{lang.cancel}}</button>
    </div>
 </div>
