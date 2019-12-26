@@ -129,7 +129,7 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
 
       // remove data binding, as we don't want to change anything here
       file = JSON.parse(JSON.stringify(file));
-      metaDoc = JSON.parse(JSON.stringify(metaDoc));
+      if (metaDoc) metaDoc = JSON.parse(JSON.stringify(metaDoc));
 
       if (file.mimetype === 'application/json') {
          return _getCadUrl(metaDoc);
