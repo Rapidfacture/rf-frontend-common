@@ -21,6 +21,8 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
 
       getFileDownloadUrl: _getFileDownloadUrl,
 
+      fileCanBeOpened: fileCanBeOpened, // fileFactory.fileCanBeOpened(file)
+
       unit8ToArray: _unit8ToArray,
 
       getFirstUsableFile: _getFirstUsableFile
@@ -129,10 +131,13 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
 
       // remove data binding, as we don't want to change anything here
       file = JSON.parse(JSON.stringify(file));
-      if (metaDoc) metaDoc = JSON.parse(JSON.stringify(metaDoc));
 
       if (file.mimetype === 'application/json') {
-         return _getCadUrl(metaDoc);
+         if (metaDoc) {
+            return _getCadUrl(JSON.parse(JSON.stringify(metaDoc)));
+         } else {
+            return true;
+         }
       } if (file.mimetype === 'model/stl' || file.mimetype === 'model/x.stl-binary' || file.mimetype === 'application/sla' || file.extension === 'stl') {
          if (forceDownload) {
             return _getFileDownloadUrl('drawing-file', file, true);
@@ -173,12 +178,12 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
          i++;
       }
 
-      function fileCanBeOpened (file) {
-         if (!file) return false;
-         return _getFileUrl('drawing-file', file, meta, null, 'noWarning');
-      }
-
       return firstUsableFile;
+   }
+
+   function fileCanBeOpened (file) {
+      if (!file) return false;
+      return _getFileUrl('drawing-file', file, null, null, 'noWarning');
    }
 
    function _getCadUrl (drawing) {
