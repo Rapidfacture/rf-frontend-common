@@ -138,7 +138,8 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
          } else {
             return true;
          }
-      } if (file.mimetype === 'model/stl' || file.mimetype === 'model/x.stl-binary' || file.mimetype === 'application/sla' || file.extension === 'stl') {
+      } if (file.mimetype === 'model/stl' || file.mimetype === 'model/x.stl-binary' || file.mimetype === 'application/sla' || file.extension === 'stl' ||
+            file.extension === 'step' || file.extension === 'STEP' || file.extension === 'stp' || file.extension === 'STP') {
          if (forceDownload) {
             return _getFileDownloadUrl('drawing-file', file, true);
          } else { // Not force download
