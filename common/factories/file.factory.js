@@ -1,6 +1,6 @@
 /** fileFactory
  * @desc deal with attached files to json meta data
- * @version 0.5.0
+ * @version 0.5.1
  */
 
 app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http, loginFactory, $rootScope) {
@@ -27,7 +27,7 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
 
       getFirstUsableFile: _getFirstUsableFile,
 
-      is: _is // fileFactory.is(file, 'pdf')
+      is: _is // fileFactory.is(file, 'pdf') or fileFactory.is(file, ['pdf', 'image'])
    };
 
    function _saveFile (endPointUrl, files, metaDoc, filetype, successFunc, errFunction) {
@@ -236,26 +236,39 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
          return false;
       }
 
-      // start with the checks
-      var compare = fileTypeComparison[type];
-      var fileMatches = false;
-
-      // 1. check mimetype
-      if (file.mimetype && compare.mimeRegex) {
-         fileMatches = file.mimetype.match(compare.mimeRegex);
+      if (typeof type === 'string') {
+         return is(file, type);
+      } else if (Array.isArray(type)) {
+         for (var i = 0; i < type.length; i++) {
+            if (is(file, type[i])) return true;
+         }
+         return false;
       }
 
+      function is (file, type) {
 
-      if (!fileMatches && compare.mimetype) {
-         fileMatches = _fileMetaCompare(file, 'mimetype', compare.mimetype);
+
+         // start with the checks
+         var compare = fileTypeComparison[type];
+         var fileMatches = false;
+
+         // 1. check mimetype
+         if (file.mimetype && compare.mimeRegex) {
+            fileMatches = file.mimetype.match(compare.mimeRegex);
+         }
+
+
+         if (!fileMatches && compare.mimetype) {
+            fileMatches = _fileMetaCompare(file, 'mimetype', compare.mimetype);
+         }
+
+         // 2. try file extension
+         if (!fileMatches && compare.extension) {
+            fileMatches = _fileMetaCompare(file, 'extension', compare.extension);
+         }
+
+         return fileMatches;
       }
-
-      // 2. try file extension
-      if (!fileMatches && compare.extension) {
-         fileMatches = _fileMetaCompare(file, 'extension', compare.extension);
-      }
-
-      return fileMatches;
    }
 
    function _fileMetaCompare (file, fileKey, checkValues) {
