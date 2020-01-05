@@ -149,7 +149,7 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
             return _getFileDownloadUrl('3d.html', file, false).replace('/api', '');
          }
       } else {
-         if (forceDownload || _is(file, 'pdf') || _is(file, 'image')) {
+         if (forceDownload || _is(file, 'pdf') || _is(file, 'image') || _is(file, 'text')) {
             return _getFileDownloadUrl(endPointUrl, file, forceDownload);
          } else {
             if (!noWarning) $rootScope.$emit('note_alert', 'Cannot open fileType ' + file.mimetype);
@@ -221,7 +221,7 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
 
 
    function _is (file, type) {
-
+      // console.log(file);
       // housekeeping
       if (!file) {
          console.log('file is missing');
@@ -301,6 +301,10 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
       stl: {
          mimetype: ['model/stl', 'model/x.stl-binary', 'application/sla'],
          extension: 'stl'
+      },
+      text: {
+         mimeRegex: /text/,
+         extension: ['txt', 'cnc']
       }
    };
 
