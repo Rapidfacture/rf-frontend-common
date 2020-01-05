@@ -231,10 +231,6 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
          console.log('type is missing');
          return false;
       }
-      if (!fileTypeComparison[type]) {
-         console.log('type ', type, ' not found in ', fileTypeComparison);
-         return false;
-      }
 
       if (typeof type === 'string') {
          return is(file, type);
@@ -247,6 +243,10 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
 
       function is (file, type) {
 
+         if (!fileTypeComparison[type]) {
+            console.log('type ', type, ' not found in ', fileTypeComparison);
+            return false;
+         }
 
          // start with the checks
          var compare = fileTypeComparison[type];
