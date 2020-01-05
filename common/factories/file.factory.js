@@ -1,10 +1,10 @@
 /** fileFactory
  * @desc deal with attached files to json meta data
- * @version 0.0.8
+ * @version 0.5.0
  */
 
 app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http, loginFactory, $rootScope) {
-   return {
+   var Services = {
       saveFile: _saveFile, // fileFactory.saveFile(endPointUrl, file, metaDoc, filetype, successFunc)
 
       removeFile: _removeFile, // fileFactory.removeFile(endPointUrl, file, successFunc)
@@ -25,7 +25,9 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
 
       unit8ToArray: _unit8ToArray,
 
-      getFirstUsableFile: _getFirstUsableFile
+      getFirstUsableFile: _getFirstUsableFile,
+
+      is: _is // fileFactory.is(file, 'pdf')
    };
 
    function _saveFile (endPointUrl, files, metaDoc, filetype, successFunc, errFunction) {
@@ -132,14 +134,13 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
       // remove data binding, as we don't want to change anything here
       file = JSON.parse(JSON.stringify(file));
 
-      if (file.mimetype === 'application/json') {
+      if (_is(file, 'json')) {
          if (metaDoc) {
             return _getCadUrl(JSON.parse(JSON.stringify(metaDoc)));
          } else {
             return true;
          }
-      } if (file.mimetype === 'model/stl' || file.mimetype === 'model/x.stl-binary' || file.mimetype === 'application/sla' || file.extension === 'stl' ||
-            file.extension === 'step' || file.extension === 'STEP' || file.extension === 'stp' || file.extension === 'STP') {
+      } if (_is(file, 'stl') || _is(file, 'step')) {
          if (forceDownload) {
             return _getFileDownloadUrl('drawing-file', file, true);
          } else { // Not force download
@@ -148,8 +149,7 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
             return _getFileDownloadUrl('3d.html', file, false).replace('/api', '');
          }
       } else {
-         var m = file ? file.mimetype : '';
-         if (forceDownload || m === 'application/pdf' | m === 'application/x-download' | m === 'image/png' | m === 'image/jpeg' | m === 'image/gif' | m === 'image/svg+xml') {
+         if (forceDownload || _is(file, 'pdf') || _is(file, 'image')) {
             return _getFileDownloadUrl(endPointUrl, file, forceDownload);
          } else {
             if (!noWarning) $rootScope.$emit('note_alert', 'Cannot open fileType ' + file.mimetype);
@@ -218,5 +218,79 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
       }
       return content;
    }
+
+
+   function _is (file, type) {
+
+      // housekeeping
+      if (!file) {
+         console.log('file is missing');
+         return false;
+      }
+      if (!type) {
+         console.log('type is missing');
+         return false;
+      }
+      if (!fileTypeComparison[type]) {
+         console.log('type ', type, ' not found in ', fileTypeComparison);
+         return false;
+      }
+
+      // start with the checks
+      var compare = fileTypeComparison[type];
+      var fileMatches = false;
+
+      // 1. check mimetype
+      if (file.mimetype && compare.mimeRegex) {
+         fileMatches = file.mimetype.match(compare.mimeRegex);
+      }
+
+
+      if (!fileMatches && compare.mimetype) {
+         fileMatches = _fileMetaCompare(file, 'mimetype', compare.mimetype);
+      }
+
+      // 2. try file extension
+      if (!fileMatches && compare.extension) {
+         fileMatches = _fileMetaCompare(file, 'extension', compare.extension);
+      }
+
+      return fileMatches;
+   }
+
+   function _fileMetaCompare (file, fileKey, checkValues) {
+      file = file || {};
+      fileKey = fileKey || 'mimetype'; // or 'extension'
+      if (typeof checkValues === 'string') checkValues = [checkValues];
+      var value = file[fileKey];
+      if (!value || !checkValues) return false;
+      for (var i = 0; i < checkValues.length; i++) {
+         if (checkValues[i] === value) return true;
+      }
+      return false;
+   }
+
+   var fileTypeComparison = {
+      json: {
+         mimetype: ['application/json'],
+         extension: ['json', 'JSON']
+      },
+      pdf: {
+         mimetype: ['application/pdf', 'application/x-download'],
+         extension: ['pdf', 'PDF']
+      },
+      image: {
+         mimeRegex: /image/
+      },
+      step: {
+         extension: ['step', 'STEP', 'stp', 'STP']
+      },
+      stl: {
+         mimetype: ['model/stl', 'model/x.stl-binary', 'application/sla'],
+         extension: 'stl'
+      }
+   };
+
+   return Services;
 
 }]);
