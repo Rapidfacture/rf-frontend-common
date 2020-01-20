@@ -1,7 +1,7 @@
 /**
  * @module http factory
  * @desc backend middleware with methods get and post, error handling included
- * @version 0.2.1
+ * @version 0.2.2
  */
 
 // Source: https://stackoverflow.com/a/901144/2597135
@@ -122,7 +122,7 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
             internalQueryPart = (dataQueryPart ? '&' : '?') + 'internal=' + internalToken;
          }
 
-         $http.get(url + dataQueryPart + internalQueryPart)
+         var runningRequest = $http.get(url + dataQueryPart + internalQueryPart)
             .success(function (response) {
                self.retryCount = 0; // Reset retry count on every request, ToDo: Maybe this is a problem if you make multiple invalid requests in a row
                successFunction('GET', url, successFunc, response, requestId);
@@ -140,6 +140,24 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
                      }
                   });
             });
+
+         return {
+            then: function (callback) {
+               runningRequest.then(function (response) {
+                  callback(response.data, requestId);
+               });
+            },
+            success: function (callback) {
+               runningRequest.success(function (response) {
+                  callback(response.data, requestId);
+               });
+            },
+            error: function (callback) {
+               runningRequest.error(function (data, status, headers, conf) {
+                  callback(data, status, headers, conf);
+               });
+            }
+         };
       },
 
       mail: function (url, data, successFunc, errFunc) {
