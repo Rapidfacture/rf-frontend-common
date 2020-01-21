@@ -1,0 +1,11 @@
+rf-confirm{
+   .grey-layer{
+      z-index: 9500 !important;
+   }
+
+   .rf-box{
+      z-index: 9600 !important;
+      min-height: 200px;
+      height: auto !important;
+   }
+}
