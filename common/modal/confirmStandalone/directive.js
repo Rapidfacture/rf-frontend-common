@@ -19,6 +19,7 @@ app.directive('rfConfirm', ['$timeout', 'langFactory', '$rootScope', function ($
             // beforeQuit
             // afterQuit
             // console.log(forwardObject);
+            message = message || 'reallyContinue';
             forwardObject = forwardObject || {};
             $scope.rfModal = forwardObject;
             $scope.rfModal.message = langFactory.translate(message) || '';
