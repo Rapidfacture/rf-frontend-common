@@ -5,13 +5,15 @@
  */
 
 app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootScope) {
+
    var Services = {
       watch: _watch,
       saveCheck: _saveCheck,
       twoDecimals: _twoDecimals,
       round: _round,
       moveUpDown: _moveUpDown,
-      checkFileVersion: _checkFileVersion
+      checkFileVersion: _checkFileVersion,
+      parseNumber: _parseNumber
    };
 
    /**
@@ -140,6 +142,10 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
       // console.log("filename afterwards: ", filename);
 
       return filename;
+   }
+
+   function _parseNumber (num) {
+      return isNaN(num) ? 0 : parseFloat(num);
    }
 
    // _checkFileVersion("filename");
