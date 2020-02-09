@@ -1,7 +1,7 @@
 /**
  * @module http factory
  * @desc backend middleware with methods get and post, error handling included
- * @version 0.2.2
+ * @version 0.2.3
  */
 
 // Source: https://stackoverflow.com/a/901144/2597135
@@ -46,8 +46,18 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
    }
 
    function _getUrl (url) {
-      if (url[0] !== '/') url = '/' + url;
       var apiPrefix = 'api';
+
+      if (url.startsWith('http')) {
+         console.log('WARNING: your url is not relative: ', url);
+      }
+
+      if (url[0] !== '/') url = '/' + url;
+
+      if (url.startsWith('/' + apiPrefix)) {
+         console.log('WARNING: your url for some reason already holds the apiPrefix', apiPrefix, url);
+      }
+
       return config.serverURL + apiPrefix + url;
    }
 
