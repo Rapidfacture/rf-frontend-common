@@ -8,93 +8,101 @@
  *
  * @version 0.0.3
  */
-
 .rf-edit {
-  padding: 5px 0 0;
-  margin-bottom: 5px;
-  position: relative;
-  border-bottom: 1px solid #ddd;
-  overflow: auto;
+   padding: 5px 0 0;
+   margin-bottom: 5px;
+   position: relative;
+   border-bottom: 1px solid #ddd;
+   overflow: auto;
 
-  input,
-  select,
-  textarea {
-    position: relative;
-    z-index: 2;
-    border: 0;
-    width: 100%;
-    background: none;
+   input,
+   select,
+   textarea {
+      position: relative;
+      z-index: 2;
+      border: 0;
+      width: 100%;
+      background: none;
 
-    &:hover {
-      @include box-shadow(0, 0, 3px, 0px, $main_color_light);
-    }
-  }
-
-  textarea {
-    min-width: 100%;
-    max-width: 100%;
-  }
-
-  select {
-    background: #fff;
-  }
-
-  &:before {
-    z-index: 1;
-    display: block;
-    content: "";
-    font-family: "FontAwesome";
-    color: #ddd;
-    position: absolute;
-    background: #fff;
-    padding: 0 2px;
-    right: 2px;
-    top: 7px;
-    font-size: 85%;
-    &.disabled { // user cannot edit this field => hide pencil
-     display: none;
-    }
-  }
-
-
-  &.rf-label {
-    label {
-      width: 40%;
-      float: left;
-      color: grey;
-    }
-
-    input,
-    select,
-    textarea {
-      width: 60%;
-    }
-
-    textarea {
-      min-width: 60%;
-      max-width: 60%;
-    }
-  }
-  &.rf-disabled {
-    &:before {
-      display: none;
-    }
-    input,
-    select,
-    textarea {
       &:hover {
-        @include box-shadow(0, 0, 0, 0, #fff);
+         @include box-shadow(0, 0, 3px, 0px, $main_color_light);
       }
-    }
-  }
-  &.rf-checkbox {
-        &:before {
-          display: none;
-        }
-        input{
-            width: 0px;
-            position: absolute;
-            right: 0;
-        }
-    }
-  }
+   }
+
+   textarea {
+      min-width: 100%;
+      max-width: 100%;
+   }
+
+   select {
+      background: #fff;
+   }
+
+   .rf-edit-btn {
+      cursor: pointer;
+      float: right;
+      color: $main_color;
+      &:hover {
+         opacity: 0.6;
+      }
+   }
+
+   &:before {
+      z-index: 1;
+      display: block;
+      content: "";
+      font-family: "FontAwesome";
+      color: #ddd;
+      position: absolute;
+      background: #fff;
+      padding: 0 2px;
+      right: 2px;
+      top: 7px;
+      font-size: 85%;
+   }
+
+   &.rf-label {
+      label {
+         width: 40%;
+         float: left;
+         color: grey;
+      }
+
+      input,
+      select,
+      textarea {
+         width: 60%;
+      }
+
+      textarea {
+         min-width: 60%;
+         max-width: 60%;
+      }
+   }
+
+   &.rf-disabled {
+      &:before {
+         display: none;
+      }
+
+      input,
+      select,
+      textarea {
+         &:hover {
+            @include box-shadow(0, 0, 0, 0, #fff);
+         }
+      }
+   }
+
+   &.rf-checkbox {
+      &:before {
+         display: none;
+      }
+
+      input {
+         width: 0;
+         position: absolute;
+         right: 0;
+      }
+   }
+}
