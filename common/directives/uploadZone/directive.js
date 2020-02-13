@@ -71,7 +71,7 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
 
          // we wait until we can be sure,that inner content was loaded (fileselectElement)
          setTimeout(function () {
-            var fileselectElement = uploadZone.getElementsByClassName('file-select')[0];
+            fileselectElement = uploadZone.getElementsByClassName('file-select')[0];
             if (attr.fileselect || fileselectElement) {
                // console.log('Initializing upload button ...');
                hiddenInput.addEventListener('change', function () {
@@ -102,8 +102,6 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
                initializeDragAndDrop(uploadZone, upload);
             }
          }, 400);
-
-
 
 
          function upload (files) {
