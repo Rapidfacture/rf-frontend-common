@@ -1,9 +1,25 @@
 rf-upload-zone{
+   display: block;
+   position: relative;
+   width: 100%;
+
+   // the upload works over this input which we hide, but click in the background with js
    input.hidden {
       display: none;
    }
-   display: block;
-   width: 100%;
+
+   // this layer is on top to prevent events for inner elements
+   .hidden-drop-layer{
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 99999999999;
+      background: $lightgrey;
+      opacity: 0.4;
+      display: none;
+   }
 
    &.default-style{
       border: dashed 2px $grey;

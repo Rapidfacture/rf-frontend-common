@@ -36,7 +36,7 @@
                 </div>
              </rf-upload-zone>
  *
- *  @version 0.1.2
+ *  @version 0.1.3
  *
  */
 
@@ -55,13 +55,17 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
 
          var uploadZone = elem[0];
          var fileselectElement = uploadZone.getElementsByClassName('file-select')[0];
+         var fileSizeLimit = attr.fileSizeLimit ? parseInt(attr.fileSizeLimit) : null;
+         var asText = !!attr.readAsText;
+
          var hiddenInput = document.createElement('input');
          hiddenInput.multiple = !!attr.multiple || false;
          hiddenInput.type = 'file';
          hiddenInput.classList.add('hidden');
          uploadZone.appendChild(hiddenInput);
-         var fileSizeLimit = attr.fileSizeLimit ? parseInt(attr.fileSizeLimit) : null;
-         var asText = !!attr.readAsText;
+         var hiddeDropLayer = document.createElement('div');
+         hiddeDropLayer.classList.add('hidden-drop-layer');
+         uploadZone.appendChild(hiddeDropLayer);
 
 
          if (!attr.fileselect && !attr.drag) { // noting configured?
@@ -140,46 +144,47 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
           *     }
           *  })
           */
-         // eslint-disable-next-line no-unused-vars
+         var listenToEvents = false;
          function initializeDragAndDrop (elem, callback) {
 
             // dragenter => add class 'show-drop'
             elem.addEventListener('dragenter', function (event) {
-               setChildrenPointer(elem, 'none');
-               elem.classList.add('show-drop');
                preventDefault(event);
+               setDropMode(true);
+               setTimeout(function () {
+                  listenToEvents = true;
+               }, 100);
             }, false);
 
             // dragleave => remove class 'show-drop'
             elem.addEventListener('dragleave', function (event) {
-               setChildrenPointer(elem, 'inherit');
-               elem.classList.remove('show-drop');
                preventDefault(event);
+               if (listenToEvents) {
+                  listenToEvents = false;
+                  setDropMode(false);
+               }
             }, false);
 
             // drop: get the file
             elem.addEventListener('drop', function (event) {
                preventDefault(event);
-               elem.classList.remove('show-drop');
+               setDropMode(false);
                callback(event.dataTransfer.files);
             }, false);
-
-            // eslint-disable-next-line no-unused-vars
-            function preventDefault (event) {
-               event.stopPropagation();
-               event.preventDefault();
-            }
-
-            function setChildrenPointer (elem, state) {
-               var children = elem.children;
-               for (var i = 0; i < children.length; i++) {
-                  children[i].style.pointerEvents = state;
-               }
-            }
 
             // not in use, we just prevent things
             elem.addEventListener('dragover', preventDefault, false);
             elem.addEventListener('dragdrop', preventDefault, false);
+
+            function setDropMode (state) {
+               hiddeDropLayer.style.display = state ? 'block' : 'none';
+               elem.classList.add((state ? 'show-drop' : 'show-drop'));
+            }
+
+            function preventDefault (event) {
+               event.stopPropagation();
+               event.preventDefault();
+            }
          }
 
 
