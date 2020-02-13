@@ -54,7 +54,6 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
          // console.log('uploadZone');
 
          var uploadZone = elem[0];
-         var fileselectElement = uploadZone.getElementsByClassName('file-select')[0];
          var fileSizeLimit = attr.fileSizeLimit ? parseInt(attr.fileSizeLimit) : null;
          var asText = !!attr.readAsText;
 
@@ -66,40 +65,45 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
          var hiddeDropLayer = document.createElement('div');
          hiddeDropLayer.classList.add('hidden-drop-layer');
          uploadZone.appendChild(hiddeDropLayer);
+         var fileselectElement = null;
 
 
-         if (!attr.fileselect && !attr.drag) { // noting configured?
-            // console.log('rfUploadZone: no attributes defined. enabling drag&drop and fileselect');
-            attr.fileselect = true;
-            attr.drag = true;
-         }
 
-         if (attr.fileselect || fileselectElement) {
-            // console.log('Initializing upload button ...');
-            hiddenInput.addEventListener('change', function () {
-               upload(hiddenInput.files);
-            });
-
-            // specific html element to open upload dialog?
-            if (fileselectElement) {
-               fileselectElement.addEventListener('click', function () {
-                  hiddenInput.click();
+         // we wait until we can be sure,that inner content was loaded (fileselectElement)
+         setTimeout(function () {
+            var fileselectElement = uploadZone.getElementsByClassName('file-select')[0];
+            if (attr.fileselect || fileselectElement) {
+               // console.log('Initializing upload button ...');
+               hiddenInput.addEventListener('change', function () {
+                  upload(hiddenInput.files);
                });
-            // otherwise take whole element
-            } else {
-               uploadZone.addEventListener('click', function () {
-                  hiddenInput.click();
-               });
+
+               // specific html element to open upload dialog?
+               if (fileselectElement) {
+                  fileselectElement.addEventListener('click', function () {
+                     hiddenInput.click();
+                  });
+               // otherwise take whole element
+               } else {
+                  uploadZone.addEventListener('click', function () {
+                     hiddenInput.click();
+                  });
+               }
             }
 
+            if (!attr.fileselect && !attr.drag) { // noting configured?
+               // console.log('rfUploadZone: no attributes defined. enabling drag&drop and fileselect');
+               attr.fileselect = true;
+               attr.drag = true;
+            }
 
-         }
+            if (attr.drag) {
+               // console.log('Initializing upload zone ...');
+               initializeDragAndDrop(uploadZone, upload);
+            }
+         }, 400);
 
 
-         if (attr.drag) {
-            // console.log('Initializing upload zone ...');
-            initializeDragAndDrop(uploadZone, upload);
-         }
 
 
          function upload (files) {
