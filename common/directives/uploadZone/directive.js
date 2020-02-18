@@ -36,7 +36,7 @@
                 </div>
              </rf-upload-zone>
  *
- *  @version 0.1.3
+ *  @version 0.1.4
  *
  */
 
@@ -72,6 +72,13 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
          // we wait until we can be sure,that inner content was loaded (fileselectElement)
          setTimeout(function () {
             fileselectElement = uploadZone.getElementsByClassName('file-select')[0];
+
+            if (!attr.fileselect && !attr.drag) { // noting configured?
+               // console.log('rfUploadZone: no attributes defined. enabling drag&drop and fileselect');
+               attr.fileselect = true;
+               attr.drag = true;
+            }
+
             if (attr.fileselect || fileselectElement) {
                // console.log('Initializing upload button ...');
                hiddenInput.addEventListener('change', function () {
@@ -89,12 +96,6 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
                      hiddenInput.click();
                   });
                }
-            }
-
-            if (!attr.fileselect && !attr.drag) { // noting configured?
-               // console.log('rfUploadZone: no attributes defined. enabling drag&drop and fileselect');
-               attr.fileselect = true;
-               attr.drag = true;
             }
 
             if (attr.drag) {
