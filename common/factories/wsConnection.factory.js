@@ -59,11 +59,14 @@ app.factory('wsConnectionFactory', ['$q', '$rootScope', '$window', 'loginFactory
 
       /* --------------------------------------- Establish Websocket Connection ---------------------------------------- */
 
-      function _initConnection (url) { // init websocket connection
+      function _initConnection (url, opts) { // init websocket connection
+         opts = opts || {};
          if (!url) {
             log('No Server URL specified! Cannot Connect Websocket');
             return;
          }
+         defaultConnectionTimeout = opts.defaultConnectionTimeout || defaultConnectionTimeout;
+         keepConIntervalTime = opts.keepConIntervalTime || keepConIntervalTime;
 
          serverURL = url.replace('http', 'ws');
 

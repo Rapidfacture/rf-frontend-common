@@ -1,14 +1,23 @@
 /**
  * @module randomFactory
- * @version 0.0.5
+ * @version 0.1.0
  */
 
 app.factory('randomFactory', [function () {
    var Services = {
+      generateObjectId: _generateObjectId,
       generateId: _generateId,
       generateDrawingNumber: _generateDrawingNumber,
       generatePassword: _generatePassword
    };
+
+
+   function _generateObjectId (length) {
+      var timestamp = (new Date().getTime() / 1000 | 0).toString(16);
+      return timestamp + 'xxxxxxxxxxxxxxxx'.replace(/[x]/g, function () {
+         return (Math.random() * 16 | 0).toString(16);
+      }).toLowerCase();
+   }
 
    function _generateId (length) {
       length = length || 10;
