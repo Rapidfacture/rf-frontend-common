@@ -36,7 +36,7 @@
                 </div>
              </rf-upload-zone>
  *
- *  @version 0.1.4
+ *  @version 0.2.0
  *
  */
 
@@ -50,44 +50,53 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
       },
       link: function ($scope, elem, attr) {
          $scope.lang = langFactory.getCurrentDictionary();
-         // when the user clicks anywhere, open the file dialog
          // console.log('uploadZone');
 
-         var uploadZone = elem[0];
+
          var fileSizeLimit = attr.fileSizeLimit ? parseInt(attr.fileSizeLimit) : null;
          var asText = !!attr.readAsText;
+
+
+         // html elements
+         var uploadZone = elem[0];
 
          var hiddenInput = document.createElement('input');
          hiddenInput.multiple = !!attr.multiple || false;
          hiddenInput.type = 'file';
          hiddenInput.classList.add('hidden');
          uploadZone.appendChild(hiddenInput);
-         var hiddeDropLayer = document.createElement('div');
-         hiddeDropLayer.classList.add('hidden-drop-layer');
-         uploadZone.appendChild(hiddeDropLayer);
-         var fileselectElement = null;
+
+         var hiddenDropLayer = document.createElement('div');
+         hiddenDropLayer.classList.add('hidden-drop-layer');
+         uploadZone.appendChild(hiddenDropLayer);
+
+         var hiddenTestUploadButton = document.createElement('div');
+         hiddenTestUploadButton.setAttribute('data-cy', 'hidden-test-upload-btn');
+         uploadZone.appendChild(hiddenTestUploadButton);
+
+         var fileSelectElement = null;
 
 
-
-         // we wait until we can be sure,that inner content was loaded (fileselectElement)
+         // wait until inner content was loaded (fileSelectElement)
          setTimeout(function () {
-            fileselectElement = uploadZone.getElementsByClassName('file-select')[0];
+            fileSelectElement = uploadZone.getElementsByClassName('file-select')[0];
 
-            if (!attr.fileselect && !attr.drag) { // noting configured?
-               // console.log('rfUploadZone: no attributes defined. enabling drag&drop and fileselect');
+            // noting configured => enabling fileselect and drag&drop
+            if (attr.fileselect !== 'false' && attr.drag !== 'false') {
                attr.fileselect = true;
                attr.drag = true;
             }
 
-            if (attr.fileselect || fileselectElement) {
-               // console.log('Initializing upload button ...');
+            // fileselect on click
+            if (attr.fileselect || fileSelectElement) {
+               // init upload button
                hiddenInput.addEventListener('change', function () {
                   upload(hiddenInput.files);
                });
 
                // specific html element to open upload dialog?
-               if (fileselectElement) {
-                  fileselectElement.addEventListener('click', function () {
+               if (fileSelectElement) {
+                  fileSelectElement.addEventListener('click', function () {
                      hiddenInput.click();
                   });
                // otherwise take whole element
@@ -98,8 +107,8 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
                }
             }
 
+            // drag&drop
             if (attr.drag) {
-               // console.log('Initializing upload zone ...');
                initializeDragAndDrop(uploadZone, upload);
             }
          }, 400);
@@ -120,9 +129,27 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
 
                   // last file finished?
                   if (index === (files.length - 1)) {
+                     console.log(fileInfos);
                      $scope.onUpload(fileInfos, $scope.data);
                   }
                });
+            }
+         }
+
+         // for external testing via cypress
+
+         hiddenTestUploadButton.addEventListener('click', function () {
+            console.log('try uploading files');
+            testUpload();
+         });
+         function testUpload(){
+            console.log('testUpload', rfUploadZoneTestFactory.hasFiles());
+            if (rfUploadZoneTestFactory && rfUploadZoneTestFactory.hasFiles()) {
+               var content = rfUploadZoneTestFactory.get();
+               console.log('uploading', content.files.length, ' files');
+               $scope.onUpload(content.files, content.data);
+               rfUploadZoneTestFactory.clear();
+               return;
             }
          }
 
@@ -180,7 +207,7 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
             elem.addEventListener('dragdrop', preventDefault, false);
 
             function setDropMode (state) {
-               hiddeDropLayer.style.display = state ? 'block' : 'none';
+               hiddenDropLayer.style.display = state ? 'block' : 'none';
                elem.classList.add((state ? 'show-drop' : 'show-drop'));
             }
 
@@ -230,3 +257,22 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
       }
    };
 }]);
+
+/* eslint no-unused-vars: 0 */
+var rfUploadZoneTestFactory = {
+   files: [],
+   data: {},
+   hasFiles: function () {
+      return this.files.length !== 0;
+   },
+   get: function () {
+      return {files: this.files, data: this.data};
+   },
+   set: function (files, data) {
+      this.files = files;
+      if (data) this.data = data;
+   },
+   clear: function () {
+      this.files = [];
+   }
+};
