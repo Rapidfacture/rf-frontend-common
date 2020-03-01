@@ -1,7 +1,7 @@
 /**
  * @module langFactory
  * @desc fetch language as json data from server, provide current language
- * @version 0.1.3
+ * @version 0.1.4
  *
  * TODO:
  *  * unify language factory in every project
@@ -33,22 +33,44 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
 
       extendLang: _extendLang,
 
-      initLanguage: _initLanguage
+      initLanguage: _initLanguage,
+
+      parseTemplateString: _parseTemplateString // parseTemplateString('Hello ${(gender == "m") ? "Mr." : "Ms."} Schmitz', {gender: 'm'})
    };
 
-   function _translate (key, lang) {
-      lang = lang || Services.currentLang;
+
+   function _parseTemplateString (string, data) {
+      return string.replace(/\${(.*?)}/g, function (value, code) {
+         var scoped = code.replace(/(["'.\w$]+)/g, function (match) {
+            return /["']/.test(match[0]) ? match : 'scope.' + match;
+         });
+         try {
+            /* eslint-disable-next-line */
+            return new Function('scope', 'return ' + scoped)(data);
+         } catch (e) { return ''; }
+      });
+   };
+
+   function _translate (key, data, opts) {
+      opts = opts || {};
+      var lang = opts.language || Services.currentLang;
 
       var bestOtherTranslation = (dictionary.en && dictionary.en[key]) ? dictionary.en[key] : key;
 
-      // tranlation available
+      if (data) bestOtherTranslation = _parseTemplateString(bestOtherTranslation, data);
+
+      // translation available
       if (Services.supportedLang.indexOf(lang) === -1) {
          return bestOtherTranslation;
       }
 
       if (dictionary[lang]) {
          if (dictionary[lang][key]) { // tranlation available => return it
-            return dictionary[lang][key];
+            if (data) {
+               return _parseTemplateString(dictionary[lang][key], data);
+            } else {
+               return dictionary[lang][key];
+            }
 
          // show to the developer, if a translation is missing
          } else if (key) {
