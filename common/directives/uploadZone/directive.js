@@ -142,14 +142,14 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
             console.log('try uploading files');
             testUpload();
          });
-         function testUpload(){
+         function testUpload () {
             console.log('testUpload', rfUploadZoneTestFactory.hasFiles());
             if (rfUploadZoneTestFactory && rfUploadZoneTestFactory.hasFiles()) {
                var content = rfUploadZoneTestFactory.get();
                console.log('uploading', content.files.length, ' files');
                $scope.onUpload(content.files, content.data);
                rfUploadZoneTestFactory.clear();
-               return;
+
             }
          }
 
