@@ -40,6 +40,8 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
 
 
    function _parseTemplateString (string, data) {
+      string = string || '';
+      data = data || {};
       return string.replace(/\${(.*?)}/g, function (value, code) {
          var scoped = code.replace(/(["'.\w$]+)/g, function (match) {
             return /["']/.test(match[0]) ? match : 'scope.' + match;
