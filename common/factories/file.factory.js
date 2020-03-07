@@ -1,9 +1,9 @@
 /** fileFactory
  * @desc deal with attached files to json meta data
- * @version 0.5.2
+ * @version 0.5.5
  */
 
-app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http, loginFactory, $rootScope) {
+app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', function (http, $http, loginFactory, $rootScope) {
    var Services = {
       saveFile: _saveFile, // fileFactory.saveFile(endPointUrl, file, metaDoc, filetype, successFunc)
 
@@ -16,6 +16,8 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
       openFileNewTab: _openFileNewTab, // fileFactory.openFileNewTab(endPointUrl, file, metaDoc, successFunc)
 
       openFileNewWindow: _openFileNewWindow, // fileFactory.openFileNewTab(endPointUrl, file, metaDoc, successFunc)
+
+      getFiles: _getFiles,
 
       getFileUrl: _getFileUrl, // fileFactory.getFileUrl(endPointUrl, file, metaDoc, forceDownload)
 
@@ -33,7 +35,6 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
    function _saveFile (endPointUrl, files, metaDoc, filetype, successFunc, errFunction) {
       var counter = 0;
       metaDoc = metaDoc || {};
-      successFunc = successFunc || function () {};
       if (!Array.isArray(files)) files = [files];
 
       nextFile();
@@ -111,6 +112,41 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
       if (url) { // only if it can be opened
          $rootScope.$broadcast('modal', 'file-viewer', null, {data:
             {endPointUrl: endPointUrl, file: file, metaDoc: metaDoc}});
+      }
+   }
+
+   function _getFiles (endPointUrl, files, successFunc, errFunction) {
+      var counter = 0;
+      var fileArray = [];
+      if (!Array.isArray(files)) files = [files];
+
+      nextFile();
+
+      function nextFile () {
+         var file = files[counter];
+         _getSingleFile(endPointUrl, file, function (data) {
+            fileArray.push(data);
+            counter++;
+            if (counter < files.length) {
+               nextFile();
+            } else {
+               successFunc(fileArray);
+            }
+         }, errFunction);
+      }
+
+      function _getSingleFile (endPointUrl, file, callback) {
+         $http({
+            method: 'GET',
+            url: _getFileUrl('order-file', file, null, true),
+            responseType: 'arraybuffer'
+         }).then(function (result) {
+            callback({
+               filename: file.filename,
+               mimetype: file.mimetype,
+               content: new Uint8Array(result.data)
+            });
+         });
       }
    }
 
