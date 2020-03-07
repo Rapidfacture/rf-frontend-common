@@ -1,6 +1,6 @@
 /** fileFactory
  * @desc deal with attached files to json meta data
- * @version 0.5.1
+ * @version 0.5.2
  */
 
 app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http, loginFactory, $rootScope) {
@@ -70,6 +70,7 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
          if (successFunc) successFunc(response);
       }, function (err) {
          if (errFunction) errFunction(err);
+         $rootScope.$emit('note_error', err);
       });
    }
 
@@ -82,11 +83,12 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
             http.post(endPointUrl, file.fileId,
                function (response) {
                   if (successFunc) successFunc(response);
+               },
+               function (err) {
+                  $rootScope.$emit('note_error', err);
                });
          },
-         onFailure: function () {
-            console.log('fail');
-         }
+         onFailure: function () {}
       };
 
       opts = opts || {};
