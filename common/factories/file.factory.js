@@ -33,6 +33,7 @@ app.factory('fileFactory', ['http', 'loginFactory', '$rootScope', function (http
    function _saveFile (endPointUrl, files, metaDoc, filetype, successFunc, errFunction) {
       var counter = 0;
       metaDoc = metaDoc || {};
+      successFunc = successFunc || function () {};
       if (!Array.isArray(files)) files = [files];
 
       nextFile();
