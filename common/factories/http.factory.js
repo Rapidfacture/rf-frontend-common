@@ -1,7 +1,7 @@
 /**
  * @module http factory
  * @desc backend middleware with methods get and post, error handling included
- * @version 0.2.3
+ * @version 0.2.5
  */
 
 // Source: https://stackoverflow.com/a/901144/2597135
@@ -201,28 +201,13 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
             transformRequest: []
          })
             .success(function (response) {
-               successFunction('PUT', url, successFunc, response);
+               successFunction('POST', url, successFunc, response);
             })
             .error(function (data, status, headers, conf) {
                errorFunction(data, status, headers, conf, errFunc, url);
             });
       },
 
-      fileDownload: function (url, data, successFunc, errFunc) {
-         url = _getUrl(url);
-         $http({
-            method: 'POST',
-            url: url + 'drawingbinary',
-            data: {data: data},
-            responseType: 'arraybuffer'
-         })
-            .success(function (response) {
-               successFunction('PUT', url, successFunc, response);
-            })
-            .error(function (data, status, headers, conf) {
-               errorFunction(data, status, headers, conf, errFunc, url);
-            });
-      },
 
       setHeaderToken: _setHeaderToken,
 
