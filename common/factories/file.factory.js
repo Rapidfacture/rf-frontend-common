@@ -138,7 +138,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
       function _getSingleFile (endPointUrl, file, callback) {
          $http({
             method: 'GET',
-            url: _getFileUrl('order-file', file, null, true),
+            url: _getFileUrl(endPointUrl, file, null, true),
             responseType: 'arraybuffer'
          }).then(function (result) {
             callback({
