@@ -1,7 +1,7 @@
 /** rfTokenFactory
  * @desc used in loginfactory and bootstrap
  * do not use in html: ng-app="app" (this would also bootstrap the app)
- * @version 0.1.8
+ * @version 0.1.9
  */
 
 /* globals initTokenFactory */
@@ -80,7 +80,11 @@ function initTokenFactory () {
                   for (var key in response) {
                      service.config[key] = response[key];
                   }
+                  service.deleteToken();
                   service.logout();
+                  setTimeout(function () {
+                     window.location.reload();
+                  }, 500);
                } else if (callback) { // rf-acl not present => bootstrap without login
                   callback(response);
                }
