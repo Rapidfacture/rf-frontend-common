@@ -120,8 +120,8 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
 
    // move an item up/down in an array
    function _moveUpDown (arr, index, direction) {
-      const copy = arr.slice();
-      const toIdx = (direction === 'up') ? index - 1 : index + 1;
+      var copy = arr.slice();
+      var toIdx = (direction === 'up') ? index - 1 : index + 1;
       copy.splice(toIdx, 0, copy.splice(index, 1)[0]);
       return copy;
    }
