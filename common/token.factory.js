@@ -1,7 +1,7 @@
 /** rfTokenFactory
  * @desc used in loginfactory and bootstrap
  * do not use in html: ng-app="app" (this would also bootstrap the app)
- * @version 0.1.9
+ * @version 0.2.0
  */
 
 /* globals initTokenFactory */
@@ -11,11 +11,19 @@ function initTokenFactory () {
 
    var service = {
       login: function () {
-         window.location.href = this.getLoginAppUrl('login', 'redirect', 'app=' + this.config.app.name);
+         if (service.hasLogin()) {
+            window.location.href = '#/login';
+         } else {
+            window.location.href = this.getLoginAppUrl('login', 'redirect', 'app=' + this.config.app.name);
+         }
       },
 
       logout: function () {
-         window.location.href = this.getLoginAppUrl('logout', false);
+         if (service.hasLogin()) {
+            window.location.href = '#/logout';
+         } else {
+            window.location.href = this.getLoginAppUrl('logout', false);
+         }
       },
 
       config: {},
@@ -50,7 +58,7 @@ function initTokenFactory () {
                // console.log(service.config);
 
                // login app: store the token
-               if (service.isLoginApp() && service.config.token) {
+               if (service.hasLogin() && service.config.token) {
                   service.storeToken(service.config.token);
 
                // other apps
@@ -65,7 +73,7 @@ function initTokenFactory () {
                }
 
                // console.log('got everything', service.config );
-               if (preventLoggin || urlToken || service.isInternal() || (baseConfig && baseConfig.token) || service.isLoginApp()) {
+               if (preventLoggin || urlToken || service.isInternal() || (baseConfig && baseConfig.token) || service.hasLogin()) {
                   if (callback) callback(baseConfig);
                } else {
                   service.login();
@@ -126,18 +134,8 @@ function initTokenFactory () {
          return this.getUrlParameter('internal') === 'ksdf6s80fsa9s0madf7s9df';
       },
 
-      isLoginApp: function () {
-         // console.log(this.config);
-         // For dev replace localhost always by ip
-         var origin = window.location.origin.replace('localhost', '127.0.0.1'),
-            // For dev replace localhost always by ip
-            loginUri = this.config.loginMainUrl.replace('localhost', '127.0.0.1');
-         var pathname = window.location.pathname;
-         // Also match "/login/" to "login"
-         var filteredPathname = pathname.replace(/\//g, '');
-         var filteredLoginURI = loginUri.replace(/\//g, '');
-
-         return (origin === loginUri) || (filteredPathname === filteredLoginURI);
+      hasLogin: function () {
+         return this.config.hasLogin;
       },
 
       getLoginAppUrl: function (page, redirect, param) {
