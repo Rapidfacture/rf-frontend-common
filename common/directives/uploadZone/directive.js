@@ -129,7 +129,7 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
 
                   // last file finished?
                   if (index === (files.length - 1)) {
-                     console.log(fileInfos);
+                     // console.log(fileInfos);
                      $scope.onUpload(fileInfos, $scope.data);
                   }
                });
