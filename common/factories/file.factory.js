@@ -1,6 +1,6 @@
 /** fileFactory
- * @desc deal with attached files to json meta data
- * @version 0.5.5
+ * @desc deal with attached files to json meta data and file types
+ * @version 0.5.6
  */
 
 app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', function (http, $http, loginFactory, $rootScope) {
@@ -179,7 +179,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
          } else {
             return true;
          }
-      } if (_is(file, 'stl') || _is(file, 'step')) {
+      } if (_is(file, ['stl', 'step'])) {
          if (forceDownload) {
             return _getFileDownloadUrl('drawing-file', file, true);
          } else { // Not force download
@@ -188,7 +188,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
             return _getFileDownloadUrl('3d.html', file, false).replace('/api', '');
          }
       } else {
-         if (forceDownload || _is(file, 'pdf') || _is(file, 'image') || _is(file, 'text')) {
+         if (forceDownload || _is(file, ['pdf', 'image', 'text'])) {
             return _getFileDownloadUrl(endPointUrl, file, forceDownload);
          } else {
             if (!noWarning) $rootScope.$emit('note_alert', 'Cannot open fileType ' + file.mimetype);
@@ -293,7 +293,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
 
          // 1. check mimetype
          if (file.mimetype && compare.mimeRegex) {
-            fileMatches = file.mimetype.match(compare.mimeRegex);
+            fileMatches = !!file.mimetype.match(compare.mimeRegex);
          }
 
 
