@@ -191,6 +191,7 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
 
    var retryCount = 0;
    function _fetch (lang, func) {
+      if (!lang) return;
       $http.get('json/lang/' + lang + '.json').then(function (response) {
          if (typeof response.data === 'object') { // successfull fetch
             // merge config.translations into language file
