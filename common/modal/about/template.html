@@ -1,11 +1,11 @@
 <br>
 <br>
-<img src="common/img/icon-grey-lg.svg"/>
+<img src="common/img/icon-lg.svg"/>
 
 <h3>{{app.name}}, Version {{app.version}}</h3>
 
 <h4>License</h4>
-[2014] - [2019] Rapidfacture GmbH. All Rights Reserved.
+[2014] - [2020] Rapidfacture GmbH. All Rights Reserved.
 <br>
 <br>
 All information, intellectual and technical concepts contained herein are
@@ -20,3 +20,11 @@ forbidden unless prior written permission is obtained from Rapidfacture GmbH.
 <div ng-repeat="(name, version) in app.packageJson.dependencies">
    {{name}} {{version}}
 </div> -->
+
+<div ng-if="app.changelogFile">
+   <br>
+   <br>
+   <rf-markdown ng-model="app.changelogFile" view-mode="true"></rf-markdown>
+   <br>
+   <br>
+</div>
