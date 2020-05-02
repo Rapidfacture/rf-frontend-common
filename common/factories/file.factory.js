@@ -1,6 +1,6 @@
 /** fileFactory
  * @desc deal with attached files to json meta data and file types
- * @version 0.5.6
+ * @version 0.5.7
  */
 
 app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', function (http, $http, loginFactory, $rootScope) {
@@ -79,7 +79,6 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
 
 
    function _removeFile (endPointUrl, file, successFunc, opts) {
-      var modalname = 'confirm';
       var modalData = {
          onSuccess: function () {
             http.post(endPointUrl, file.fileId,
@@ -95,11 +94,11 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
 
       opts = opts || {};
       if (opts.confirmText) {
-         modalname = 'confirm-input';
          modalData.confirmText = opts.confirmText;
+         $rootScope.$emit('modal', 'confirm-input', 'removeFile', modalData);
+      } else {
+         $rootScope.$emit('confirm', 'removeFile', modalData);
       }
-
-      $rootScope.$emit('modal', modalname, 'removeFile', modalData);
    }
 
    function _downloadFile (endPointUrl, data) {
