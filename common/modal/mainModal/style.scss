@@ -1,5 +1,4 @@
 .rf-modal {
-   /* .small .box{ } this is the default */
    .box {
       position: fixed;
       z-index: 9300;
@@ -10,91 +9,117 @@
       -webkit-box-shadow: none;
       -moz-box-shadow: none;
       box-shadow: none;
+   }
 
-      // deactive default rf-box shadow
-      // => is done separate in header/modal-container
-      // reason: rf box height is bigger, thant content
+   .active {
 
-      &.small {
-         @media (max-width: 767px) {
+      .modal-container {
+         overflow-y: auto;
+         width: 100%;
+         margin: 0;
+         padding-bottom: 30px;
+         background: white;
+         position: absolute;
+         left: 0;
+         position: relative;
+         right: 0;
+         max-height: 80vh;
+      }
+
+      .box {
+         top: 15vh;
+
+         &.small {
+            @media (max-width: 767px) {
+               width: 90%;
+               left: 5%;
+            }
+            @media (min-width: 768px) and (max-width: 991px) {
+               width: 60%;
+               left: 20%;
+            }
+            @media (min-width: 992px) and (max-width: 1399px) {
+               width: 40%;
+               left: 30%;
+            }
+            @media (min-width: 1400px) {
+               width: 20%;
+               left: 40%;
+            }
+         }
+         // default
+         @media (max-width: 991px) {
             width: 90%;
             left: 5%;
          }
-         @media (min-width: 768px) and (max-width: 991px) {
+         @media (min-width: 992px) and (max-width: 1399px) {
             width: 60%;
             left: 20%;
          }
-         @media (min-width: 992px) and (max-width: 1399px) {
+         @media (min-width: 1400px) {
             width: 40%;
             left: 30%;
          }
-         @media (min-width: 1400px) {
-            width: 20%;
-            left: 40%;
-         }
-      }
-      // default
-      height: 70%;
-      @media (max-width: 991px) {
-         width: 90%;
-         left: 5%;
-      }
-      @media (min-width: 992px) and (max-width: 1399px) {
-         width: 60%;
-         left: 20%;
-      }
-      @media (min-width: 1400px) {
-         width: 40%;
-         left: 30%;
-      }
 
-      &.medium {
-         width: 60%;
-         left: 20%;
-         @media (max-width: 1399px) {
-            height: 90%;
-            width: 90%;
-            left: 5%;
-         }
-         @media (min-width: 1400px) {
+         &.medium {
             width: 60%;
             left: 20%;
+            top: 5vh;
+            .modal-container{
+               max-height: 90vh;
+            }
+            @media (max-width: 1399px) {
+               width: 90%;
+               left: 5%;
+            }
+            @media (min-width: 1400px) {
+               width: 60%;
+               left: 20%;
+            }
          }
-      }
 
-      &.large {
-         width: 90%;
-         left: 5%;
-         height: 85%;
-         @media (max-width: 1399px) {
-            height: 95%;
+         &.large {
+            width: 90%;
+            left: 5%;
+            top: 3vh;
+            .modal-container{
+               max-height: 90vh;
+            }
+            @media (max-width: 1399px) {}
          }
-      }
 
-      &.max {
-         width: 100%;
-         left: 0;
-         height: 100%;
-         modal-body{
-            background: white;
-            bottom: 0;
-            position: fixed;
-            top: 34px;
+         &.max {
+            width: 100%;
             left: 0;
-            // default padding
-            padding: 10px;
+            height: 100%;
+            top: 0;
+
+            modal-body {
+               background: white;
+               bottom: 0;
+               position: fixed;
+               top: 34px;
+               left: 0;
+               // default padding
+               padding: 10px;
+            }
+
+            &.header-hidden modal-body {
+               top: 0;
+               // padding might be done individual in a sub container
+               padding: 0;
+            }
          }
-         &.header-hidden modal-body{
-            top: 0px;
-            // padding might be done individual in a sub container
-            padding: 0px;
+
+         &.maxheader{
+            top: 0;
+            bottom: 0;
          }
       }
 
    }
 
    .header {
-      overflow: auto;
       text-align: left;
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
@@ -111,22 +136,6 @@
       }
    }
 
-   .modal-container {
-      overflow-y: auto;
-      width: 100%;
-      margin: 0;
-      padding-bottom: 30px;
-      background: white;
-      position: absolute;
-      left: 0;
-      top: 30px;
-      right: 0;
-      max-height: 100%;
-      &.maxheader {
-         bottom: 0;
-      }
-
-   }
 
    .grey-layer {
       position: fixed;
@@ -140,21 +149,6 @@
    }
 
    .active {
-      .box {
-         top: 15%;
-
-         &.medium, &.large {
-            top: 5%;
-         }
-
-         &.max {
-            top: 0;
-         }
-         &.maxheader {
-            top: 0;
-         }
-      }
-
       .grey-layer {
          opacity: 0.8;
       }
