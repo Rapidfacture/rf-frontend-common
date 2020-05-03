@@ -5,7 +5,7 @@
 
 app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', function (http, $http, loginFactory, $rootScope) {
    var Services = {
-      saveFile: _saveFile, // fileFactory.saveFile(endPointUrl, file, metaDoc, filetype, successFunc)
+      saveFile: _saveFile, // fileFactory.saveFile(endPointUrl, file, metaDoc, apptype, successFunc)
 
       removeFile: _removeFile, // fileFactory.removeFile(endPointUrl, file, successFunc)
 
@@ -32,7 +32,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
       is: _is // fileFactory.is(file, 'pdf') or fileFactory.is(file, ['pdf', 'image'])
    };
 
-   function _saveFile (endPointUrl, files, metaDoc, filetype, successFunc, errFunction) {
+   function _saveFile (endPointUrl, files, metaDoc, apptype, successFunc, errFunction) {
       var counter = 0;
       metaDoc = metaDoc || {};
       if (!Array.isArray(files)) files = [files];
@@ -41,7 +41,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
 
       function nextFile () {
          var file = files[counter];
-         _saveSingleFile(endPointUrl, file, metaDoc, filetype, function (data) {
+         _saveSingleFile(endPointUrl, file, metaDoc, apptype, function (data) {
             metaDoc = data;
             counter++;
             if (counter < files.length) {
@@ -54,7 +54,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
       }
    }
 
-   function _saveSingleFile (endPointUrl, file, metaDoc, filetype, successFunc, errFunction) {
+   function _saveSingleFile (endPointUrl, file, metaDoc, apptype, successFunc, errFunction) {
       file.filename = file.filename || file.name; // try to prevent missing file.filename
       var headers = {
          fileId: metaDoc._id,
@@ -63,7 +63,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
          mimetype: file.mimetype
       };
 
-      if (filetype) headers.filetype = filetype;
+      if (apptype) headers.apptype = apptype;
       http.fileSave(endPointUrl, {
          content: file.contentUint8Array || file.content,
          mimetype: file.mimetype,
