@@ -1,6 +1,6 @@
 /**
  * @module dateFactory
- * @version 0.1.2
+ * @version 0.1.3
  */
 
 app.factory('dateFactory', [function () {
@@ -63,7 +63,8 @@ app.factory('dateFactory', [function () {
       dateInThePast: function (milliSecsInThePast) { // return:  Date   x milliseconds ago
          return new Date(new Date().getTime() - milliSecsInThePast);
       },
-      isDate: _isDate
+      isDate: _isDate,
+      formatDate: _formatDate
    };
 }
 
