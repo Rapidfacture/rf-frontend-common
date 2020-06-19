@@ -25,6 +25,8 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
 
       fileCanBeOpened: fileCanBeOpened, // fileFactory.fileCanBeOpened(file)
 
+      fileFromFiles: _fileFromFiles, // returns last file of specific type in files array
+
       unit8ToArray: _unit8ToArray,
 
       getFirstUsableFile: _getFirstUsableFile,
@@ -223,6 +225,16 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
    function fileCanBeOpened (file) {
       if (!file) return false;
       return _getFileUrl('drawing-file', file, null, null, 'noWarning');
+   }
+
+   function _fileFromFiles (files, fileType) {
+      var selected = {};
+
+      files.forEach(function (file) {
+         if (_is(file, fileType)) selected = file;
+      });
+
+      return selected;
    }
 
    function _getCadUrl (drawing) {
