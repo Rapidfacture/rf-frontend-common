@@ -1,6 +1,6 @@
 /** fileFactory
  * @desc deal with attached files to json meta data and file types
- * @version 0.5.7
+ * @version 0.5.8
  */
 
 app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', function (http, $http, loginFactory, $rootScope) {
@@ -62,6 +62,10 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
          extension: file.extension || file.filename.split('.').pop(),
          mimetype: file.mimetype
       };
+
+      if (metaDoc.previewOpts) {
+         headers.previewopts = JSON.stringify(metaDoc.previewOpts);
+      }
 
       if (apptype) headers.apptype = apptype;
       http.fileSave(endPointUrl, {

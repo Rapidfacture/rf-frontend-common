@@ -192,7 +192,6 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
          var headers = data.headers || {};
          url = _getUrl(url);
          headers['Content-type'] = 'application/octet-stream';
-         headers.preview = (data.mimetype === 'application/pdf') ? 'true' : 'false';
          $http({
             method: 'POST',
             url: url,
