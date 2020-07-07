@@ -1,6 +1,6 @@
 /** fileFactory
  * @desc deal with attached files to json meta data and file types
- * @version 0.5.8
+ * @version 0.5.9
  */
 
 app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', function (http, $http, loginFactory, $rootScope) {
@@ -28,6 +28,8 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
       unit8ToArray: _unit8ToArray,
 
       getFirstUsableFile: _getFirstUsableFile,
+
+      fileFromFiles: _fileFromFiles,
 
       is: _is // fileFactory.is(file, 'pdf') or fileFactory.is(file, ['pdf', 'image'])
    };
@@ -259,6 +261,14 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
          content.push((text[i]).charCodeAt(0));
       }
       return content;
+   }
+
+   function _fileFromFiles (files, type) {
+      files = files || [];
+      for (var i = 0; i < files.length; i++) {
+         if (_is(files[i], type)) return files[i];
+      }
+      return {};
    }
 
 
