@@ -49,7 +49,7 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
          data: '='
       },
       link: function ($scope, elem, attr) {
-         $scope.lang = langFactory.getCurrentDictionary();
+         $scope.lang = langFactory.getTranslations();
          // console.log('uploadZone');
 
 

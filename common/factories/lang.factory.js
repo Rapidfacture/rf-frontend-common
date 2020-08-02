@@ -26,6 +26,12 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
       // getTranslations() => current translations
       // getTranslations('de') => specific translations
 
+
+      // legacyCode - TODO: remove in 2021 or 2022; currently used in thermorouter, cad, maybe srs
+      getCurrentDictionary: getTranslations,
+      getDictionary: getTranslations,
+
+
       // variables
       supportedLang: config.globalSettings.availableLanguages || ['en', 'de'],
       defaultLanguage: 'en',

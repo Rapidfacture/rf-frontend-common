@@ -39,9 +39,9 @@ app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'langFactory', f
          $scope.visible = false; // init: hide modal
 
          // refesh language in scope
-         $scope.lang = langFactory.getCurrentDictionary();
+         $scope.lang = langFactory.getTranslations();
          $scope.$on('languageSet', function (meta, lang) { // reload on change
-            $scope.lang = langFactory.getCurrentDictionary();
+            $scope.lang = langFactory.getTranslations();
          });
 
          $rootScope.$on('modal', function (event, type, message, forwardObject) {
