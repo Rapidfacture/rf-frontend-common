@@ -133,22 +133,24 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
 
 
    // merge a tranlation object into current translations
-   function _extendLang (translations) { // translations: {"de": {...}, "en": {...}}
+   function _extendLang (newTranslations) { // translations: {"de": {...}, "en": {...}}
 
       // go through all translation languages
-      for (var tanslationLang in translations) {
+      for (var tanslationLang in newTranslations) {
          // merge supported languages
          if (languageSupported(tanslationLang)) {
-            if (translations[tanslationLang]) {
-               _merge(translations[tanslationLang], translations[tanslationLang]);
-               // console.log("merged lang " + tanslationLang)
-            } // else: this language might not yet be fetched
+
+            // init if not fetched yet
+            translations[tanslationLang] = translations[tanslationLang] || {};
+
+            _merge(translations[tanslationLang], newTranslations[tanslationLang]);
          } else {
             console.log("[langFactory]:could not extend Lang '" + tanslationLang + "' because it is not supported, supported are: ", Services.supportedLang);
          }
       }
       // console.log("translations after _extendLang ", translations)
    }
+
 
    function _getFirstBrowserLanguage () {
       var nav = window.navigator,
@@ -192,27 +194,29 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
    }
 
    var retryCount = 0;
-   function _fetch (lang, func) {
+   function _fetch (lang, callback) {
       if (!lang) return;
       $http.get('json/lang/' + lang + '.json').then(function (response) {
          if (typeof response.data === 'object') { // successfull fetch
-            // merge config.translations into language file
 
-            // TODO: exted original json with additional languale jsons dynamic
+            // add translation keys
+            translations[lang] = translations[lang] || {};
+            _merge(translations[lang], response.data);
 
-            var dict;
-            if (config.translations) {
-               dict = _merge(response.data, config.translations[lang]);
-            } else {
-               dict = response.data;
+            // add missing keys from default language
+            if (lang !== Services.defaultLanguage) {
+               var defaultTrans = getDefaultTranslations();
+
+               for (var key in defaultTrans) {
+                  if (!translations[lang][key]) {
+                     translations[lang][key] = defaultTrans[key];
+                  }
+               }
             }
 
-            // store the data local in factory
-            translations[lang] = dict;
-            if (func) {
-               func(lang);
-            }
             $rootScope.$broadcast('languageFetched', lang);
+            if (callback) callback(lang);
+
          } else { // invalid response data: something went wrong
             retry(lang);
          }
@@ -223,15 +227,15 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
       function retry (lang) {
          retryCount++;
          if (retryCount < 2) {
-            _fetch(lang); // retry
+            _fetch(lang, callback); // retry
          }
       }
    }
 
    /* -------------------- helper functions ---------------------------- */
-
-
    function _merge (obj1, obj2) { // merge obj2 into obj1
+      obj1 = obj1 || {};
+      obj2 = obj2 || {};
       Object.assign(obj1, obj2);
       return obj1;
    }
@@ -245,31 +249,31 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
    }
 
    function getBestOtherTranslation (key, data) {
-      if (translations.en && translations.en[key]) {
+      var defaultTrans = getDefaultTranslations();
+      if (defaultTrans && defaultTrans[key]) {
          return _parseTemplateString(translations.en[key], data);
       } else {
          return key;
       }
    }
 
+   function getDefaultTranslations (lang) {
+      return translations[Services.defaultLanguage];
+   }
+
    function _checkLanguage (lang, callback) {
       callback = callback || function () {};
-
 
       if (translationFetched(lang)) {
          callback(lang);
 
       } else if (languageSupported(lang)) {
          // console.log("no data for " + lang + " in factory  =>  fetch from server");
-         _fetch(lang,
-            function (lang) { // then
-               callback(lang);
-            });
+         _fetch(lang, callback);
 
       // unsupported language => guess
       } else {
 
-         // guess
          var guessedLang = _getFirstBrowserLanguage();
 
          // available or take default?
