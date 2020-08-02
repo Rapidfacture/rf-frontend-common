@@ -1,20 +1,19 @@
 /**
  * @module langFactory
  * @desc fetch language as json data from server, provide current language
- * @version 0.1.4
+ * @version 0.1.5
  *
- * TODO:
- *  * unify language factory in every project
- *  * exted original json with additional languale jsons dynamic
  */
 
 app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($http, $q, $rootScope, config) {
-   var dictionary = {},
-      defaultLanguage = 'en';
+
+   var dictionary = {};
 
    config.globalSettings = config.globalSettings || {};
 
    var Services = {
+
+      defaultLanguage: 'en',
 
       supportedLang: config.globalSettings.availableLanguages || ['en', 'de'],
 
@@ -61,28 +60,26 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
 
       if (data) bestOtherTranslation = _parseTemplateString(bestOtherTranslation, data);
 
-      // translation available
-      if (Services.supportedLang.indexOf(lang) === -1) {
+
+      if (!languageSupported(lang)) {
          return bestOtherTranslation;
-      }
 
-      if (dictionary[lang]) {
-         if (dictionary[lang][key]) { // tranlation available => return it
-            if (data) {
-               return _parseTemplateString(dictionary[lang][key], data);
-            } else {
-               return dictionary[lang][key];
-            }
-
-         // show to the developer, if a translation is missing
-         } else if (key) {
-            console.log("error: lang key '" + key + "' does not exist");
-            return bestOtherTranslation;
+      // translation available
+      } else if (dictionary[lang] && dictionary[lang][key]) {
+         if (data) {
+            return _parseTemplateString(dictionary[lang][key], data);
+         } else {
+            return dictionary[lang][key];
          }
-         // else: key is null or undefined => do nothing
-         // => sometimes (before lloading is complete) there my be me requests with undefined values, but we do not care
 
-      } else if (lang) {
+      // key not found
+      } else if (dictionary[lang] && key) {
+         // show missing translation
+         console.log("error: lang key '" + key + "' does not exist");
+         return bestOtherTranslation;
+
+      // translation not fetched yet
+      } else if (!translationFetched(lang)) {
          _fetch(lang);
          console.log("error: translation for lang.'" + lang + "' was not fetched yet");
          return bestOtherTranslation;
@@ -91,7 +88,7 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
 
 
    function _getDictionary (lang) {
-      if (dictionary[lang]) {
+      if (translationFetched(lang)) {
          return dictionary[lang];
       } else {
          _fetch(lang);
@@ -112,51 +109,68 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
       });
    }
 
-   // first get main language, load other languages after that
+
    function _initLanguage (lang) {
       // console.log('_initLanguage', lang);
-      // set main language
-      _setLanguage(lang, function () {
-         // now fetch other languages
-         var activeLangIndex = Services.supportedLang.indexOf(lang);
-         var otherLanguages = Services.supportedLang.slice();
-         otherLanguages.splice(activeLangIndex, 1); // remove current lang
-         var otherLangIndex = 0;
-         loadNextLang();
 
-         function loadNextLang () {
-            _checkLanguage(otherLanguages[otherLangIndex], function () {
-               otherLangIndex++;
-               if (otherLanguages[otherLangIndex]) {
-                  setTimeout(function () {
-                     loadNextLang();
-                  }, 100);
-               }
-            });
-         }
+      // 1. load main language
+      _setLanguage(lang, function () {
+
+         // 2. now fetch other languages
+         loadNextLang();
       });
+
+      var otherLangIndex = 0;
+      var activeLangIndex = Services.supportedLang.indexOf(lang);
+      var otherLanguages = Services.supportedLang.slice();
+      otherLanguages.splice(activeLangIndex, 1); // remove current lang
+
+      function loadNextLang () {
+         _checkLanguage(otherLanguages[otherLangIndex], function () {
+            otherLangIndex++;
+            if (otherLanguages[otherLangIndex]) {
+               setTimeout(function () {
+                  loadNextLang();
+               }, 100);
+            }
+         });
+      }
    }
 
    function _checkLanguage (lang, callback) {
       callback = callback || function () {};
 
-      if (dictionary[lang]) { // data already fetched => take it
+
+      if (translationFetched(lang)) {
          callback(lang);
+
+      } else if (languageSupported(lang)) {
+         // console.log("no data for " + lang + " in factory  =>  fetch from server");
+         _fetch(lang,
+            function (lang) { // then
+               callback(lang);
+            });
+
+      // unsupported language => guess
       } else {
-         if (Services.supportedLang.indexOf(lang) !== -1) {
-            // console.log("no data for " + lang + " in factory  =>  fetch from server");
-            _fetch(lang,
-               function (lang) { // then
-                  callback(lang);
-               });
-         } else {
-            var guessedLang = _getFirstBrowserLanguage(); // from browser or default
-            console.log('error language ' + lang + ' not supported, try to guess language: ', guessedLang);
-            callback(guessedLang);
-         }
+
+         // guess
+         var guessedLang = _getFirstBrowserLanguage();
+
+         // available or take default?
+         guessedLang = languageSupported(guessedLang) ? guessedLang : Services.defaultLanguage;
+         console.log('error language ' + lang + ' not supported, try to guess language: ', guessedLang);
+         callback(guessedLang);
       }
    }
 
+   function translationFetched (lang) {
+      return dictionary[lang];
+   }
+
+   function languageSupported (lang) {
+      return (Services.supportedLang.indexOf(lang) !== -1);
+   }
 
    // merge a tranlation object into current dictionary
    function _extendLang (translations) { // translations: {"de": {...}, "en": {...}}
@@ -164,7 +178,7 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
       // go through all translation languages
       for (var tanslationLang in translations) {
          // merge supported languages
-         if (Services.supportedLang.indexOf(tanslationLang) !== -1) {
+         if (languageSupported(tanslationLang)) {
             if (dictionary[tanslationLang]) {
                _merge(dictionary[tanslationLang], translations[tanslationLang]);
                // console.log("merged lang " + tanslationLang)
@@ -182,9 +196,7 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
 
 
    function _merge (obj1, obj2) { // merge obj2 into obj1
-      for (var attr in obj2) {
-         obj1[attr] = obj2[attr];
-      }
+      Object.assign(obj1, obj2);
       return obj1;
    }
 
@@ -230,7 +242,7 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
       var nav = window.navigator,
          browserLanguagePropertyKeys = ['language', 'browserLanguage', 'systemLanguage', 'userLanguage'],
          i,
-         language = defaultLanguage,
+         language = Services.defaultLanguage,
          match = Services.supportedLanguages;
 
       // HTML 5.1 "navigator.languages"
