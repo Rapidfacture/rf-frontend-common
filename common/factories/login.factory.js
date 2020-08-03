@@ -90,6 +90,7 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
          // global  app settings
          hasApp: _hasApp, // hasApp('rf-app-login')
          getAppUrls: _getAppUrls, // getAppUrls('rf-app-login')
+         getEnvironment: _getEnvironmentAttribute,
          addTokenToUrl: _addTokenToUrl,
 
          getAppSettings: function () {
@@ -273,6 +274,10 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
             urls = config.globalSettings.apps[app].urls;
          }
          return urls;
+      }
+
+      function _getEnvironmentAttribute (attribute) {
+         return config.environment[attribute];
       }
 
       function _addTokenToUrl (url) {
