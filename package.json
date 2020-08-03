@@ -1,28 +1,27 @@
 {
-  "name": "rf-frontend-common",
-  "description": "Common frontend components for Rapidfacture apps: style, images, AngularJS files",
-  "version": "1.5.2",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:RAPIDFACTURE/rf-frontend-common.git"
-  },
-  "author": {
-    "name": "Rapidfacture GmbH"
-  },
-  "maintainers": [
-    {
+   "name": "rf-frontend-common",
+   "description": "Common frontend components for Rapidfacture apps: style, images, AngularJS files",
+   "version": "2.0.1",
+   "license": "MIT",
+   "repository": {
+      "type": "git",
+      "url": "git@github.com:RAPIDFACTURE/rf-frontend-common.git"
+   },
+   "author": {
+      "name": "Rapidfacture GmbH"
+   },
+   "maintainers": [{
       "name": "rapidfacture",
       "email": "ff@rapidfacture.com"
-    }
-  ],
-  "dependencies": {},
-  "devDependencies": {
-    "grunt": "1.0.4",
-    "grunt-eslint": "21.0.0"
-  },
-  "scripts": {
-    "prepublish": "npm test",
-    "test": "grunt"
-  }
+   }],
+   "dependencies": {
+   },
+   "devDependencies": {
+      "eslint": "6.0.1",
+      "check-clean": "0.1.0"
+   },
+   "scripts": {
+      "test": "./node_modules/.bin/eslint ./ && ./node_modules/check-clean/check-clean.sh",
+      "prepublish": "npm test"
+   }
 }

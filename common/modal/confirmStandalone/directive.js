@@ -8,9 +8,9 @@ app.directive('rfConfirm', ['$timeout', 'langFactory', '$rootScope', function ($
          $scope.rfModal = {};
 
          // refesh language in scope
-         $scope.lang = langFactory.getCurrentDictionary();
+         $scope.lang = langFactory.getTranslations();
          $scope.$on('languageSet', function (meta, lang) { // reload on change
-            $scope.lang = langFactory.getCurrentDictionary();
+            $scope.lang = langFactory.getTranslations();
          });
 
          $rootScope.$on('confirm', function (event, message, forwardObject) {

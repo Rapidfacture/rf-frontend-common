@@ -1,25 +1,25 @@
 /**
  * @module randomFactory
- * @version 0.1.0
+ * @version 0.2.0
  */
 
 app.factory('randomFactory', [function () {
    var Services = {
-      generateObjectId: _generateObjectId,
-      generateId: _generateId,
-      generateDrawingNumber: _generateDrawingNumber,
-      generatePassword: _generatePassword
+      generateObjectId: generateObjectId,
+      generateId: generateId,
+      getRandomColor: getRandomColor,
+      generateDrawingNumber: generateDrawingNumber,
+      generatePassword: generatePassword
    };
 
-
-   function _generateObjectId (length) {
+   function generateObjectId (length) {
       var timestamp = (new Date().getTime() / 1000 | 0).toString(16);
       return timestamp + 'xxxxxxxxxxxxxxxx'.replace(/[x]/g, function () {
          return (Math.random() * 16 | 0).toString(16);
       }).toLowerCase();
    }
 
-   function _generateId (length) {
+   function generateId (length) {
       length = length || 10;
       var ID = '',
          possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -30,7 +30,16 @@ app.factory('randomFactory', [function () {
       return ('_' + ID);
    }
 
-   function _generateDrawingNumber () {
+   function getRandomColor () {
+      var letters = '0123456789ABCDEF';
+      var color = '#';
+      for (var i = 0; i < 6; i++) {
+         color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+   }
+
+   function generateDrawingNumber () {
       var ID = '',
          possible = '0123456789';
 
@@ -40,7 +49,7 @@ app.factory('randomFactory', [function () {
       return ('RF - ' + ID);
    }
 
-   function _generatePassword (length) {
+   function generatePassword (length) {
       /*
        * password-generator
        * Copyright(c) 2011-2015 Bermi Ferrer <bermi@bermilabs.com>

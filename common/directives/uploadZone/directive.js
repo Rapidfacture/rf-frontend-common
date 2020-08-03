@@ -24,7 +24,7 @@
                   fileselect="true"             click to this element to open upload window
                   data="additionalDataToPass"   passed as second parameter to the on-upload function
                   file-size-limit="10"          limit in MB
-                  readAsText="true">            otherwise read as arrayBuffer
+                  read-as-text="true">          otherwise read as arrayBuffer
                 <div class="col-sm-12 add">
                   <i class="fa fa-plus"></i>
                   <span>
@@ -36,7 +36,7 @@
                 </div>
              </rf-upload-zone>
  *
- *  @version 0.2.0
+ *  @version 0.2.1
  *
  */
 
@@ -49,7 +49,7 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
          data: '='
       },
       link: function ($scope, elem, attr) {
-         $scope.lang = langFactory.getCurrentDictionary();
+         $scope.lang = langFactory.getTranslations();
          // console.log('uploadZone');
 
 
