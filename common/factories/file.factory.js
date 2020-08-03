@@ -31,8 +31,6 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
 
       getFirstUsableFile: _getFirstUsableFile,
 
-      fileFromFiles: _fileFromFiles,
-
       is: _is // fileFactory.is(file, 'pdf') or fileFactory.is(file, ['pdf', 'image'])
    };
 
@@ -233,6 +231,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
       return _getFileUrl('drawing-file', file, null, null, 'noWarning');
    }
 
+   // Returns last option
    function _fileFromFiles (files, fileType) {
       var selected = {};
 
@@ -242,6 +241,17 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
 
       return selected;
    }
+
+   /*
+   // Returns first option
+   function _fileFromFiles (files, type) {
+      files = files || [];
+      for (var i = 0; i < files.length; i++) {
+         if (_is(files[i], type)) return files[i];
+      }
+      return {};
+   }
+   */
 
    function _getCadUrl (drawing) {
       var urls = loginFactory.getAppUrls('rf-app-cad');
@@ -274,15 +284,6 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
       }
       return content;
    }
-
-   function _fileFromFiles (files, type) {
-      files = files || [];
-      for (var i = 0; i < files.length; i++) {
-         if (_is(files[i], type)) return files[i];
-      }
-      return {};
-   }
-
 
    function _is (file, type) {
       // console.log(file);
