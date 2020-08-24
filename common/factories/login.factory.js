@@ -242,6 +242,7 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
       }
 
       function _hasAppRight (app, section, access, range) {
+         access = access || 'read';
          if (config.rights && config.rights[app] &&
             config.rights[app][section] &&
             config.rights[app][section][access]) {
