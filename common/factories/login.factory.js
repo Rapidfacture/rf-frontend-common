@@ -89,6 +89,7 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
 
          // global  app settings
          hasApp: _hasApp, // hasApp('rf-app-login')
+         getAppName: _getAppName, // get the name of the app
          getAppUrls: _getAppUrls, // getAppUrls('rf-app-login')
          getEnvironmentAttribute: _getEnvironmentAttribute,
          addTokenToUrl: _addTokenToUrl,
@@ -261,6 +262,11 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
          // example: hasRight('accounting', "write")
          // example: hasRight('accounting', "write", "all")
          return _hasAppRight(config.app.name, section, access, range);
+      }
+
+      function _getAppName () {
+         var appName = config.app.name;
+         return (appName);
       }
 
       function _hasApp (app) {

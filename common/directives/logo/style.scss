@@ -1,0 +1,126 @@
+rf-logo {
+   float: left;
+   display: -webkit-box;
+   display: -moz-box;
+   display: -ms-flexbox;
+   display: -webkit-flex;
+   display: flex;
+   align-items: center;
+
+   &.nav-header {
+      height: 60px;
+   }
+
+   &.configurator-header {
+      height: 40px;
+   }
+
+   a {
+      margin: 0 !important;
+   }
+
+   img {
+      width: auto;
+      max-width: 100%;
+   }
+
+   div {
+      height: 100%;
+      align-items: center;
+      display: -webkit-box;
+      display: -moz-box;
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+   }
+
+   .responsive-standard {
+      display: none;
+      @media (min-width: 1400px) {
+         &.show-lg {
+            display: flex;
+         }
+      }
+      @media (min-width: 992px) and (max-width: 1399px) {
+         &.show-md {
+            display: flex;
+            padding-top: 4px;
+         }
+      }
+      @media (min-width: 768px) and (max-width: 991px) {
+         &.show-sm {
+            display: flex;
+            padding-top: 7px;
+         }
+      }
+      @media (max-width: 767px) {
+         &.show-xs {
+            display: flex;
+         }
+      }
+   }
+
+   .responsive-small {
+      display: none;
+
+      img {
+         max-height: 60%;
+      }
+      @media (min-width: 1800px) {
+         &.show-lg {
+            display: flex;
+         }
+      }
+      @media (min-width: 1400px) and (max-width: 1799px) {
+         &.show-md {
+            display: flex;
+            padding-top: 4px;
+         }
+      }
+      @media (min-width: 1250px) and (max-width: 1399px) {
+         &.show-sm {
+            display: flex;
+            padding-top: 7px;
+         }
+      }
+      @media (max-width: 1249px) {
+         &.show-xs {
+            display: flex;
+         }
+      }
+   }
+
+   .logo {
+      background: $darkgrey;
+      height: 40px;
+      float: left;
+      display: none;
+
+      img {
+         display: block;
+         padding-top: 6px;
+      }
+      @media (min-width: 1800px) {
+         &.lg {
+            display: block;
+         }
+      }
+      @media (min-width: 1400px) and (max-width: 1800px) {
+         &.md {
+            display: block;
+            padding-top: 4px;
+         }
+      }
+      @media (min-width: 1250px) and (max-width: 1400px) {
+         &.sm {
+            display: block;
+            padding-top: 7px;
+         }
+      }
+      @media (max-width: 1250px) {
+         &.xs {
+            display: block;
+         }
+      }
+   }
+}
