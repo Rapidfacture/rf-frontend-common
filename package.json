@@ -10,12 +10,13 @@
    "author": {
       "name": "Rapidfacture GmbH"
    },
-   "maintainers": [{
-      "name": "rapidfacture",
-      "email": "ff@rapidfacture.com"
-   }],
-   "dependencies": {
-   },
+   "maintainers": [
+      {
+         "name": "rapidfacture",
+         "email": "ff@rapidfacture.com"
+      }
+   ],
+   "dependencies": {},
    "devDependencies": {
       "eslint": "6.0.1",
       "check-clean": "0.1.0"
