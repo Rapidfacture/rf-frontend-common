@@ -28,27 +28,32 @@ app.directive('rfLogo', ['loginFactory', 'http', function (loginFactory, http) {
          var urls = loginFactory.getAppUrls(appName);
          if (urls.main) $scope.mainUrl = urls.main;
 
-         var logos = {};
+         var files = {};
 
          if (loginFactory.getAppLogos(appName)) {
-            logos = loginFactory.getAppLogos(appName);
+            files = loginFactory.getAppLogos(appName) || {};
          } else {
-            http.post('get-app-logos', function (logos) {
-               logos = logos || {};
+            http.post('get-app-logos', function (files) {
+               files = files || {};
             });
          }
 
+         var logos = {};
 
+         if (files.lg && files.lg.fileId && files.lg.extension) logos.lg = '/static/public-files/' + files.lg.fileId + '.' + files.lg.extension;
+         if (files.md && files.md.fileId && files.md.extension) logos.md = '/static/public-files/' + files.md.fileId + '.' + files.md.extension;
+         if (files.sm && files.sm.fileId && files.sm.extension) logos.sm = '/static/public-files/' + files.sm.fileId + '.' + files.sm.extension;
+         if (files.xs && files.xs.fileId && files.xs.extension) logos.xs = '/static/public-files/' + files.xs.fileId + '.' + files.xs.extension;
 
-         if (!logos.xs) var xs = logos.sm || logos.md || logos.lg || '/common/img/icon-lg.svg';
-         if (!logos.sm) var sm = logos.md || logos.lg || logos.xs || '/common/img/logo-xs.svg';
+         if (!logos.xs) var xs = logos.xs || logos.sm || logos.md || logos.lg || '/common/img/icon-lg.svg';
+         if (!logos.sm) var sm = logos.sm || logos.md || logos.lg || logos.xs || '/common/img/logo-xs.svg';
          if (!logos.md) var md = logos.lg || logos.sm || logos.xs || '/common/img/logo-sm.svg';
          if (!logos.lg) var lg = logos.md || logos.sm || logos.xs || '/common/img/logo-lg.svg';
 
-         logos.xs = xs;
-         logos.sm = sm;
-         logos.md = md;
-         logos.lg = lg;
+         logos.xs = logos.xs || xs;
+         logos.sm = logos.sm || sm;
+         logos.md = logos.md || md;
+         logos.lg = logos.lg || lg;
 
          $scope.logos = logos;
       }
