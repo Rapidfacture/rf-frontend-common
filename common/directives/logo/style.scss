@@ -17,11 +17,14 @@ rf-logo {
 
    a {
       margin: 0 !important;
+      height: 100%;
    }
 
    img {
       width: auto;
       max-width: 100%;
+      max-height: 100%;
+      padding: 5px 0;
    }
 
    div {
@@ -62,64 +65,40 @@ rf-logo {
 
    .responsive-small {
       display: none;
-
-      img {
-         max-height: 60%;
-      }
       @media (min-width: 1800px) {
          &.show-lg {
             display: flex;
+
+            img {
+               max-width: 300px;
+            }
          }
       }
       @media (min-width: 1400px) and (max-width: 1799px) {
          &.show-md {
             display: flex;
-            padding-top: 4px;
+
+            img {
+               max-width: 220px;
+            }
          }
       }
-      @media (min-width: 1250px) and (max-width: 1399px) {
+      @media (min-width: 1201px) and (max-width: 1399px) {
          &.show-sm {
             display: flex;
-            padding-top: 7px;
+
+            img {
+               max-width: 180px;
+            }
          }
       }
-      @media (max-width: 1249px) {
+      @media (max-width: 1200px) {
          &.show-xs {
             display: flex;
-         }
-      }
-   }
 
-   .logo {
-      background: $darkgrey;
-      height: 40px;
-      float: left;
-      display: none;
-
-      img {
-         display: block;
-         padding-top: 6px;
-      }
-      @media (min-width: 1800px) {
-         &.lg {
-            display: block;
-         }
-      }
-      @media (min-width: 1400px) and (max-width: 1800px) {
-         &.md {
-            display: block;
-            padding-top: 4px;
-         }
-      }
-      @media (min-width: 1250px) and (max-width: 1400px) {
-         &.sm {
-            display: block;
-            padding-top: 7px;
-         }
-      }
-      @media (max-width: 1250px) {
-         &.xs {
-            display: block;
+            img {
+               max-width: 50px;
+            }
          }
       }
    }
