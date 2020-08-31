@@ -30,7 +30,7 @@
  * multiple modals
  */
 
-app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'langFactory', function ($compile, $timeout, $rootScope, langFactory) {
+app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'eventFactory', 'langFactory', function ($compile, $timeout, $rootScope, eventFactory, langFactory) {
    return {
       restrict: 'E', // attribute or element
       templateUrl: 'global/common/modal/mainModal/main.html',
@@ -65,6 +65,7 @@ app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'langFactory', f
                   if ($scope.rfModal.afterQuit) {
                      $scope.rfModal.afterQuit();
                   }
+                  eventFactory.deleteEscapeListener($scope.rfModal.quit);
                });
             };
 
@@ -79,13 +80,8 @@ app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'langFactory', f
                }
             };
 
-
             // press "ESC" to close modal
-            document.onkeydown = function (event) {
-               if (event.which === 27) {
-                  $scope.rfModal.quit();
-               }
-            };
+            eventFactory.addEscapeListener($scope.rfModal.quit);
 
             function close (callback) {
                callback = callback || function () {};
@@ -94,7 +90,7 @@ app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'langFactory', f
                   $scope.visible = false;
                   callback();
                }, 160);
-            };
+            }
 
             var modalBody = elem.find('modal-body');
             modalBody.html('<rf-modal-' + $scope.rfModal.type + ' lang="lang" modal="rfModal"></rf-modal-' + $scope.rfModal.type + '>');
