@@ -90,7 +90,6 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
          // global  app settings
          hasApp: _hasApp, // hasApp('rf-app-login')
          getAppName: _getAppName, // get the name of the app
-         getAppLogos: _getAppLogos, // get the curstomerdefined logos of the app
          getAppUrls: _getAppUrls, // getAppUrls('rf-app-login')
          getEnvironmentAttribute: _getEnvironmentAttribute,
          addTokenToUrl: _addTokenToUrl,
@@ -269,14 +268,6 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
       function _getAppName () {
          var appName = config.app.name;
          return (appName);
-      }
-
-      function _getAppLogos () {
-         if (config && config.app && config.app.name && config.appSettings && config.appSettings[config.app.name] && config.appSettings[config.app.name].logos) {
-            return (config.appSettings[config.app.name].logos);
-         } else {
-            return null;
-         }
       }
 
       function _hasApp (app) {

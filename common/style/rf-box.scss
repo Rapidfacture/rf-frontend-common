@@ -14,7 +14,7 @@
 
       a {
          span {
-            color: $main_color;
+            color: var(--main_color);
          }
 
          i.fa {

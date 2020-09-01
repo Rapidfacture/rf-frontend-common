@@ -6,14 +6,14 @@ rf-login-menu {
       background: #fff;
       height: 40px;
       display: block;
-      color: $main_color_light;
+      color: var(--main_color_light);
       height: 40px;
       line-height: 40px;
    }
 
    .fa.fa-power-off.switch-icon{
       &:hover{
-         color: $main_color;
+         color: var(--main_color);
       }
    }
 

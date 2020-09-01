@@ -33,7 +33,7 @@ rf-overlay {
             right: 0;
             bottom: 0;
             top: 0px;
-            background-color: $midgrey;
+            background-color: var(--midgrey);
             opacity: 0;
              @include transition(0.15s);
     }

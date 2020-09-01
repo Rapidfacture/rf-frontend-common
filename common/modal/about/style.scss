@@ -5,10 +5,10 @@ rf-modal-about{
       text-align: left;
       padding-left: 20px;
       h1{
-         color: $main_color;
+         color: var(--main_color);
       }
       h2{
-         color: $midgrey;
+         color: var(--midgrey);
       }
    }
 }

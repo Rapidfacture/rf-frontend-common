@@ -16,16 +16,16 @@ rf-upload-zone{
       left: 0;
       right: 0;
       z-index: 99999999999;
-      background: $lightgrey;
+      background: var(--lightgrey);
       opacity: 0.4;
       display: none;
    }
 
    &.default-style{
-      border: dashed 2px $grey;
+      border: dashed 2px var(--grey);
       border-radius: 15px;
       .files-select{
-         color: $main_color;
+         color: var(--main_color);
          cursor: pointer;
       }
    }

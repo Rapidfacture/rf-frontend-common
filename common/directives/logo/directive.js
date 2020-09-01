@@ -13,7 +13,7 @@
 *
 */
 
-app.directive('rfLogo', ['loginFactory', 'http', function (loginFactory, http) { // panel on top: zoom, undo/redo
+app.directive('rfLogo', ['loginFactory', 'layoutFactory', 'http', function (loginFactory, layoutFactory, http) { // panel on top: zoom, undo/redo
    return {
       restrict: 'E',
       templateUrl: 'global/common/directives/logo/template.html',
@@ -32,22 +32,15 @@ app.directive('rfLogo', ['loginFactory', 'http', function (loginFactory, http) {
 
 
          function getLogos (callback) {
-            var files = {};
-
-            if (loginFactory.getAppLogos(appName)) {
-               files = loginFactory.getAppLogos(appName) || {};
+            layoutFactory.getAppLogos(function (files) {
+               files = files || {};
                callback(files);
-            } else {
-               http.post('get-app-logos', function (files) {
-                  files = files || {};
-                  callback(files);
-               });
-            }
+            });
          }
 
          function setLogos (files) {
             var logos = {};
-            console.log($scope.logos);
+
             if (files.lg && files.lg.fileId && files.lg.extension) logos.lg = '/static/public-files/' + files.lg.fileId + '.' + files.lg.extension;
             if (files.md && files.md.fileId && files.md.extension) logos.md = '/static/public-files/' + files.md.fileId + '.' + files.md.extension;
             if (files.sm && files.sm.fileId && files.sm.extension) logos.sm = '/static/public-files/' + files.sm.fileId + '.' + files.sm.extension;

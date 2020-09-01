@@ -30,7 +30,7 @@
   transition-delay: $time;
 }
 
-// @include box-shadow( 2px, 2px, 2px, 2px, $grey);
+// @include box-shadow( 2px, 2px, 2px, 2px, var(--grey));
 @mixin box-shadow($x, $y, $blur, $spread, $color) {
   -webkit-box-shadow: $x $y $blur $spread $color;
   -moz-box-shadow: $x $y $blur $spread $color;

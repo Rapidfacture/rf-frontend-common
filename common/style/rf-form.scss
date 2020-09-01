@@ -4,8 +4,8 @@
    textarea {
       &.rf-form {
          &.ng-invalid {
-            border: 1px solid $red;
-            box-shadow: 0 0 10px 0 $red;
+            border: 1px solid var(--red);
+            box-shadow: 0 0 10px 0 var(--red);
          }
       }
    }
@@ -30,7 +30,7 @@ select,
 textarea {
    &.rf-form {
       width: 100%;
-      border: 1px solid $darkwhite;
+      border: 1px solid var(--darkwhite);
       background: #fff;
       padding: 5px;
       margin: 4px 0;
