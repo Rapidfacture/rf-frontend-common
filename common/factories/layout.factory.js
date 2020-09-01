@@ -9,7 +9,7 @@
 app.factory('layoutFactory', ['config', 'http', 'loginFactory',
    function (config, http, loginFactory) {
 
-      const root = document.documentElement;
+      var root = document.documentElement;
 
       var Services = {
          getAppLogos: _getAppLogos, // get the curstomerdefined logos of the app
