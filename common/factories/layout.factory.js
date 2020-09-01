@@ -10,33 +10,7 @@ app.factory('layoutFactory', ['config', 'http', 'loginFactory',
    function (config, http, loginFactory) {
 
       const root = document.documentElement;
-      const cssColors = [
-         'main_color',
-         'main_color_light',
-         'main_color_dark',
-         'main_color_contrast_light',
-         'main_color_contrast_dark',
-         'nav_background',
-         'sidebar_background',
-         'header_background',
-         'invalid',
-         'valid',
-         'untouched',
-         'midwhite',
-         'darkwhite',
-         'lightgrey',
-         'midgrey',
-         'grey',
-         'darkgrey',
-         'green',
-         'darkgreen',
-         'blue',
-         'darkblue',
-         'red',
-         'darkred',
-         'yellow',
-         'darkyellow'
-      ];
+
       var Services = {
          getAppLogos: _getAppLogos, // get the curstomerdefined logos of the app
          setAppColors: _setAppColors // get the curstomerdefined logos of the app
@@ -56,17 +30,14 @@ app.factory('layoutFactory', ['config', 'http', 'loginFactory',
 
 
       function _setAppColors () {
-         var appLayout = {};
-
-         // appLayout.colors = { // SAMPLE => REMOVE AFTER COMPLETED CODE
-         //    grey: 'black'
-         // };
-
-         if (appLayout.colors) {
-            for (var i = 0; i < cssColors.length; i++) {
-               if (appLayout.colors[cssColors[i]]) root.style.setProperty('--' + cssColors[i], appLayout.colors[cssColors[i]]);
+         getAppLayout(function (appLayout) {
+            appLayout = appLayout || {};
+            if (appLayout.colors && appLayout.colors !== {}) {
+               for (var color in appLayout.colors) {
+                  if (appLayout.colors[color]) root.style.setProperty('--' + color, appLayout.colors[color]);
+               }
             }
-         }
+         });
       }
 
 
