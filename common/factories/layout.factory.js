@@ -30,8 +30,10 @@ app.factory('layoutFactory', ['config', 'http', 'loginFactory',
 
 
       function _setAppColors () {
+         console.log();
          getAppLayout(function (appLayout) {
             appLayout = appLayout || {};
+
             if (appLayout.colors && appLayout.colors !== {}) {
                for (var color in appLayout.colors) {
                   if (appLayout.colors[color]) root.style.setProperty('--' + color, appLayout.colors[color]);
@@ -42,17 +44,10 @@ app.factory('layoutFactory', ['config', 'http', 'loginFactory',
 
 
       function getAppLayout (callback) {
-         var settings = {};
-
-         if (config && config.app && config.app.name && config.appSettings && config.appSettings[config.app.name]) {
-            settings = config.appSettings[config.app.name];
+         http.post('get-app-layout', function (settings) {
+            settings = settings || {};
             callback(settings);
-         } else {
-            http.post('get-app-layout', function (settings) {
-               settings = settings || {};
-               callback(settings);
-            });
-         }
+         });
       }
 
 
