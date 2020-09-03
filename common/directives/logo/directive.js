@@ -41,15 +41,15 @@ app.directive('rfLogo', ['loginFactory', 'layoutFactory', 'http', function (logi
          function setLogos (files) {
             var logos = {};
 
-            if (files.lg && files.lg.fileId && files.lg.extension) logos.lg = '/static/public-files/' + files.lg.fileId + '.' + files.lg.extension;
-            if (files.md && files.md.fileId && files.md.extension) logos.md = '/static/public-files/' + files.md.fileId + '.' + files.md.extension;
-            if (files.sm && files.sm.fileId && files.sm.extension) logos.sm = '/static/public-files/' + files.sm.fileId + '.' + files.sm.extension;
-            if (files.xs && files.xs.fileId && files.xs.extension) logos.xs = '/static/public-files/' + files.xs.fileId + '.' + files.xs.extension;
+            if (files.lg && files.lg.fileId && files.lg.extension) logos.lg = './static/public-files/' + files.lg.fileId + '.' + files.lg.extension;
+            if (files.md && files.md.fileId && files.md.extension) logos.md = './static/public-files/' + files.md.fileId + '.' + files.md.extension;
+            if (files.sm && files.sm.fileId && files.sm.extension) logos.sm = './static/public-files/' + files.sm.fileId + '.' + files.sm.extension;
+            if (files.xs && files.xs.fileId && files.xs.extension) logos.xs = './static/public-files/' + files.xs.fileId + '.' + files.xs.extension;
 
-            if (!logos.xs) var xs = logos.xs || logos.sm || logos.md || logos.lg || '/common/img/icon-lg.svg';
-            if (!logos.sm) var sm = logos.sm || logos.md || logos.lg || logos.xs || '/common/img/logo-xs.svg';
-            if (!logos.md) var md = logos.lg || logos.sm || logos.xs || '/common/img/logo-sm.svg';
-            if (!logos.lg) var lg = logos.md || logos.sm || logos.xs || '/common/img/logo-lg.svg';
+            if (!logos.xs) var xs = logos.xs || logos.sm || logos.md || logos.lg || './common/img/icon-lg.svg';
+            if (!logos.sm) var sm = logos.sm || logos.md || logos.lg || logos.xs || './common/img/logo-xs.svg';
+            if (!logos.md) var md = logos.lg || logos.sm || logos.xs || './common/img/logo-sm.svg';
+            if (!logos.lg) var lg = logos.md || logos.sm || logos.xs || './common/img/logo-lg.svg';
 
             logos.xs = logos.xs || xs;
             logos.sm = logos.sm || sm;
