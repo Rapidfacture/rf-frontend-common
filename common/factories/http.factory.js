@@ -1,7 +1,7 @@
 /**
  * @module http factory
  * @desc backend middleware with methods get and post, error handling included
- * @version 0.2.5
+ * @version 0.2.6
  */
 
 // Source: https://stackoverflow.com/a/901144/2597135
@@ -189,6 +189,7 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
       },
 
       fileSave: function (url, data, successFunc, errFunc) {
+         $rootScope.$broadcast('file-upload-start');
          var headers = data.headers || {};
          url = _getUrl(url);
          headers['Content-type'] = 'application/octet-stream';
@@ -197,12 +198,20 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
             url: url,
             data: data.content,
             headers: headers,
-            transformRequest: []
+            transformRequest: [],
+            uploadEventHandlers: {
+               progress: function (evt) {
+                  var percentComplete = Math.round(100 / evt.total * evt.loaded);
+                  $rootScope.$broadcast('file-upload-progress', percentComplete);
+               }
+            }
          })
             .success(function (response) {
+               $rootScope.$broadcast('file-upload-finish');
                successFunction('POST', url, successFunc, response);
             })
             .error(function (data, status, headers, conf) {
+               $rootScope.$broadcast('file-upload-finish');
                errorFunction(data, status, headers, conf, errFunc, url);
             });
       },
