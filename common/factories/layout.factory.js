@@ -3,17 +3,18 @@
  * @desc
  * individualise colors, logos
  *
- * @version 0.1.0
+ * @version 0.1.1
  */
 
-app.factory('layoutFactory', ['config', 'http', 'loginFactory',
-   function (config, http, loginFactory) {
+app.factory('layoutFactory', ['config', 'http',
+   function (config, http) {
 
       var root = document.documentElement;
 
       var Services = {
          getAppLogos: _getAppLogos, // get the curstomerdefined logos of the app
-         setAppColors: _setAppColors // get the curstomerdefined logos of the app
+         setAppColors: _setAppColors, // get the curstomerdefined logos of the app
+         getAppTabName: _getAppTabName
       };
 
 
@@ -28,9 +29,15 @@ app.factory('layoutFactory', ['config', 'http', 'loginFactory',
          });
       }
 
+      function _getAppTabName (callback) {
+         getAppLayout(function (appLayout) {
+            appLayout = appLayout || {};
+
+            callback(appLayout.tabName);
+         });
+      }
 
       function _setAppColors () {
-         console.log();
          getAppLayout(function (appLayout) {
             appLayout = appLayout || {};
 
