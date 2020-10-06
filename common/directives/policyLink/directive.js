@@ -14,9 +14,9 @@ app.directive('rfPolicyLink', ['http', 'langFactory', 'config', function (http, 
       restrict: 'E',
       scope: '=',
       // NOTE: we load this template here as it throws an error in the login process otherwise
-      template: '<div class="privacy-info"><i class="fa fa-lock"></i><a href="{{termsAndPolicyLink}}" target="_blank" rel="noopener">{{lang.privacyPolicy}}</a></div>',
+      template: '<div class="privacy-info"><i class="fa fa-lock"></i><a href="{{privacyPolicyLink}}" target="_blank" rel="noopener">{{lang.privacyPolicy}}</a></div>',
       link: function ($scope, elem, attr, ctrl) {
-         $scope.termsAndPolicyLink = config.termsAndPolicyLink;
+         $scope.privacyPolicyLink = config.privacyPolicyLink;
       }
    };
 }]);

@@ -20,7 +20,7 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
       // app configuration
       // loginUrl
       // loginMainUrl
-      // termsAndPolicyLink
+      // privacyPolicyLink
 
       /* ---- from session db ---- */
       // token => small token for refreshing
