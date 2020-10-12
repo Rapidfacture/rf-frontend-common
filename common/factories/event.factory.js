@@ -9,8 +9,9 @@ app.factory('eventFactory', ['$document', function ($document) {
                return ((f.scope && !f.scope.$$destroyed) || !f.scope);
             });
 
-            var fn = events[k].functions[events[k].functions.length - 1].fn;
-            if (fn) fn();
+            var selected = events[k].functions[events[k].functions.length - 1];
+            selected = selected || {};
+            if (selected.fn) selected.fn();
 
             break;
          }
