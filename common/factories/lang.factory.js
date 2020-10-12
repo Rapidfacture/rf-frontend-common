@@ -26,6 +26,7 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
       // getTranslations() => current translations
       // getTranslations('de') => specific translations
 
+      getFirstBrowserLanguage: _getFirstBrowserLanguage,
 
       // legacyCode - TODO: remove in 2021 or 2022; currently used in thermorouter, cad, maybe srs
       getCurrentDictionary: getTranslations,
