@@ -1,3 +1,17 @@
+/** rf-overlay
+ * @desc spinner waiting symbold in a modal => show the user, that the application is working
+ *
+ * @example further options
+    $scope.$emit('overlay', 'open', 'backupRunning');
+
+    $scope.$emit('overlay', 'close');
+ *
+ *  @version 0.0.2
+ *
+ */
+
+
+
 app.directive('rfOverlay', ['$timeout', '$rootScope', 'langFactory', function ($timeout, $rootScope, langFactory) {
    return {
       restrict: 'E', // attribute or element
