@@ -13,7 +13,8 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
       round: _round,
       moveUpDown: _moveUpDown,
       checkFileVersion: _checkFileVersion,
-      parseNumber: _parseNumber
+      parseNumber: _parseNumber,
+      accessObjectByString: _accessObjectByString
    };
 
    /**
@@ -146,6 +147,24 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
 
    function _parseNumber (num) {
       return isNaN(num) ? 0 : parseFloat(num);
+   }
+
+   /**
+    * @example helperFactory.accessObjectByString({a: {b: 1}, c: 15}, 'a.b'); => 1
+    */
+   function _accessObjectByString (obj, keyString) {
+      keyString = keyString.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
+      keyString = keyString.replace(/^\./, ''); // strip a leading dot
+      var a = keyString.split('.');
+      for (var i = 0, n = a.length; i < n; ++i) {
+         var k = a[i];
+         if (k in obj) {
+            obj = obj[k];
+         } else {
+            return;
+         }
+      }
+      return obj;
    }
 
    // _checkFileVersion("filename");
