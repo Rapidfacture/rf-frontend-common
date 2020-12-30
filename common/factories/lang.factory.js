@@ -1,7 +1,7 @@
 /**
  * @module langFactory
  * @desc fetch language as json data from server, provide current language
- * @version 1.0.0
+ * @version 1.0.1
  *
  */
 
@@ -82,7 +82,7 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
          });
          try {
             /* eslint-disable-next-line */
-            return new Function('scope', 'return ' + scoped)(data);
+            return new Function('scope', 'return ' + scoped + ' || ""')(data);
          } catch (e) { return ''; }
       });
    }
