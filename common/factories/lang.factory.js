@@ -1,7 +1,7 @@
 /**
  * @module langFactory
  * @desc fetch language as json data from server, provide current language
- * @version 1.0.1
+ * @version 1.0.2
  *
  */
 
@@ -231,7 +231,7 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
                $rootScope.$broadcast('languageFetched', langKey);
 
                translations[langKey] = newLang;
-               if (callback) callback(lang);
+               if (callback) callback(langKey);
             });
 
          } else {
