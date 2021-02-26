@@ -89,7 +89,12 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
          data = data || {};
          var requestId = data.requestId || '';
 
-         $http.post(url, {data: data})
+         // Internal / magic token processor
+         // Used for internal requests
+         var internalToken = getQueryParameterByName('internal');
+         var internalQueryPart = (internalToken ? '?internal=' + internalToken : '');
+
+         $http.post(url + internalQueryPart, {data: data})
          // {data: data} - always parse as json, prevent body-parser errors in node backend
             .success(function (response) {
                self.retryCount = 0; // Reset retry count on every request, ToDo: Maybe this is a problem if you make multiple invalid requests in a row
