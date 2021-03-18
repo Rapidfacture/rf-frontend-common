@@ -7,7 +7,7 @@
  *     <rf-action-select ng-model="functions"></rf-tag-select>
  *
  **/
-app.directive('rfActionSelect', ['langFactory', 'http', 'tagFactory', '$timeout', function (langFactory, http, tagFactory, $timeout) { // save json drawing
+app.directive('rfActionSelect', ['langFactory', '$timeout', function (langFactory, $timeout) { // save json drawing
    return {
       restrict: 'E',
       require: 'ngModel',
