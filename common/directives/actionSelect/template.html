@@ -1,0 +1,22 @@
+<div class="select-container" style="position: relative">
+   <div>
+      <div
+         class="select-row pointer first"
+         ng-click="selectFunction(mainFunction)"
+         ng-attr-data-cy="{{ mainFunction ? 'rf-action-main-function-btn' : ''}}">
+         <!-- we use data-cy here over "ng-attr-data-cy" to make sure the function is there, before cypress clicks the btn -->
+
+         {{mainFunction.translation}}
+      </div>
+      <button class="rf-btn rf-btn-inverted rf-btn-border select" ng-click="showOptions = !showOptions" ng-show="otherFunctions.length > 0">
+         <i class="fa fa-caret-down"></i>
+      </button>
+   </div>
+   <div class="lower-select-container">
+      <div ng-if="showOptions" class="inner-select-container">
+         <div class="select-row pointer" ng-repeat="item in otherFunctions" ng-click="selectFunction(item)">
+            {{item.translation}}
+         </div>
+      </div>
+   </div>
+</div>
