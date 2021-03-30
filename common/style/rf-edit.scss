@@ -47,19 +47,20 @@
       }
    }
 
-   &:before {
-      z-index: 1;
-      display: block;
-      content: "";
-      font-family: "FontAwesome";
-      color: #ddd;
-      position: absolute;
-      background: #fff;
-      padding: 0 2px;
-      right: 2px;
-      top: 7px;
-      font-size: 85%;
-   }
+   // rather confusing - better not show the pencil icon
+   // &:before {
+   //    z-index: 1;
+   //    display: block;
+   //    content: "";
+   //    font-family: "FontAwesome";
+   //    color: #ddd;
+   //    position: absolute;
+   //    background: #fff;
+   //    padding: 0 2px;
+   //    right: 2px;
+   //    top: 7px;
+   //    font-size: 85%;
+   // }
 
    &.rf-label {
       label {
