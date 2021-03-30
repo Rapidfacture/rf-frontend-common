@@ -2,10 +2,11 @@
  * @desc Gloabal dialog box. Can be triggered from anywhere by event.
  * manages animated box and quit function
  *
- * @version 0.2.1
+ * @version 0.3.0
  *
  * place this in the index html:
  * <rf-modal></rf-modal>
+ * <rf-modal mode="child"></rf-modal>
  *
  * @example simple
  *  //                          type
@@ -36,6 +37,8 @@ app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'eventFactory', 
       templateUrl: 'global/common/modal/mainModal/main.html',
       scope: true,
       link: function ($scope, elem, attr, ctrl) {
+
+         $scope.mode = attr.mode || 'main';
          $scope.visible = false; // init: hide modal
 
          // refesh language in scope
@@ -44,7 +47,16 @@ app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'eventFactory', 
             $scope.lang = langFactory.getTranslations();
          });
 
-         $rootScope.$on('modal', function (event, type, message, forwardObject) {
+         var childName = 'modal-child';
+         var eventName = ($scope.mode === 'main') ? 'modal' : childName;
+         $rootScope.$on(eventName, function (event, type, message, forwardObject) {
+
+            // already active => try to open second instance
+            if ($scope.mode === 'main' && $scope.visible) {
+               $rootScope.$broadcast(childName, type, message, forwardObject);
+               return;
+            }
+
             // use keys in forwardObject:
             // onSuccess
             // beforeQuit
@@ -96,7 +108,7 @@ app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'eventFactory', 
             modalBody.html('<rf-modal-' + $scope.rfModal.type + ' lang="lang" modal="rfModal"></rf-modal-' + $scope.rfModal.type + '>');
             $compile(elem.contents())($scope);
 
-            // show dialohttpg
+            // show dialog
             $scope.visible = true;
             $timeout(function () {
                $scope.fade = true;

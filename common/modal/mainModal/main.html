@@ -1,5 +1,5 @@
 <div class="rf-modal" ng-class="rfModal.type">
-   <div ng-show="visible" ng-class="{active: fade }">
+   <div ng-show="visible" ng-class="{'active': fade, 'modal-child': (mode !== 'main') }">
 
      <div class="grey-layer" ng-click="greyLayerClick()"></div>
 

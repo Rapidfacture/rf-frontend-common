@@ -1,4 +1,5 @@
 .rf-modal {
+
    .box {
       position: fixed;
       z-index: 9300;
@@ -111,7 +112,6 @@
             bottom: 0;
          }
       }
-
    }
 
    .header {
@@ -146,6 +146,16 @@
    .active {
       .grey-layer {
          opacity: 0.8;
+      }
+   }
+
+   .modal-child{
+      .box {
+         z-index: 9500;
+      }
+
+      .grey-layer {
+         z-index: 9400;
       }
    }
 }
