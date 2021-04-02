@@ -13,7 +13,16 @@ app.directive('rfConfirm', ['$timeout', 'langFactory', '$rootScope', function ($
             $scope.lang = langFactory.getTranslations();
          });
 
-         $rootScope.$on('confirm', function (event, message, forwardObject) {
+
+         // allow usage like this:
+         // $scope.$emit('reallyDelete', function () { });
+         $rootScope.$on('reallyDelete', function (event, successFunction) {
+            modalFunction(event, 'reallyDelete', { onSuccess: successFunction});
+         });
+
+         $rootScope.$on('confirm', modalFunction);
+
+         function modalFunction (event, message, forwardObject) {
             // use keys in forwardObject:
             // onSuccess
             // beforeQuit
@@ -58,7 +67,10 @@ app.directive('rfConfirm', ['$timeout', 'langFactory', '$rootScope', function ($
             $timeout(function () {
                $scope.fade = true;
             }, 40);
-         });
+         }
+
+
+
       }
    };
 }]);
