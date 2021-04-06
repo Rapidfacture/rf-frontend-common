@@ -175,7 +175,7 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
 
       mail: function (url, data, successFunc, errFunc) {
          $rootScope.$emit('overlay', 'open', 'sendingMail');
-         url = _getUrl(url);
+         url = _getUrl('post-' + url);
          $http.post(url, {
             data: data
          })
@@ -194,7 +194,7 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
       fileSave: function (url, data, successFunc, errFunc) {
          $rootScope.$broadcast('file-upload-start');
          var headers = data.headers || {};
-         url = _getUrl(url);
+         url = _getUrl('post-' + url);
          headers['Content-type'] = 'application/octet-stream';
          $http({
             method: 'POST',
