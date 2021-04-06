@@ -79,7 +79,8 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
 
       post: function (url, data, successFunc, errFunc) {
          var self = this;
-         url = _getUrl(url);
+         url = _getUrl('post-' + url);
+
          // post without data argument
          if (typeof data === 'function' && !successFunc && !errFunc) {
             successFunc = data;
@@ -117,7 +118,8 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
 
       get: function (url, data, successFunc, errFunc) {
          var self = this;
-         url = _getUrl(url);
+         url = _getUrl('get-' + url);
+
          data = data || null;
          // call without data, maximum tree arguments => skip parameter "data"
          if (typeof data === 'function') {
@@ -128,16 +130,12 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
 
          var requestId = (data && data.requestId) ? data.requestId : '';
 
-         var dataQueryPart = (data ? '?data=' + encodeURIComponent(JSON.stringify(data)) : '');
          // Internal / magic token processor
          // Used for internal requests
          var internalToken = getQueryParameterByName('internal');
-         var internalQueryPart = '';
-         if (internalToken) {
-            internalQueryPart = (dataQueryPart ? '&' : '?') + 'internal=' + internalToken;
-         }
+         var internalQueryPart = (internalToken ? '?internal=' + internalToken : '');
 
-         var runningRequest = $http.get(url + dataQueryPart + internalQueryPart)
+         var runningRequest = $http.post(url + internalQueryPart, {data: data})
             .success(function (response) {
                self.retryCount = 0; // Reset retry count on every request, ToDo: Maybe this is a problem if you make multiple invalid requests in a row
                successFunction('GET', url, successFunc, response, requestId);
