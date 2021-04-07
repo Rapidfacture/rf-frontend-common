@@ -21,6 +21,10 @@ global/common
 * when working correct, update the `rf-frontend-common` project
 * push the new version to our server and publish on npm
 
+## Usage
+* Call endpoint names as specified in backend API
+* POST and GET methods will be appended with 'get-' or 'post-' automatically
+* Standard requests will be always converted to POST method to prevent errors with large requests
 
 ## ToDo
 * share dialog
