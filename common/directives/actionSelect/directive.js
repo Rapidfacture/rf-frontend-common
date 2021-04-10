@@ -1,10 +1,12 @@
 /** button with further options in select
  *
  *
- * @version 0.0.1
+ * @version 0.0.2
  *
  * @example ng-model holds array of objects with functions to call
  *     <rf-action-select ng-model="functions"></rf-tag-select>
+ *
+ *     <rf-action-select ng-model="functions" data="order"></rf-tag-select>
  *
  **/
 app.directive('rfActionSelect', ['langFactory', '$timeout', function (langFactory, $timeout) { // save json drawing
@@ -12,7 +14,8 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', function (langFactor
       restrict: 'E',
       require: 'ngModel',
       scope: {
-         ngModel: '='
+         ngModel: '=',
+         data: '='
       },
       templateUrl: 'global/common/directives/actionSelect/template.html',
       link: function ($scope, elem, attr, ctrl) {
@@ -24,7 +27,7 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', function (langFactor
          });
 
          $scope.selectFunction = function (item) {
-            item.function();
+            item.function($scope.data);
             $scope.showOptions = false;
          };
 
