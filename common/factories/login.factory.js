@@ -299,6 +299,7 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
 
       /* -------------  settings  -------------- */
 
+      // todo. Function can be removed (currently not used in erp and cad project)
       function _setUserSettings (userSettings, callback) {
          if (!userSettings) {
             return console.log('[loginFactory] cannot set user settings, incomplete function parameters!');
@@ -320,7 +321,7 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
             };
          }
 
-         $http.post(config.loginMainUrl + '/api/' + url, {
+         $http.post(config.loginMainUrl + '/api/post-' + url, {
             data: data
          }, options)
             // {data: data} - always parse as json, prevent body-parser errors in node backend
