@@ -1,6 +1,6 @@
 /** fileFactory
  * @desc deal with attached files to json meta data and file types
- * @version 0.5.9
+ * @version 0.5.10
  */
 
 app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', function (http, $http, loginFactory, $rootScope) {
@@ -8,6 +8,8 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
       saveFile: _saveFile, // fileFactory.saveFile(endPointUrl, file, metaDoc, apptype, successFunc)
 
       removeFile: _removeFile, // fileFactory.removeFile(endPointUrl, file, successFunc)
+
+      removeAllFiles: _removeAllFiles, // fileFactory.removeAllFiles(endPointUrl, files, successFunc)
 
       downloadFile: _downloadFile, // fileFactory.downloadFile(endPointUrl, file)
 
@@ -104,6 +106,39 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
          $rootScope.$emit('modal', 'confirm-input', 'removeFile', modalData);
       } else {
          $rootScope.$emit('confirm', 'removeFile', modalData);
+      }
+   }
+
+   function _removeAllFiles (endPointUrl, files, successFunc, opts) {
+      var modalData = {
+         onSuccess: function () {
+            deleteRecursiveFiles(endPointUrl, files, successFunc);
+         },
+         onFailure: function () {}
+      };
+
+      opts = opts || {};
+      if (opts.confirmText) {
+         modalData.confirmText = opts.confirmText;
+         $rootScope.$emit('modal', 'confirm-input', 'removeAllFiles', modalData);
+      } else {
+         $rootScope.$emit('confirm', 'removeAllFiles', modalData);
+      }
+   }
+
+   function deleteRecursiveFiles (endPointUrl, files, successFunc) {
+      if (files.length > 0) {
+         http.post(endPointUrl, files[0].fileId,
+            function (response) {
+               files.shift();
+               deleteRecursiveFiles(endPointUrl, files, successFunc);
+            },
+            function (err) {
+               $rootScope.$emit('note_error', err);
+            });
+
+      } else {
+         if (successFunc) successFunc();
       }
    }
 
