@@ -62,6 +62,9 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
          getUserId: function () {
             return _getUserAttribute('_id');
          },
+         getSenderMailAddress: function () {
+            return _getUserAttribute('alternativeSenderEmail') || _getUserAttribute('email');
+         },
 
          getToken: _getToken,
          verifyToken: _verifyToken,
