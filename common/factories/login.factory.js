@@ -98,10 +98,7 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
          addTokenToUrl: _addTokenToUrl,
 
          getAppSettings: function () {
-            return (
-               config.appSettings.hasOwnProperty(config.app.name)
-                  ? config.appSettings[config.app.name] // legacy - all apps were saved here
-                  : (config.appSettings || {})); // new version
+            return config.appSettings || {};
          },
          getUserSettings: function () {
             // TODO: maybe filter out and return just current app settings
