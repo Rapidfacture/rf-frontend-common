@@ -5,7 +5,7 @@
 
 app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', function (http, $http, loginFactory, $rootScope) {
    var Services = {
-      saveFile: _saveFile, // fileFactory.saveFile(endPointUrl, file, metaDoc, apptype, successFunc)
+      saveFile: _saveFile, // fileFactory.saveFile(endPointUrl, file, metaDoc, subCategory, successFunc)
 
       removeFile: _removeFile, // fileFactory.removeFile(endPointUrl, file, successFunc)
 
@@ -33,13 +33,15 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
 
       getFirstUsableFile: _getFirstUsableFile,
 
-      is: _is // fileFactory.is(file, 'pdf') or fileFactory.is(file, ['pdf', 'image'])
+      is: _is, // fileFactory.is(file, 'pdf') or fileFactory.is(file, ['pdf', 'image'])
+
+      getSubCategoryFromSection: _getSubCategoryFromSection
    };
 
-   function _saveFile (endPointUrl, files, metaDoc, apptype, successFunc, errFunction) {
+   function _saveFile (endPointUrl, files, metaDoc, subCategory, successFunc, errFunction) {
       var counter = 0;
       metaDoc = metaDoc || {};
-      apptype = apptype || 'other';
+      subCategory = subCategory || 'other';
 
       if (!Array.isArray(files)) files = [files];
 
@@ -47,7 +49,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
 
       function nextFile () {
          var file = files[counter];
-         _saveSingleFile(endPointUrl, file, metaDoc, apptype, function (data) {
+         _saveSingleFile(endPointUrl, file, metaDoc, subCategory, function (data) {
             metaDoc = data;
             counter++;
             if (counter < files.length) {
@@ -60,7 +62,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
       }
    }
 
-   function _saveSingleFile (endPointUrl, file, metaDoc, apptype, successFunc, errFunction) {
+   function _saveSingleFile (endPointUrl, file, metaDoc, subCategory, successFunc, errFunction) {
       file.filename = file.filename || file.name; // try to prevent missing file.filename
       var headers = {
          fileId: metaDoc._id,
@@ -73,7 +75,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
          headers.previewopts = JSON.stringify(metaDoc.previewOpts);
       }
 
-      if (apptype) headers.apptype = apptype;
+      if (subCategory) headers.subCategory = subCategory;
       http.fileSave(endPointUrl, {
          content: file.contentUint8Array || file.content,
          mimetype: file.mimetype,
@@ -383,6 +385,17 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
          if (checkValues[i] === value) return true;
       }
       return false;
+   }
+
+   function _getSubCategoryFromSection (section) {
+      return {
+         article: 'otherArticle',
+         campaign: 'other',
+         incomingInvoice: 'otherIncomingInvoice',
+         invoice: 'otherInvoice',
+         purchase: 'otherPurchase',
+         sale: 'otherSale'
+      }[section] || 'other';
    }
 
    var fileTypeComparison = {
