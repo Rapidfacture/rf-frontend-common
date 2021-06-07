@@ -14,7 +14,9 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
       moveUpDown: _moveUpDown,
       checkFileVersion: _checkFileVersion,
       parseNumber: _parseNumber,
-      accessObjectByString: _accessObjectByString
+      accessObjectByString: _accessObjectByString,
+      waterfall: _waterfall,
+      eachSeries: _eachSeries
    };
 
    /**
@@ -173,6 +175,75 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
    // _checkFileVersion("filename(2)");
    // _checkFileVersion("filename (sd6) (5s)");
    // _checkFileVersion("filename (ds)");
+
+   // async functions
+   function _waterfall (tasks, mainCallback) {
+      var i = 0;
+
+      function callback () {
+         var err = null;
+
+         // prepare function arguments
+         var args = Array.prototype.slice.call(arguments);
+         if (args.length > 0) err = args.shift(); // remove 'err' from arguments and set error variable
+         args.push(callback); // add 'callback'
+
+         // on error: stop and tell the user
+         if (err) {
+            $rootScope.$emit('note_error', 'Error at function ' + tasks[i].name + ': ' + err);
+            // console.log(tasks[i].name);
+            // console.log(err);
+            mainCallback(err);
+
+         // process
+         } else {
+            i++;
+            var nextTask = tasks[i];
+
+            // process
+            if (typeof nextTask === 'function') {
+               // console.log(i, nextTask, args);
+
+               nextTask.apply(null, args);
+
+            // last run => success
+            } else {
+               console.log('final loop');
+               mainCallback(err, args);
+            }
+         }
+      }
+
+      // start the process
+      if (typeof tasks !== 'string' && tasks[0]) {
+         tasks[0](callback);
+      } else {
+         console.log('empty tasklist or invalid tasks ', tasks);
+      }
+   }
+
+   function _eachSeries (items, eachCallback, mainCallback) {
+      var i = 0;
+      function processNext (err) {
+         if (err) return mainCallback(err);
+         i++;
+         var nextItem = items[i];
+         if (nextItem) {
+            eachCallback(nextItem, processNext);
+
+         } else { // last run
+            mainCallback();
+         }
+      }
+
+      // start the process
+      if (Array.isArray(items) && items.length) {
+         eachCallback(items[i], processNext);
+
+      } else {
+         console.log('empty tasklist or invalid tasks ', items);
+      }
+   }
 
    return Services;
 }]);
