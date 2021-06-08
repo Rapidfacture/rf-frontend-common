@@ -208,7 +208,6 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
 
             // last run => success
             } else {
-               console.log('final loop');
                mainCallback(err, args);
             }
          }
