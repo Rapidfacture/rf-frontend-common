@@ -64,7 +64,32 @@ app.factory('dateFactory', [function () {
          return new Date(new Date().getTime() - milliSecsInThePast);
       },
       isDate: _isDate,
-      formatDate: _formatDate
+      formatDate: _formatDate,
+      getDateArray: function (startDate, endDate, opts) {
+         opts = opts || {};
+         startDate = new Date(startDate);
+         startDate.setHours(0, 0, 0, 0);
+
+         function iterator (date) {
+            if (opts.resolution === 'month') {
+               date.setMonth(date.getMonth() + 1);
+
+            } else if (opts.resolution === 'weeks') {
+               date.setDate(date.getDate() + 7);
+
+            } else {
+               date.setDate(date.getDate() + 1);
+            }
+
+            return date;
+         }
+
+         // eslint-disable-next-line no-unmodified-loop-condition
+         for (var arr = [], dt = startDate; dt <= endDate; iterator(dt)) {
+            arr.push(new Date(dt));
+         }
+         return arr;
+      }
    };
 }
 
