@@ -259,6 +259,8 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
       function _hasRight (section, access, range) {
          // example: hasRight('accounting', "write")
          // example: hasRight('accounting', "write", "all")
+         if (!config || !config.app || !config.app.name) return;
+
          return _hasAppRight(config.app.name, section, access, range);
       }
 
