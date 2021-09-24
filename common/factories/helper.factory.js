@@ -1,7 +1,7 @@
 /**
  * @module helperFactory
  * @desc common functions
- * @version 0.1.2
+ * @version 0.1.3
  */
 
 app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootScope) {
@@ -115,7 +115,7 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
    }
 
    function _round (num, dec) {
-      dec = dec || 2;
+      if (!dec && dec !== 0) dec = 2;
       var rounded = (Math.round(num + 'e+' + dec) + 'e-' + dec);
       rounded = isNaN(rounded) ? 0 : rounded;
       return parseFloat(rounded);
