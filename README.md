@@ -15,7 +15,6 @@ global/common
 * include the important required files (variables.scss, etc.) in correct order - stick to other grunt files
 
 
-
 ## Development
 * edit the files in the common folder in your project
 * when working correct, update the `rf-frontend-common` project
@@ -25,6 +24,3 @@ global/common
 * Call endpoint names as specified in backend API
 * POST and GET methods will be appended with 'get-' or 'post-' automatically
 * Standard requests will be always converted to POST method to prevent errors with large requests
-
-## ToDo
-* share dialog
