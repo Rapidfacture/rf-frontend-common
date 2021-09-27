@@ -25,6 +25,3 @@ global/common
 * Call endpoint names as specified in backend API
 * POST and GET methods will be appended with 'get-' or 'post-' automatically
 * Standard requests will be always converted to POST method to prevent errors with large requests
-
-## ToDo
-* share dialog
