@@ -15,7 +15,6 @@ global/common
 * include the important required files (variables.scss, etc.) in correct order - stick to other grunt files
 
 
-
 ## Development
 * edit the files in the common folder in your project
 * when working correct, update the `rf-frontend-common` project
