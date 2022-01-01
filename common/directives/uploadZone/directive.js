@@ -52,11 +52,6 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
          $scope.lang = langFactory.getTranslations();
          // console.log('uploadZone');
 
-
-         var fileSizeLimit = attr.fileSizeLimit ? parseInt(attr.fileSizeLimit) : null;
-         var asText = !!attr.readAsText;
-
-
          // html elements
          var uploadZone = elem[0];
 
@@ -119,6 +114,8 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
             for (var i = 0; i < files.length; i++) {
                fileIntoMemory(files[i], i, function (fileInfo, index) {
                   // Call callback
+
+                  var fileSizeLimit = attr.fileSizeLimit ? parseInt(attr.fileSizeLimit) : null;
 
                   if (fileSizeLimit && fileInfo && fileInfo.size > fileSizeLimit * 1000000) {
                      console.log('filesizeLimited to ' + fileSizeLimit + 'MB, aborting.');
@@ -237,6 +234,7 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
          function fileIntoMemory (file, index, callback) {
             // eslint-disable-next-line no-undef
             var reader = new FileReader();
+            var asText = !!attr.readAsText;
             reader.onload = function () {
                var content = asText ? this.result : new Uint8Array(this.result);
                callback({
