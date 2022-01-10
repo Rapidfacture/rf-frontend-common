@@ -7,7 +7,7 @@
  * @event loggedIn
  * @event loggedOut
  *
- * @version 0.4.0
+ * @version 1.0.0
  */
 
 /* globals rfTokenFactory */
@@ -170,13 +170,9 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
          return config.user.account || {};
       }
 
-
-      /**
-       * Verify the token
-       */
       function _verifyToken () {
          return $q(function (resolve, reject) {
-            postToLogin('verify', {}, function (err, data) {
+            postToLogin('auth-verify', {}, function (err, data) {
                if (err) {
                   console.log('[loginFactory] ', err);
                   reject();
@@ -188,12 +184,9 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
          });
       }
 
-      /**
-       * Retrive a new token with the old one
-       */
       function _refreshToken (sessionId) {
          return $q(function (resolve, reject) {
-            postToLogin('refresh', {
+            postToLogin('auth-refresh', {
                app: config.app.name,
                sessionId: sessionId || null // optional add a sessionId to refresh to find old sessions with already refreshed tokens
             }, function (err, res) {
