@@ -14,13 +14,28 @@ app.directive('rfConfirm', ['$timeout', 'langFactory', '$rootScope', function ($
          });
 
 
-         // allow usage like this:
-         // $scope.$emit('reallyDelete', function () { });
+         // @example: $scope.$emit('reallyDelete', function () { });
          $rootScope.$on('reallyDelete', function (event, successFunction) {
             modalFunction(event, 'reallyDelete', { onSuccess: successFunction});
          });
 
-         $rootScope.$on('confirm', modalFunction);
+         // @example: $scope.$emit('confirm', function () { });
+         // @example: $scope.$emit('confirm', 'areYouSure', function () { });
+         $rootScope.$on('confirm', function (event, message, successFunction) {
+            var opts = {};
+
+            if (typeof message === 'function') {
+               successFunction = message;
+               message = 'reallyContinue';
+            }
+
+            if (typeof successFunction === 'function') {
+               opts = { onSuccess: successFunction};
+            } else {
+               opts = successFunction;
+            }
+            modalFunction(event, message, opts);
+         });
 
          function modalFunction (event, message, forwardObject) {
             // use keys in forwardObject:
