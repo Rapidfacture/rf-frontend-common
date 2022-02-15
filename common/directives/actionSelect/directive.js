@@ -18,7 +18,7 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', function (langFactor
       scope: {
          ngModel: '=',
          data: '=',
-         callback: '=?',
+         onToggle: '=?',
          showOptions: '=?'
       },
       templateUrl: 'global/common/directives/actionSelect/template.html',
@@ -60,7 +60,7 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', function (langFactor
 
          $scope.toggle = function () {
             $scope.showOptions = !$scope.showOptions;
-            if ($scope.callback) $scope.callback();
+            if ($scope.onToggle) $scope.onToggle();
          };
       }
    };
