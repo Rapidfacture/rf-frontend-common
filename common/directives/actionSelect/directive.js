@@ -1,12 +1,14 @@
 /** button with further options in select
  *
  *
- * @version 0.0.2
+ * @version 0.0.3
  *
  * @example ng-model holds array of objects with functions to call
  *     <rf-action-select ng-model="functions"></rf-tag-select>
  *
  *     <rf-action-select ng-model="functions" data="order"></rf-tag-select>
+ *
+ *     <rf-action-select ng-model="functions" callback="callbackFunktion" show-options="option"></rf-tag-select>
  *
  **/
 app.directive('rfActionSelect', ['langFactory', '$timeout', function (langFactory, $timeout) { // save json drawing
@@ -15,7 +17,9 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', function (langFactor
       require: 'ngModel',
       scope: {
          ngModel: '=',
-         data: '='
+         data: '=',
+         callback: '=?',
+         showOptions: '=?'
       },
       templateUrl: 'global/common/directives/actionSelect/template.html',
       link: function ($scope, elem, attr, ctrl) {
@@ -53,6 +57,11 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', function (langFactor
 
          // if there is no change - force refresh; needed in e2e on server
          $timeout(refreshFunctions, 1000);
+
+         $scope.toggleExpand = function () {
+            $scope.showOptions = !$scope.showOptions;
+            if ($scope.callback) $scope.callback();
+         };
       }
    };
 }]);
