@@ -58,7 +58,7 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', function (langFactor
          // if there is no change - force refresh; needed in e2e on server
          $timeout(refreshFunctions, 1000);
 
-         $scope.toggleExpand = function () {
+         $scope.toggle = function () {
             $scope.showOptions = !$scope.showOptions;
             if ($scope.callback) $scope.callback();
          };
