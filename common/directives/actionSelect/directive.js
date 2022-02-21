@@ -1,7 +1,7 @@
 /** button with further options in select
  *
  *
- * @version 0.0.3
+ * @version 0.0.4
  *
  * @example ng-model holds array of objects with functions to call
  *     <rf-action-select ng-model="functions"></rf-tag-select>
@@ -25,6 +25,7 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', function (langFactor
       link: function ($scope, elem, attr, ctrl) {
          $scope.mainFunction = null;
          $scope.otherFunctions = [];
+         $scope.ngModel = $scope.ngModel || [];
 
          $scope.$on('languageSet', function (meta, lang) { // reload on change
             refreshFunctions();
