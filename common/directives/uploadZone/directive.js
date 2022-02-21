@@ -36,7 +36,7 @@
                 </div>
              </rf-upload-zone>
  *
- *  @version 0.2.1
+ *  @version 0.2.2
  *
  */
 
@@ -111,24 +111,41 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
 
          function upload (files) {
             var fileInfos = [];
-            for (var i = 0; i < files.length; i++) {
-               fileIntoMemory(files[i], i, function (fileInfo, index) {
-                  // Call callback
+            var fileIndex = 0;
+            var numOfFiles = files.length;
 
-                  var fileSizeLimit = attr.fileSizeLimit ? parseInt(attr.fileSizeLimit) : null;
+            checkNextFile();
 
-                  if (fileSizeLimit && fileInfo && fileInfo.size > fileSizeLimit * 1000000) {
-                     console.log('filesizeLimited to ' + fileSizeLimit + 'MB, aborting.');
-                     return $scope.$emit('note_warning', 'filesizeLimited');
-                  }
-
-                  fileInfos.push(fileInfo);
-
-                  // last file finished?
-                  if (index === (files.length - 1)) {
-                     // console.log(fileInfos);
+            function checkNextFile () {
+               var indexOfLast = numOfFiles - 1;
+               // finished?
+               if (fileIndex === indexOfLast) {
+                  addFile(fileIndex, function () {
                      $scope.onUpload(fileInfos, $scope.data);
+                  });
+
+               // next file
+               } else {
+                  addFile(fileIndex, function () {
+                     fileIndex++;
+                     checkNextFile();
+                  });
+               }
+            }
+
+            function addFile (fileIndexCounter, callback) {
+               fileIntoMemory(files[fileIndexCounter], fileIndexCounter, function (fileInfo, index) {
+                  var fileSizeLimit = attr.fileSizeLimit ? parseInt(attr.fileSizeLimit) : null;
+                  var fileTooLarge = fileSizeLimit && fileInfo && fileInfo.size > fileSizeLimit * 1000000;
+
+                  if (fileTooLarge) {
+                     console.log('filesize is limited to ' + fileSizeLimit + 'MB, aborting.');
+                     return $scope.$emit('note_warning', 'filesizeLimited');
+                  } else {
+                     fileInfos.push(fileInfo);
                   }
+
+                  if (callback) callback();
                });
             }
          }
