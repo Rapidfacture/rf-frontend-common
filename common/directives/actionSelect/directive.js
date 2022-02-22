@@ -11,7 +11,7 @@
  *     <rf-action-select ng-model="functions" callback="callbackFunktion" show-options="option"></rf-tag-select>
  *
  **/
-app.directive('rfActionSelect', ['langFactory', '$timeout', function (langFactory, $timeout) { // save json drawing
+app.directive('rfActionSelect', ['langFactory', '$timeout', 'helperFactory', function (langFactory, $timeout, helperFactory) { // save json drawing
    return {
       restrict: 'E',
       require: 'ngModel',
@@ -33,7 +33,7 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', function (langFactor
 
          $scope.selectFunction = function (item) {
             item.function($scope.data);
-            $scope.showOptions = false;
+            closeDropdown();
          };
 
          function refreshFunctions () {
@@ -63,6 +63,14 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', function (langFactor
             $scope.showOptions = !$scope.showOptions;
             if ($scope.onToggle) $scope.onToggle();
          };
+
+         function closeDropdown () {
+            $timeout(function () { $scope.showOptions = false; });
+         }
+
+         var removeListener = new helperFactory.elemOutsideClickListener(elem[0], closeDropdown);
+         $scope.$on('$destroy', removeListener);
+
       }
    };
 }]);

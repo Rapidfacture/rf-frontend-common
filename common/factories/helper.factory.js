@@ -1,28 +1,29 @@
 /**
  * @module helperFactory
  * @desc common functions
- * @version 0.1.3
+ * @version 0.1.5
  */
 
 app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootScope) {
 
    var Services = {
-      watch: _watch,
-      saveCheck: _saveCheck,
-      twoDecimals: _twoDecimals,
-      round: _round,
-      moveUpDown: _moveUpDown,
-      checkFileVersion: _checkFileVersion,
-      parseNumber: _parseNumber,
-      accessObjectByString: _accessObjectByString,
-      waterfall: _waterfall,
-      eachSeries: _eachSeries
+      watch: watch,
+      saveCheck: saveCheck,
+      twoDecimals: twoDecimals,
+      round: round,
+      moveUpDown: moveUpDown,
+      checkFileVersion: checkFileVersion,
+      parseNumber: parseNumber,
+      accessObjectByString: accessObjectByString,
+      waterfall: waterfall,
+      eachSeries: eachSeries,
+      elemOutsideClickListener: elemOutsideClickListener
    };
 
    /**
     * @example var saveCheck = new helperFactory.saveCheck($scope, unsaved );
     */
-   function _saveCheck (scope) {
+   function saveCheck (scope) {
       scope.unsaved = false;
 
       scope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
@@ -54,7 +55,7 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
     * watch.stopAll();
     *
     */
-   function _watch (scope, defaultChangeFunction) {
+   function watch (scope, defaultChangeFunction) {
 
       var self = this;
       self.list = {};
@@ -110,11 +111,11 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
       };
    }
 
-   function _twoDecimals (num) {
-      return _round(num, 2);
+   function twoDecimals (num) {
+      return round(num, 2);
    }
 
-   function _round (num, dec) {
+   function round (num, dec) {
       if (!dec && dec !== 0) dec = 2;
       var rounded = (Math.round(num + 'e+' + dec) + 'e-' + dec);
       rounded = isNaN(rounded) ? 0 : rounded;
@@ -122,14 +123,14 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
    }
 
    // move an item up/down in an array
-   function _moveUpDown (arr, index, direction) {
+   function moveUpDown (arr, index, direction) {
       var copy = arr.slice();
       var toIdx = (direction === 'up') ? index - 1 : index + 1;
       copy.splice(toIdx, 0, copy.splice(index, 1)[0]);
       return copy;
    }
 
-   function _checkFileVersion (filename) {
+   function checkFileVersion (filename) {
       // console.log("filename before: ", filename);
 
       var regex = /[(][0-9][)]$/g;
@@ -147,14 +148,14 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
       return filename;
    }
 
-   function _parseNumber (num) {
+   function parseNumber (num) {
       return isNaN(num) ? 0 : parseFloat(num);
    }
 
    /**
     * @example helperFactory.accessObjectByString({a: {b: 1}, c: 15}, 'a.b'); => 1
     */
-   function _accessObjectByString (obj, keyString) {
+   function accessObjectByString (obj, keyString) {
       keyString = keyString.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
       keyString = keyString.replace(/^\./, ''); // strip a leading dot
       var a = keyString.split('.');
@@ -169,15 +170,15 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
       return obj;
    }
 
-   // _checkFileVersion("filename");
-   // _checkFileVersion("filename (3) (5)");
-   // _checkFileVersion("filename (7)");
-   // _checkFileVersion("filename(2)");
-   // _checkFileVersion("filename (sd6) (5s)");
-   // _checkFileVersion("filename (ds)");
+   // checkFileVersion("filename");
+   // checkFileVersion("filename (3) (5)");
+   // checkFileVersion("filename (7)");
+   // checkFileVersion("filename(2)");
+   // checkFileVersion("filename (sd6) (5s)");
+   // checkFileVersion("filename (ds)");
 
    // async functions
-   function _waterfall (tasks, mainCallback) {
+   function waterfall (tasks, mainCallback) {
       var i = 0;
 
       function callback () {
@@ -221,7 +222,7 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
       }
    }
 
-   function _eachSeries (items, eachCallback, mainCallback) {
+   function eachSeries (items, eachCallback, mainCallback) {
       var i = 0;
       function processNext (err) {
          if (err) return mainCallback(err);
@@ -242,6 +243,34 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
       } else {
          console.log('empty tasklist or invalid tasks ', items);
       }
+   }
+
+
+
+   function elemOutsideClickListener (element, outsideClickFunc, insideClickFunc) {
+      function onClickOutside (e) {
+         var targetEl = e.target; // clicked element
+         do {
+            // click inside
+            if (targetEl === element) {
+               if (insideClickFunc) insideClickFunc();
+               return;
+
+            // Go up the DOM
+            } else {
+               targetEl = targetEl.parentNode;
+            }
+         } while (targetEl);
+
+         // click outside
+         if (!targetEl && outsideClickFunc) outsideClickFunc();
+      }
+
+      window.addEventListener('click', onClickOutside);
+
+      return function () {
+         window.removeEventListener('click', onClickOutside);
+      };
    }
 
    return Services;

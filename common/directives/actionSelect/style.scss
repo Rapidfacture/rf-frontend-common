@@ -14,50 +14,64 @@ rf-action-select {
       }
    }
 
+   &.small {
+      .select-row {
+         min-height: 20px;
+         padding: 1px 5px
+      }
+
+      .rf-btn {
+         min-height: 24px;
+      }
+
+      .lower-select-container {
+         top: 22px;
+      }
+   }
+
+   .upper-select-container{
+      width: 100%;
+   }
+
    .select-row {
-      min-height: 32px;
+      width: 100%;;
+      min-height: 20px;
       padding: 5px 5px;
-      // min-width: 100px;
       background: white;
       border: 1px solid var(--main_color);
       color: var(--main_color);
-      width: 100%;
-      &.pointer {
-         cursor: pointer;
-         &:hover {
-            background: var(--darkwhite);
-         }
+      float: left;
+      
+      &:hover {
+         background: var(--darkwhite);
       }
+
       &.first {
-         border-radius: 3px;
+         width: calc(100% - 30px);
+         border-bottom-left-radius: 5px;
+         border-top-left-radius: 5px;
       }
    }
 
    .rf-btn {
+      width: 30px;
       min-height: 32px;
-      position: absolute;
       margin: 0 0 0 0;
-      right: 0;
-      top: 0;
       float: right;
-      border-bottom-right-radius: 3px;
-      border-top-right-radius: 3px;
+      border-bottom-right-radius: 5px;
+      border-top-right-radius: 5px;
       &:hover {
          margin: 0 0 0 0 !important;
          border-color: var(--main_color) !important;
       }
    }
 
-   .pointer {
-      .rf-btn {
-         color: var(--main_color);
-      }
-   }
    .lower-select-container {
       width: 100%;
       z-index: 99;
       position: absolute;
       right: 0;
+      top: 30px;
       .inner-select-container {
          width: 100%;
       }
