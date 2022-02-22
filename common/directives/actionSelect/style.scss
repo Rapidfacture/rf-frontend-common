@@ -5,23 +5,25 @@ rf-action-select {
       .select-row {
          background: var(--main_color);
          color: white;
-         &.pointer {
-            cursor: pointer;
-            &:hover {
-               color: var(--main_color);
-            }
+         &:hover {
+            color: var(--main_color);
          }
+      }
+      .select-btn {
+         background: white;
+         color: var(--main_color);
       }
    }
 
-   &.small {
+   &.small-btn {
       .select-row {
          min-height: 20px;
          padding: 1px 5px
       }
 
-      .rf-btn {
-         min-height: 24px;
+      .select-btn {
+         height: 24px;
+         padding-top: 1px;
       }
 
       .lower-select-container {
@@ -29,19 +31,46 @@ rf-action-select {
       }
    }
 
+   &.round-btn {
+      .select-row {
+         min-height: 24px;
+         padding: 2px 5px;
+         &.first {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+         }
+      }
+
+      .select-btn {
+         height: 26px;
+         border-top-right-radius: 10px;
+         border-bottom-right-radius: 10px;
+      }
+
+      .lower-select-container {
+         top: 22px;
+         width: max-content;
+         .select-row {
+
+         }
+      }
+   }
+
    .upper-select-container{
       width: 100%;
+      overflow: auto;
    }
 
    .select-row {
-      width: 100%;;
+      width: 100%;
       min-height: 20px;
       padding: 5px 5px;
-      background: white;
       border: 1px solid var(--main_color);
+      background: white;
       color: var(--main_color);
       float: left;
-      
+      border-radius: 0;
+
       &:hover {
          background: var(--darkwhite);
       }
@@ -53,13 +82,17 @@ rf-action-select {
       }
    }
 
-   .rf-btn {
+   .select-btn {
       width: 30px;
       min-height: 32px;
       margin: 0 0 0 0;
       float: right;
       border-bottom-right-radius: 5px;
       border-top-right-radius: 5px;
+      cursor: pointer;
+      background: white;
+      color: var(--main_color);
+      text-align: center;
       &:hover {
          margin: 0 0 0 0 !important;
          border-color: var(--main_color) !important;
