@@ -1,7 +1,7 @@
 /**
  * @module helperFactory
  * @desc common functions
- * @version 0.1.5
+ * @version 0.1.6
  */
 
 app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootScope) {
@@ -12,7 +12,6 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
       twoDecimals: twoDecimals,
       round: round,
       moveUpDown: moveUpDown,
-      checkFileVersion: checkFileVersion,
       parseNumber: parseNumber,
       accessObjectByString: accessObjectByString,
       waterfall: waterfall,
@@ -130,24 +129,6 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
       return copy;
    }
 
-   function checkFileVersion (filename) {
-      // console.log("filename before: ", filename);
-
-      var regex = /[(][0-9][)]$/g;
-      var actualVersion = regex.exec(filename); //  "filename (3) (5)" => ["(5)"]
-      actualVersion = actualVersion || [''];
-      actualVersion = actualVersion[0]; //  ["(5)"] => "(5)"
-      filename = filename.replace(actualVersion, ''); //  "filename (3) (5)" => "filename (3) "
-      actualVersion = actualVersion.replace('(', '').replace(')', ''); //  "(5)" => "5"
-      actualVersion = isNaN(parseInt(actualVersion)) ? 0 : parseInt(actualVersion); //  "5" => 5
-
-      var version = actualVersion + 1;
-      filename = filename + '(' + version + ')';
-      // console.log("filename afterwards: ", filename);
-
-      return filename;
-   }
-
    function parseNumber (num) {
       return isNaN(num) ? 0 : parseFloat(num);
    }
@@ -169,13 +150,6 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
       }
       return obj;
    }
-
-   // checkFileVersion("filename");
-   // checkFileVersion("filename (3) (5)");
-   // checkFileVersion("filename (7)");
-   // checkFileVersion("filename(2)");
-   // checkFileVersion("filename (sd6) (5s)");
-   // checkFileVersion("filename (ds)");
 
    // async functions
    function waterfall (tasks, mainCallback) {
