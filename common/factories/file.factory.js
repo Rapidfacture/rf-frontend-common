@@ -3,42 +3,44 @@
  * @version 0.5.10
  */
 
-app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', function (http, $http, loginFactory, $rootScope) {
+app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'langFactory', 'dateFactory', function (http, $http, loginFactory, $rootScope, langFactory, dateFactory) {
    var Services = {
-      saveFile: _saveFile, // fileFactory.saveFile(endPointUrl, file, metaDoc, subCategory, successFunc)
+      saveFile: saveFile, // fileFactory.saveFile(endPointUrl, file, metaDoc, subCategory, successFunc)
 
-      removeFile: _removeFile, // fileFactory.removeFile(endPointUrl, file, successFunc)
+      removeFile: removeFile, // fileFactory.removeFile(endPointUrl, file, successFunc)
 
-      removeAllFiles: _removeAllFiles, // fileFactory.removeAllFiles(endPointUrl, files, successFunc)
+      removeAllFiles: removeAllFiles, // fileFactory.removeAllFiles(endPointUrl, files, successFunc)
 
-      downloadFile: _downloadFile, // fileFactory.downloadFile(endPointUrl, file)
+      downloadFile: downloadFile, // fileFactory.downloadFile(endPointUrl, file)
 
-      openFileIframe: _openFileIframe, // fileFactory.openFileIframe(endPointUrl, file, metaDoc, successFunc)
+      openFileIframe: openFileIframe, // fileFactory.openFileIframe(endPointUrl, file, metaDoc, successFunc)
 
-      openFileNewTab: _openFileNewTab, // fileFactory.openFileNewTab(endPointUrl, file, metaDoc, successFunc)
+      openFileNewTab: openFileNewTab, // fileFactory.openFileNewTab(endPointUrl, file, metaDoc, successFunc)
 
-      openFileNewWindow: _openFileNewWindow, // fileFactory.openFileNewTab(endPointUrl, file, metaDoc, successFunc)
+      openFileNewWindow: openFileNewWindow, // fileFactory.openFileNewTab(endPointUrl, file, metaDoc, successFunc)
 
-      getFiles: _getFiles,
+      getFiles: getFiles,
 
-      getFileUrl: _getFileUrl, // fileFactory.getFileUrl(endPointUrl, file, metaDoc, forceDownload)
+      getFileUrl: getFileUrl, // fileFactory.getFileUrl(endPointUrl, file, metaDoc, forceDownload)
 
-      getFileDownloadUrl: _getFileDownloadUrl,
+      getFileDownloadUrl: getFileDownloadUrl,
 
       fileCanBeOpened: fileCanBeOpened, // fileFactory.fileCanBeOpened(file)
 
-      fileFromFiles: _fileFromFiles, // returns last file of specific type in files array
+      fileFromFiles: fileFromFiles, // returns last file of specific type in files array
 
-      unit8ToArray: _unit8ToArray,
+      unit8ToArray: unit8ToArray,
 
-      getFirstUsableFile: _getFirstUsableFile,
+      getFirstUsableFile: getFirstUsableFile,
 
-      is: _is, // fileFactory.is(file, 'pdf') or fileFactory.is(file, ['pdf', 'image'])
+      is: is, // fileFactory.is(file, 'pdf') or fileFactory.is(file, ['pdf', 'image'])
 
-      getSubCategoryFromSection: _getSubCategoryFromSection
+      getSubCategoryFromSection: getSubCategoryFromSection,
+
+      getFileName: getFileName
    };
 
-   function _saveFile (endPointUrl, files, metaDoc, subCategory, successFunc, errFunction) {
+   function saveFile (endPointUrl, files, metaDoc, subCategory, successFunc, errFunction) {
       var counter = 0;
       metaDoc = metaDoc || {};
       subCategory = subCategory || 'other';
@@ -49,7 +51,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
 
       function nextFile () {
          var file = files[counter];
-         _saveSingleFile(endPointUrl, file, metaDoc, subCategory, function (data) {
+         saveSingleFile(endPointUrl, file, metaDoc, subCategory, function (data) {
             metaDoc = data;
             counter++;
             if (counter < files.length) {
@@ -62,7 +64,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
       }
    }
 
-   function _saveSingleFile (endPointUrl, file, metaDoc, subCategory, successFunc, errFunction) {
+   function saveSingleFile (endPointUrl, file, metaDoc, subCategory, successFunc, errFunction) {
       file.filename = file.filename || file.name; // try to prevent missing file.filename
       var headers = {
          fileId: metaDoc._id,
@@ -90,7 +92,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
 
 
 
-   function _removeFile (endPointUrl, file, successFunc, opts) {
+   function removeFile (endPointUrl, file, successFunc, opts) {
       var modalData = {
          onSuccess: function () {
             http.post(endPointUrl, file.fileId,
@@ -113,7 +115,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
       }
    }
 
-   function _removeAllFiles (endPointUrl, files, successFunc, opts) {
+   function removeAllFiles (endPointUrl, files, successFunc, opts) {
       var modalData = {
          onSuccess: function () {
             deleteRecursiveFiles(endPointUrl, files, successFunc);
@@ -146,20 +148,20 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
       }
    }
 
-   function _downloadFile (endPointUrl, data) {
-      var url = _getFileDownloadUrl(endPointUrl, data, 'forceDownload');
+   function downloadFile (endPointUrl, data) {
+      var url = getFileDownloadUrl(endPointUrl, data, 'forceDownload');
       window.open(url, '_blank');
    }
 
-   function _openFileIframe (endPointUrl, file, metaDoc, successFunc) { // open in an iframe
-      var url = _getFileUrl(endPointUrl, file, metaDoc, false);
+   function openFileIframe (endPointUrl, file, metaDoc, successFunc) { // open in an iframe
+      var url = getFileUrl(endPointUrl, file, metaDoc, false);
       if (url) { // only if it can be opened
          $rootScope.$broadcast('modal', 'file-viewer', null, {data:
             {endPointUrl: endPointUrl, file: file, metaDoc: metaDoc}});
       }
    }
 
-   function _getFiles (endPointUrl, files, successFunc, errFunction) {
+   function getFiles (endPointUrl, files, successFunc, errFunction) {
       var counter = 0;
       var fileArray = [];
       if (!Array.isArray(files)) files = [files];
@@ -168,7 +170,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
 
       function nextFile () {
          var file = files[counter];
-         _getSingleFile(endPointUrl, file, function (data) {
+         getSingleFile(endPointUrl, file, function (data) {
             fileArray.push(data);
             counter++;
             if (counter < files.length) {
@@ -179,10 +181,10 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
          }, errFunction);
       }
 
-      function _getSingleFile (endPointUrl, file, callback) {
+      function getSingleFile (endPointUrl, file, callback) {
          $http({
             method: 'GET',
-            url: _getFileUrl(endPointUrl, file, null, true),
+            url: getFileUrl(endPointUrl, file, null, true),
             responseType: 'arraybuffer'
          }).then(function (result) {
             callback({
@@ -194,15 +196,15 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
       }
    }
 
-   function _openFileNewTab (endPointUrl, file, metaDoc, successFunc) {
-      var url = _getFileUrl(endPointUrl, file, metaDoc);
+   function openFileNewTab (endPointUrl, file, metaDoc, successFunc) {
+      var url = getFileUrl(endPointUrl, file, metaDoc);
       if (url) { // only if it can be opened
          window.open(url, '_blank');
       }
    }
 
-   function _openFileNewWindow (endPointUrl, file, metaDoc, successFunc, newWindowProperties) {
-      var url = _getFileUrl(endPointUrl, file, metaDoc);
+   function openFileNewWindow (endPointUrl, file, metaDoc, successFunc, newWindowProperties) {
+      var url = getFileUrl(endPointUrl, file, metaDoc);
       var windowName = 'file';
       if (file.filename) windowName += (' ' + file.filename);
       newWindowProperties = newWindowProperties || 'width=600,height=400';
@@ -212,28 +214,28 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
       }
    }
 
-   function _getFileUrl (endPointUrl, file, metaDoc, forceDownload, noWarning) {
+   function getFileUrl (endPointUrl, file, metaDoc, forceDownload, noWarning) {
 
       // remove data binding, as we don't want to change anything here
       file = JSON.parse(JSON.stringify(file));
 
-      if (_is(file, 'json')) {
+      if (is(file, 'json')) {
          if (metaDoc) {
-            return _getCadUrl(JSON.parse(JSON.stringify(metaDoc)));
+            return getCadUrl(JSON.parse(JSON.stringify(metaDoc)));
          } else {
             return true;
          }
-      } if (_is(file, ['stl', 'step'])) {
+      } if (is(file, ['stl', 'step'])) {
          if (forceDownload) {
-            return _getFileDownloadUrl('drawing-file', file, true);
+            return getFileDownloadUrl('drawing-file', file, true);
          } else { // Not force download
             // Opens the viewer in an iframe which will
             // in turn load the actual STL file using our token
-            return _getFileDownloadUrl('3d.html', file, false).replace('/api', '');
+            return getFileDownloadUrl('3d.html', file, false).replace('/api', '');
          }
       } else {
-         if (forceDownload || _is(file, ['pdf', 'image', 'text'])) {
-            return _getFileDownloadUrl(endPointUrl, file, forceDownload);
+         if (forceDownload || is(file, ['pdf', 'image', 'text'])) {
+            return getFileDownloadUrl(endPointUrl, file, forceDownload);
          } else {
             if (!noWarning) $rootScope.$emit('note_alert', 'Cannot open fileType ' + file.mimetype);
             return false;
@@ -241,7 +243,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
       }
    }
 
-   function _getFileDownloadUrl (endPointUrl, data, forceDownload) {
+   function getFileDownloadUrl (endPointUrl, data, forceDownload) {
       var tokenURL = loginFactory.getToken();
       data = JSON.parse(JSON.stringify(data)); // prevent modification of the original obj
       data.forceDownload = !!forceDownload;
@@ -249,11 +251,11 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
       return http.getUrl(endPointUrl) + '?data=' + dataURL + '&token=' + tokenURL;
    }
 
-   function _getFirstUsableFile (meta) {
+   function getFirstUsableFile (meta) {
       var i = 0;
       var files = meta.files || [];
       var firstUsableFile = null;
-      // console.log('_getFirstUsableFile', meta);
+      // console.log('getFirstUsableFile', meta);
 
       // see if one of the file can be opened
       while (i < files.length && !fileCanBeOpened(firstUsableFile)) {
@@ -267,15 +269,15 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
 
    function fileCanBeOpened (file) {
       if (!file) return false;
-      return _getFileUrl('drawing-file', file, null, null, 'noWarning');
+      return getFileUrl('drawing-file', file, null, null, 'noWarning');
    }
 
    // Returns last option
-   function _fileFromFiles (files, fileType) {
+   function fileFromFiles (files, fileType) {
       var selected = {};
 
       files.forEach(function (file) {
-         if (_is(file, fileType)) selected = file;
+         if (is(file, fileType)) selected = file;
       });
 
       return selected;
@@ -283,23 +285,23 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
 
    /*
    // Returns first option
-   function _fileFromFiles (files, type) {
+   function fileFromFiles (files, type) {
       files = files || [];
       for (var i = 0; i < files.length; i++) {
-         if (_is(files[i], type)) return files[i];
+         if (is(files[i], type)) return files[i];
       }
       return {};
    }
    */
 
-   function _getCadUrl (drawing) {
+   function getCadUrl (drawing) {
       var urls = loginFactory.getAppUrls('rf-app-cad');
       var url = urls.main + urls.loadDrawing + drawing.hash;
       url = loginFactory.addTokenToUrl(url);
       return url;
    }
 
-   function _unit8ToArray (uint) {
+   function unit8ToArray (uint) {
       var chuck = 1024 * 64; // 64kB
       var text = '';
       var len = uint.byteLength;
@@ -324,7 +326,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
       return content;
    }
 
-   function _is (file, type) {
+   function is (file, type) {
       // console.log(file);
       // housekeeping
       if (!file) {
@@ -363,19 +365,19 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
 
 
          if (!fileMatches && compare.mimetype) {
-            fileMatches = _fileMetaCompare(file, 'mimetype', compare.mimetype);
+            fileMatches = fileMetaCompare(file, 'mimetype', compare.mimetype);
          }
 
          // 2. try file extension
          if (!fileMatches && compare.extension) {
-            fileMatches = _fileMetaCompare(file, 'extension', compare.extension);
+            fileMatches = fileMetaCompare(file, 'extension', compare.extension);
          }
 
          return fileMatches;
       }
    }
 
-   function _fileMetaCompare (file, fileKey, checkValues) {
+   function fileMetaCompare (file, fileKey, checkValues) {
       file = file || {};
       fileKey = fileKey || 'mimetype'; // or 'extension'
       if (typeof checkValues === 'string') checkValues = [checkValues];
@@ -387,7 +389,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
       return false;
    }
 
-   function _getSubCategoryFromSection (section) {
+   function getSubCategoryFromSection (section) {
       return {
          article: 'otherArticle',
          campaign: 'other',
@@ -422,6 +424,11 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', funct
          extension: ['txt', 'cnc']
       }
    };
+
+   function getFileName (nameKey, ending) {
+      var filename = langFactory.translate(nameKey).replaceAll(' ', '-');
+      return filename + '_' + dateFactory.getDateStringForFileName() + '.' + ending;
+   }
 
    return Services;
 
