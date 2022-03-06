@@ -39,6 +39,9 @@ rf-action-select {
             border-top-left-radius: 10px;
             border-bottom-left-radius: 10px;
          }
+         &.first.full{
+            border-radius: 10px;
+         }
       }
 
       .select-btn {
@@ -79,6 +82,10 @@ rf-action-select {
          width: calc(100% - 30px);
          border-bottom-left-radius: 5px;
          border-top-left-radius: 5px;
+      }
+      &.first.full{
+         border-radius: 5px;
+         width: 100%;
       }
    }
 

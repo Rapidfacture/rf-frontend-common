@@ -2,13 +2,13 @@
    <div class="upper-select-container">
       <div
          class="select-row pointer first"
+         ng-class="{'full': otherFunctions.length == 0}"
          ng-click="selectFunction(mainFunction)"
          ng-attr-data-cy="{{ mainFunction ? 'rf-action-main-function-btn' : ''}}">
          <!-- we use data-cy here over "ng-attr-data-cy" to make sure the function is there, before cypress clicks the btn -->
-
          {{mainFunction.translation}}
       </div>
-      <div class="select-row select-btn" ng-click="toggle()" ng-show="otherFunctions.length > 0">
+      <div class="select-row select-btn" ng-click="toggle()" ng-hide="otherFunctions.length == 0">
          <i class="fa fa-caret-down"></i>
       </div>
    </div>
