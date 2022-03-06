@@ -31,7 +31,8 @@
  * multiple modals
  */
 
-app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'eventFactory', 'langFactory', function ($compile, $timeout, $rootScope, eventFactory, langFactory) {
+app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'langFactory', 'eventFactory', function ($compile, $timeout, $rootScope, langFactory, eventFactory) {
+   // the eventFactory is only here so it is initialised
    return {
       restrict: 'E', // attribute or element
       templateUrl: 'global/common/modal/mainModal/main.html',
@@ -77,7 +78,6 @@ app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'eventFactory', 
                   if ($scope.rfModal.afterQuit) {
                      $scope.rfModal.afterQuit();
                   }
-                  eventFactory.deleteEscapeListener($scope.rfModal.quit);
                });
             };
 
@@ -92,8 +92,9 @@ app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'eventFactory', 
                }
             };
 
-            // press "ESC" to close modal
-            eventFactory.addEscapeListener($scope.rfModal.quit);
+            $scope.$on('escape', function () {
+               $scope.rfModal.quit();
+            });
 
             function close (callback) {
                callback = callback || function () {};
