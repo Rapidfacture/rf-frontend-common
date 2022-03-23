@@ -1,7 +1,7 @@
 /** button with further options in select
  *
  *
- * @version 0.0.4
+ * @version 0.0.5
  *
  * @example ng-model holds array of objects with functions to call
  *     <rf-action-select ng-model="functions"></rf-tag-select>
@@ -49,6 +49,18 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', 'helperFactory', fun
                   $scope.otherFunctions.push(item);
                }
             });
+
+            if (typeof attr.dynamicWidth !== 'undefined') {
+               var paddingOffset = 40;
+               var pixelMultiplier = 8;
+               var maxWidth = 0;
+
+               $scope.ngModel.forEach(function (option) {
+                  if (maxWidth < option.label.length) maxWidth = option.label.length;
+               });
+
+               $scope.dynamicWidth = ((maxWidth * pixelMultiplier) + paddingOffset).toString() + 'px';
+            }
          }
 
          ctrl.$formatters.unshift(function (value) { // ngModel set external from code => refresh
