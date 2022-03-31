@@ -55,8 +55,8 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', 'helperFactory', fun
                var pixelMultiplier = 8;
                var maxWidth = 0;
 
-               $scope.ngModel.forEach(function (option) {
-                  if (maxWidth < option.label.length) maxWidth = option.label.length;
+               $scope.ngModel.forEach(function (item) {
+                  if (maxWidth < item.translation.length) maxWidth = item.translation.length;
                });
 
                $scope.dynamicWidth = ((maxWidth * pixelMultiplier) + paddingOffset).toString() + 'px';
