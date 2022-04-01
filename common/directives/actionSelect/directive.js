@@ -50,16 +50,19 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', 'helperFactory', fun
                }
             });
 
-            if (typeof attr.dynamicWidth !== 'undefined') {
-               var paddingOffset = 40;
+            if (attr.hasOwnProperty('dynamicWidth')) {
+               var paddingOffset = 30;
                var pixelMultiplier = 8;
                var maxWidth = 0;
+               var maxWidthDropDown = 0;
 
-               $scope.ngModel.forEach(function (item) {
-                  if (maxWidth < item.translation.length) maxWidth = item.translation.length;
+               $scope.ngModel.forEach(function (item, i) {
+                  if (!i) maxWidth = item.translation.length;
+                  if (maxWidthDropDown < item.translation.length && i) maxWidthDropDown = item.translation.length;
                });
 
                $scope.dynamicWidth = ((maxWidth * pixelMultiplier) + paddingOffset).toString() + 'px';
+               $scope.dynamicWidthDropDown = ((maxWidthDropDown * pixelMultiplier) + paddingOffset).toString() + 'px';
             }
          }
 
