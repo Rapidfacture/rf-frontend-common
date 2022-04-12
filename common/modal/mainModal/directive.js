@@ -93,7 +93,11 @@ app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'langFactory', '
             };
 
             $scope.$on('escape', function () {
-               $scope.rfModal.quit();
+               var isModalChildActive = document.getElementsByClassName('modal-child active').length === 1;
+               if (($scope.mode === 'main' && !isModalChildActive) ||
+               ($scope.mode !== 'main' && isModalChildActive)) {
+                  $scope.rfModal.quit();
+               }
             });
 
             function close (callback) {
