@@ -1,7 +1,7 @@
 /**
  * @module helperFactory
  * @desc common functions
- * @version 0.1.6
+ * @version 0.1.7carefulMerge
  */
 
 app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootScope) {
@@ -16,7 +16,9 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
       accessObjectByString: accessObjectByString,
       waterfall: waterfall,
       eachSeries: eachSeries,
-      elemOutsideClickListener: elemOutsideClickListener
+      elemOutsideClickListener: elemOutsideClickListener,
+      createLazySave: createLazySave,
+      carefulMerge: carefulMerge
    };
 
    /**
@@ -245,6 +247,86 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
       return function () {
          window.removeEventListener('click', onClickOutside);
       };
+   }
+
+
+   /** createLazySave: save only once with a delay, prevent jitter
+    *
+    * var lazySave = helperFactory.createLazySave({defaultTimeout: 1500});
+    *
+    * function toggleCheckBox (num) {
+    *    lazySave(function () {
+    *       // will be executed only after last call
+    *       if ($scope.ngChange) $scope.ngChange(num);
+    *    });
+    * }
+    */
+
+   function createLazySave (opts) {
+      opts = Object.assign({
+         defaultTimeout: 600,
+         countingInterval: 100
+      }, (opts || {}));
+      var saveRunning = false;
+      var waitingTime = opts.defaultTimeout;
+
+      return function lazySave (saveFunction) {
+         if (saveRunning) {
+            if (waitingTime < 2 * opts.defaultTimeout) waitingTime += opts.defaultTimeout;
+         } else {
+            saveRunning = true;
+            countDown(function () {
+               saveRunning = false;
+               waitingTime = opts.defaultTimeout;
+               if (saveFunction) saveFunction();
+            });
+         }
+
+         function countDown (callback) {
+            if (waitingTime > 0) {
+               setTimeout(function () {
+                  waitingTime = waitingTime - opts.countingInterval;
+                  countDown(callback);
+               }, opts.countingInterval);
+            } else {
+               if (callback) callback();
+            }
+         }
+      };
+   }
+
+   /** carefulMerge: similar to Object.assign, but deep copy a special key path
+    * allowe to carfully write data from the backend after saving back to the frontend
+    * "jumping" in the view through ng-repeats is prevented
+    *
+    * helperFactory.carefulMerge($scope.campaign, result, 'customerList.list');
+    *
+    */
+   function carefulMerge (oldObj, updateObj, key) {
+      // prevent frontend refresh problems as we can update a subsection of the data one by one
+      // this prevents the ng-repeat from "jumping"
+      var keys = key.split('.');
+
+      transferKeys(oldObj, updateObj, 0);
+
+      function transferKeys (oldObj, updateObj, index) {
+         if (Array.isArray(updateObj)) {
+            for (var i = 0; i < updateObj.length; i++) {
+               Object.assign(oldObj[i], updateObj[i]);
+            }
+            // abort here
+         } else if (typeof updateObj === 'object') {
+            var ignoreKey = keys[index];
+            index++;
+            for (var key in updateObj) {
+               // update all, except what we should ignore
+               if (key !== ignoreKey) oldObj[key] = updateObj[key];
+            }
+
+            // step in next lower level, if there is one
+            if (ignoreKey) transferKeys(oldObj[ignoreKey], updateObj[ignoreKey], index);
+         } // else: abort
+      }
    }
 
    return Services;
