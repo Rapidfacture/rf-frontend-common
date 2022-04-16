@@ -102,7 +102,6 @@ app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'langFactory', '
 
             function close (callback) {
                callback = callback || function () {};
-               $scope.fade = false;
                $timeout(function () {
                   $scope.visible = false;
                   callback();
@@ -115,9 +114,6 @@ app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'langFactory', '
 
             // show dialog
             $scope.visible = true;
-            $timeout(function () {
-               $scope.fade = true;
-            }, 40);
          });
       }
    };
