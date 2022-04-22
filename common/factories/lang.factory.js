@@ -76,16 +76,21 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
 
       if (!data) return string;
 
-      return string.replace(/\${(.*?)}/g, function (value, code) {
-         var scoped = code.replace(/([\b(\\n)"'.\w$]+)/g, function (match) {
-            return /["'\b(\\n)]/.test(match[0]) ? match : 'scope.' + match;
-         });
-         try {
-            /* eslint-disable-next-line */
-            return new Function('scope', 'return ' + scoped + ' || ""')(data);
-         } catch (e) { return ''; }
-      });
+      try {
+         var properties = string.match(new RegExp('[.a-zA-Z]+', 'g'));
+         // Required for parsing (no unknown values in object allowed)
+         var values = {};
+         properties.forEach(function (key) { values[key] = undefined; });
+         Object.assign(values, data);
+
+         /* eslint-disable-next-line */
+         return new Function('scope', 'for (var k in scope) {this[k] = scope[k];} return `' + string + '`')(values);
+
+      } catch (e) {
+         return '';
+      }
    }
+
 
 
    function getTranslations (lang, callback) {
