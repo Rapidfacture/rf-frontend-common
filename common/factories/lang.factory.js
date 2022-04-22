@@ -77,8 +77,8 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
       if (!data) return string;
 
       return string.replace(/\${(.*?)}/g, function (value, code) {
-         var scoped = code.replace(/(["'.\w$]+)/g, function (match) {
-            return /["']/.test(match[0]) ? match : 'scope.' + match;
+         var scoped = code.replace(/([\b(\\n)"'.\w$]+)/g, function (match) {
+            return /["'\b(\\n)]/.test(match[0]) ? match : 'scope.' + match;
          });
          try {
             /* eslint-disable-next-line */
