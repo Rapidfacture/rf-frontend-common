@@ -80,7 +80,7 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
          var properties = string.match(new RegExp('[.a-zA-Z]+', 'g'));
          // Required for parsing (no unknown values in object allowed)
          var values = {};
-         properties.forEach(function (key) { values[key] = undefined; });
+         properties.forEach(function (key) { values[key] = ''; });
          Object.assign(values, data);
 
          /* eslint-disable-next-line */
