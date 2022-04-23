@@ -312,8 +312,14 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
       function transferKeys (oldObj, updateObj, index) {
          if (Array.isArray(updateObj)) {
             for (var i = 0; i < updateObj.length; i++) {
+               oldObj[i] = oldObj[i] || {};
                Object.assign(oldObj[i], updateObj[i]);
             }
+
+            // some items were deleted? shorten the array
+            var newLength = updateObj.length;
+            while (newLength < oldObj.length) oldObj.pop();
+
             // abort here
          } else if (typeof updateObj === 'object') {
             var ignoreKey = keys[index];
