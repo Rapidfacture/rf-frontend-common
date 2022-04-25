@@ -76,19 +76,24 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
 
       if (!data) return string;
 
-      try {
-         var properties = string.match(new RegExp('[.a-zA-Z]+', 'g'));
-         // Required for parsing (no unknown values in object allowed)
-         var values = {};
-         properties.forEach(function (key) { values[key] = ''; });
-         Object.assign(values, data);
+      // Advantage of this structure:
+      // - No globals
+      // - Replaces word by word
+      // - More reliable as no undefined could interrupt parsing
 
-         /* eslint-disable-next-line */
-         return new Function('scope', 'for (var k in scope) {this[k] = scope[k];} return `' + string + '`')(values);
+      // 1. Find all string elements to replace
+      return string.replace(/\${(.*?)}/g, function (value, code) {
+         // 2. Find and extend all keys with scope. for parsing function
+         var scoped = code.replace(/(["'.\w\\$]+)/g, function (match) {
+            return /["'\\+]/.test(match[0]) ? match : 'scope.' + match;
+         });
 
-      } catch (e) {
-         return '';
-      }
+         // 3. Parse scoped
+         try {
+            /* eslint-disable-next-line */
+            return new Function('scope', 'return ' + scoped + ' || ""')(data);
+         } catch (e) { return ''; }
+      });
    }
 
 
