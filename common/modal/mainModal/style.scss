@@ -12,8 +12,11 @@
       box-shadow: none;
    }
 
-   .modal-container {
+   modal-body {
       overflow-y: auto;
+   }
+
+   .modal-container {
       width: 100%;
       margin: 0;
       padding-bottom: 30px;
