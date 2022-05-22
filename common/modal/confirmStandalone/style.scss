@@ -3,9 +3,32 @@ rf-confirm{
       z-index: 9500 !important;
    }
 
-   .rf-box{
+   .box{
       z-index: 9600 !important;
       min-height: 200px;
       height: auto !important;
+   }
+
+   .header {
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      background: var(--midwhite);
+      height: 40px;
+      padding-left: 10px;
+      padding-right: 10px;
+      text-align: left;
+      color: var(--midgrey);
+      font-weight: bold;
+      font-size: 19px;
+      line-height: 40px;
+
+      .actions {
+         float: right;
+
+         .rf-btn {
+            line-height: 21px;
+            font-size: 21px;
+         }
+      }
    }
 }
