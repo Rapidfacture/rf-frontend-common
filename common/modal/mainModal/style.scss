@@ -12,11 +12,8 @@
       box-shadow: none;
    }
 
-   modal-body {
-      overflow-y: auto;
-   }
-
    .modal-container {
+      overflow-y: auto;
       width: 100%;
       margin: 0;
       padding-bottom: 30px;
@@ -26,6 +23,55 @@
       position: relative;
       right: 0;
       max-height: 80vh;
+   }
+
+   .header {
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      background: var(--midwhite);
+      height: 40px;
+      padding-left: 10px;
+      padding-right: 10px;
+      text-align: left;
+      color: var(--midgrey);
+      font-weight: bold;
+      font-size: 19px;
+      line-height: 40px;
+
+      .actions {
+         float: right;
+
+         .rf-btn {
+            line-height: 21px;
+            font-size: 21px;
+         }
+      }
+   }
+
+
+   .grey-layer {
+      position: fixed;
+      z-index: 9100;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 0;
+      background-color: grey;
+      opacity: 0;
+   }
+
+   .grey-layer {
+      opacity: 0.8;
+   }
+
+   .modal-child{
+      .box {
+         z-index: 9500;
+      }
+
+      .grey-layer {
+         z-index: 9400;
+      }
    }
 
    .box {
@@ -111,48 +157,6 @@
       &.maxheader{
          top: 0;
          bottom: 0;
-      }
-   }
-   .header {
-      text-align: left;
-      border-top-left-radius: 5px;
-      border-top-right-radius: 5px;
-      background: var(--grey) !important;
-      font-style: bold;
-
-      .actions {
-         float: right;
-
-         .rf-btn {
-            line-height: 21px;
-            font-size: 21px;
-         }
-      }
-   }
-
-
-   .grey-layer {
-      position: fixed;
-      z-index: 9100;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      top: 0;
-      background-color: grey;
-      opacity: 0;
-   }
-
-   .grey-layer {
-      opacity: 0.8;
-   }
-
-   .modal-child{
-      .box {
-         z-index: 9500;
-      }
-
-      .grey-layer {
-         z-index: 9400;
       }
    }
 }
