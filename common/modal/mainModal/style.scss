@@ -1,17 +1,5 @@
 .rf-modal {
 
-   .box {
-      position: fixed;
-      z-index: 9300;
-      top: 0;
-      display: block;
-      text-align: center;
-      margin: 0 auto;
-      -webkit-box-shadow: none;
-      -moz-box-shadow: none;
-      box-shadow: none;
-   }
-
    .modal-container {
       overflow-y: auto;
       width: 100%;
@@ -20,7 +8,6 @@
       background: white;
       position: absolute;
       left: 0;
-      position: relative;
       right: 0;
       max-height: 80vh;
    }
@@ -58,9 +45,6 @@
       top: 0;
       background-color: grey;
       opacity: 0;
-   }
-
-   .grey-layer {
       opacity: 0.8;
    }
 
@@ -75,6 +59,12 @@
    }
 
    .box {
+      position: fixed;
+      z-index: 9300;
+      display: block;
+      text-align: center;
+      margin: 0 auto;
+      box-shadow: none;
       top: 15vh;
 
       &.small {
