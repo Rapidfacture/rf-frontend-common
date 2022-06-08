@@ -195,6 +195,7 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
          tasks[0](callback);
       } else {
          console.log('empty tasklist or invalid tasks ', tasks);
+         mainCallback();
       }
    }
 
@@ -218,6 +219,7 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
 
       } else {
          console.log('empty tasklist or invalid tasks ', items);
+         mainCallback();
       }
    }
 
