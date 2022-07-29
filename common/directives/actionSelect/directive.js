@@ -32,14 +32,23 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', 'helperFactory', fun
          });
 
          $scope.selectFunction = function (item) {
+            if (item.status === 'disabled') return;
+
             item.function($scope.data);
             closeDropdown();
          };
 
          function refreshFunctions () {
+            var options = $scope.ngModel.slice(0);
+            options = options.sort(function (a, b) {
+               if (a.status === 'active' && b.status !== 'active') return -1;
+               if (!a.status && b.status === 'disabled') return -1;
+               if (a.status === 'disabled' && b.status !== 'disabled') return 1;
+               return 0;
+            });
             $scope.otherFunctions = [];
 
-            $scope.ngModel.forEach(function (item, $index) {
+            options.forEach(function (item, $index) {
                item.translation = langFactory.translate(item.label);
                if (item.elemNumber) item.translation += item.elemNumber;
 

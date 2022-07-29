@@ -2,7 +2,7 @@
    <div class="upper-select-container">
       <div
          class="select-row pointer first"
-         ng-class="{'full': otherFunctions.length == 0}"
+         ng-class="{'full': otherFunctions.length == 0, 'disabled': mainFunction.status == 'disabled'}"
          ng-click="selectFunction(mainFunction)"
          ng-attr-data-cy="{{ mainFunction ? 'rf-action-main-function-btn' : ''}}">
          <!-- we use data-cy here over "ng-attr-data-cy" to make sure the function is there, before cypress clicks the btn -->
@@ -13,8 +13,8 @@
       </div>
    </div>
    <div class="lower-select-container">
-      <div ng-if="showOptions" class="inner-select-container" ng-style="{ 'width': dynamicWidthDropDown }">
-         <div class="select-row pointer" ng-repeat="item in otherFunctions" ng-click="selectFunction(item)">
+      <div ng-if="showOptions" class="inner-select-container" ng-style="{'width': dynamicWidthDropDown}">
+         <div class="select-row pointer" ng-repeat="item in otherFunctions" ng-click="selectFunction(item)" ng-class="{disabled: item.status == 'disabled'}">
             {{item.translation}}
          </div>
       </div>

@@ -113,4 +113,13 @@ rf-action-select {
          width: 100%;
       }
    }
+
+   .disabled {
+      color: var(--lightgrey);
+      cursor: default;
+
+      &:hover {
+         background: white;
+      }
+   }
 }
