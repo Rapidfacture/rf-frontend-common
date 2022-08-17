@@ -15,6 +15,21 @@ rf-action-select {
       }
    }
 
+   &.minimum-btn {
+      .select-row {
+         min-height: 20px;
+         padding: 1px 5px;
+      }
+
+      .select-btn {
+         height: 20px;
+      }
+
+      .lower-select-container {
+         top: 20px;
+      }
+   }
+
    &.small-btn {
       .select-row {
          min-height: 20px;
