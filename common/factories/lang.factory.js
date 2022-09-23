@@ -208,7 +208,7 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
             getLanguage();
 
          } else {
-            _getLang('en', function (result) {
+            getTranslationFile('en', function (result) {
                newLang = JSON.parse(JSON.stringify(result));
                if (langKey !== 'en') translations.en = result;
 
@@ -225,7 +225,7 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
             getLocale();
 
          } else {
-            _getLang(lang, function (result) {
+            getTranslationFile(lang, function (result) {
                Object.assign(newLang, result);
                $rootScope.$broadcast('languageFetched', langKey);
 
@@ -236,7 +236,7 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
 
       function getLocale () {
          if (locale) {
-            _getLang(langKey, function (result) {
+            getTranslationFile(langKey, function (result) {
                Object.assign(newLang, result);
                $rootScope.$broadcast('languageFetched', langKey);
 
@@ -249,32 +249,36 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
             if (callback) callback(lang);
          }
       }
-   }
 
-   var retryCount = 0;
-   function _getLang (lang, callback) {
-      var source = (lang.split('-').length === 1 ? 'json/lang/' : 'json/locale/');
+      var retryCount = 0;
+      function getTranslationFile (lang, callback) {
+         var source = (lang.split('-').length === 1 ? 'json/lang/' : 'json/locale/');
 
-      $http.get(source + lang + '.json').then(function (response) {
-         if (typeof response.data === 'object') { // successfull fetch
-            if (callback) callback(response.data);
+         $http.get(source + lang + '.json').then(function (response) {
+            if (typeof response.data === 'object') { // successfull fetch
+               if (callback) callback(response.data);
 
-         } else { // invalid response data: something went wrong
+            } else { // invalid response data: something went wrong
+               retry(lang);
+            }
+         }, function () { // invalid http answer: something went wrong
             retry(lang);
-         }
-      }, function () { // invalid http answer: something went wrong
-         retry(lang);
-      });
+         });
 
-      function retry (lang) {
-         retryCount++;
-         if (retryCount < 2) {
-            _getLang(lang, callback); // retry
+         function retry (lang) {
+            retryCount++;
+            if (retryCount < 2) {
+               getTranslationFile(lang, callback); // retry
+            }
          }
       }
    }
 
    /* -------------------- helper functions ---------------------------- */
+   function getDefaultTranslations (lang) {
+      return translations[Services.defaultLanguage];
+   }
+
    function translationFetched (lang) {
       return translations[lang];
    }
@@ -290,10 +294,6 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
       } else {
          return key;
       }
-   }
-
-   function getDefaultTranslations (lang) {
-      return translations[Services.defaultLanguage];
    }
 
    function _checkLanguage (lang, callback) {
