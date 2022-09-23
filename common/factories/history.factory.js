@@ -47,8 +47,11 @@ app.factory('historyFactory', ['$state', function ($state) {
          for (var key in lastState.params) {
             if (lastState.params[key] === 'new') stateIncludesNew = true;
          }
-
          if (stateIncludesNew) return this.backTwice(alternativeState);
+
+         // regex check => "list" included in state?
+         // fix case: article:edit => article-parents => article:edit => back to list view => article:list
+         if (!this.getLastStateName().includes('list') && alternativeState) return $state.go(alternativeState);
 
          // regular case
          if (this.getLastStateName()) return this.back();
