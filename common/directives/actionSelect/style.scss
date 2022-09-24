@@ -71,6 +71,10 @@ rf-action-select {
       }
    }
 
+   .select-container.hidden{
+      display: none;
+   }
+
    .upper-select-container{
       width: 100%;
       overflow: auto;
