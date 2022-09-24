@@ -142,6 +142,10 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
                      console.log('filesize is limited to ' + fileSizeLimit + 'MB, aborting.');
                      return $scope.$emit('note_warning', 'filesizeLimited');
                   } else {
+                     // filename without extension
+                     fileInfo.shortName = fileInfo.filename.replace(/\.[^/.]+$/, '');
+                     fileInfo.extension = fileInfo.filename.split('.').pop();
+
                      fileInfos.push(fileInfo);
                   }
 
