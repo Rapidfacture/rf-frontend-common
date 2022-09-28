@@ -37,7 +37,9 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'lang
 
       getSubCategoryFromSection: getSubCategoryFromSection,
 
-      getFileName: getFileName
+      getFileName: getFileName,
+
+      getShortFileName: getShortFileName
    };
 
    function saveFile (endPointUrl, files, metaDoc, subCategory, successFunc, errFunction) {
@@ -428,6 +430,13 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'lang
    function getFileName (nameKey, ending) {
       var filename = langFactory.translate(nameKey).replaceAll(' ', '-');
       return filename + '_' + dateFactory.getDateStringForFileName() + '.' + ending;
+   }
+
+   function getShortFileName (file) {
+      file = file || {};
+      var fileName = file.filename || '';
+      var index = fileName.lastIndexOf('.');
+      return fileName.slice(0, index);
    }
 
    return Services;
