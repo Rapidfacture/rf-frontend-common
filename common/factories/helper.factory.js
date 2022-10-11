@@ -34,7 +34,8 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
                $state.go(toState, toParams);
             } else {
                event.preventDefault();
-               scope.$emit('modal', 'confirm', 'unsavedChangesReallyLeave', {
+               scope.$emit('modal', 'confirm', {
+                  message: 'unsavedChangesReallyLeave',
                   onSuccess: function () {
                      scope.unsaved = false;
                      $state.go(toState, toParams);

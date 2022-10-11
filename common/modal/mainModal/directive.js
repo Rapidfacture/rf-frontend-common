@@ -13,8 +13,8 @@
  * $scope.$broadcast('modal', "about");
  *
  * @example complex
- *     //                       type        message      obj put in $scope.rfModal
- *     $scope.$emit('modal', "confirm", "removeDrawing", {onSuccess: function() {
+ *     //                       type        arg1      obj put in $scope.rfModal
+ *     $scope.$emit('modal', "confirm", {onSuccess: function() {
  *              http.post('removedrawing', {
  *                  'data': $scope.drawing._id
  *              }, function(response) {
@@ -50,52 +50,48 @@ app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'langFactory', '
 
          var childName = 'modal-child';
          var eventName = ($scope.mode === 'main') ? 'modal' : childName;
-         $rootScope.$on(eventName, function (event, type, message, forwardObject) {
-
-            // already active => try to open second instance
-            if ($scope.mode === 'main' && $scope.visible) {
-               $rootScope.$broadcast(childName, type, message, forwardObject);
-               return;
-            }
+         $rootScope.$on(eventName, function (event, type, forwardObject) {
 
             // use keys in forwardObject:
             // onSuccess
             // beforeQuit
             // afterQuit
-            // console.log(forwardObject);
+            // headertext
+            // message
+            // data
 
-            if (typeof message === 'object') {
-               forwardObject = message;
-            } else {
-               $scope.rfModal.message = langFactory.translate(message) || '';
+            // already active => try to open second instance
+            if ($scope.mode === 'main' && $scope.visible) {
+               $rootScope.$broadcast(childName, type, forwardObject);
+               return;
             }
 
-            forwardObject = forwardObject || {};
-            $scope.rfModal = forwardObject;
-            $scope.rfModal.type = type || 'confirm';
-            $scope.rfModal.message = langFactory.translate(message) || '';
-            $scope.rfModal.headerText = forwardObject.headerText || '';
-            $scope.rfModal.quit = function (callback) {
+            $scope.rfModal = forwardObject || {};
+            var modal = $scope.rfModal;
+            modal.message = langFactory.translate(modal.message) || '';
+            modal.headerText = langFactory.translate(modal.headerText) || '';
+            modal.type = type || 'confirm';
+            modal.quit = function (callback) {
                callback = callback || function () {};
-               if ($scope.rfModal.beforeQuit) {
-                  $scope.rfModal.beforeQuit();
+               if (modal.beforeQuit) {
+                  modal.beforeQuit();
                }
                close(function () {
                   callback();
-                  if ($scope.rfModal.afterQuit) {
-                     $scope.rfModal.afterQuit();
+                  if (modal.afterQuit) {
+                     modal.afterQuit();
                   }
                });
             };
 
             $scope.greyLayerClick = function () {
-               if ($scope.rfModal.disableGreyLayerClose) {
+               if (modal.disableGreyLayerClose) {
                   $scope.showClosingInfo = true;
                   $timeout(function () {
                      $scope.showClosingInfo = false;
                   }, 1200);
                } else {
-                  $scope.rfModal.quit();
+                  modal.quit();
                }
             };
 
@@ -103,7 +99,7 @@ app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'langFactory', '
                var isModalChildActive = document.getElementsByClassName('modal-child active').length === 1;
                if (($scope.mode === 'main' && !isModalChildActive) ||
                ($scope.mode !== 'main' && isModalChildActive)) {
-                  $scope.rfModal.quit();
+                  modal.quit();
                }
             });
 
@@ -116,7 +112,7 @@ app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'langFactory', '
             }
 
             var modalBody = elem.find('modal-body');
-            modalBody.html('<rf-modal-' + $scope.rfModal.type + ' lang="lang" modal="rfModal"></rf-modal-' + $scope.rfModal.type + '>');
+            modalBody.html('<rf-modal-' + modal.type + ' lang="lang" modal="rfModal"></rf-modal-' + modal.type + '>');
             $compile(elem.contents())($scope);
 
             // show dialog
