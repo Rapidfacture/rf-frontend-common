@@ -63,6 +63,13 @@ app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'langFactory', '
             // beforeQuit
             // afterQuit
             // console.log(forwardObject);
+
+            if (typeof message === 'object') {
+               forwardObject = message;
+            } else {
+               $scope.rfModal.message = langFactory.translate(message) || '';
+            }
+
             forwardObject = forwardObject || {};
             $scope.rfModal = forwardObject;
             $scope.rfModal.type = type || 'confirm';
