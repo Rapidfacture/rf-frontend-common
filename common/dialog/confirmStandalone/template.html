@@ -1,0 +1,21 @@
+<div class="rf-dialog">
+   <div ng-show="visible" ng-class="{active: fade }">
+
+     <div class="grey-layer" ng-click="rfDialog.quit()"></div>
+
+     <div class="box" ng-class="rfDialog.size">
+       <div class="header">
+         {{rfDialog.headerText}}
+         <div class="actions">
+           <button class="rf-btn rf-btn-inverted rf-btn-transparent" ng-click="rfDialog.quit()"><i class="fa fa-times-circle"></i></button>
+         </div>
+       </div>
+
+       <div class="dialog-container row">
+         <dialog-body class="col-xs-12" data-cy="rf-dialog-body-confirm">
+            <rf-dialog-confirm lang="lang" dialog="rfDialog"></rf-dialog-confirm>
+         </dialog-body>
+       </div>
+     </div>
+   </div>
+</div>

@@ -4,20 +4,20 @@
  *
  * @example simple
  *  //                          type
- * <div class="btn" modal-open="confirm" modal-message="dialog text message" modal-data="scopeObjforModal" ></div>
+ * <div class="btn" dialog-open="confirm" dialog-message="dialog text message" dialog-data="scopeObjforDialog" ></div>
  */
 
-app.directive('modalOpen', ['$rootScope', function ($rootScope) { // save json drawing
+app.directive('dialogOpen', ['$rootScope', function ($rootScope) { // save json drawing
    return {
       restrict: 'A', // attribute
       scope: {
-         modalData: '='
+         dialogData: '='
       },
       link: function ($scope, elem, attr, ctrl) {
          elem.bind('click', function () {
-            $rootScope.$broadcast('modal', attr.modalOpen, {
-               message: attr.modalMessage,
-               data: $scope.modalData
+            $rootScope.$broadcast('dialog', attr.dialogOpen, {
+               message: attr.dialogMessage,
+               data: $scope.dialogData
             });
          });
       }

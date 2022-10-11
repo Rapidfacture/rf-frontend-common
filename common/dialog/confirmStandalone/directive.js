@@ -1,11 +1,11 @@
 app.directive('rfConfirm', ['$timeout', 'langFactory', '$rootScope', function ($timeout, langFactory, $rootScope) {
    return {
       restrict: 'E',
-      templateUrl: 'global/common/modal/confirmStandalone/template.html',
+      templateUrl: 'global/common/dialog/confirmStandalone/template.html',
       scope: true,
       link: function ($scope, elem, attr, ctrl) {
-         $scope.visible = false; // init: hide modal
-         $scope.rfModal = {};
+         $scope.visible = false; // init: hide dialog
+         $scope.rfDialog = {};
 
          // refesh language in scope
          $scope.lang = langFactory.getTranslations();
@@ -16,7 +16,7 @@ app.directive('rfConfirm', ['$timeout', 'langFactory', '$rootScope', function ($
 
          // @example: $scope.$emit('reallyDelete', function () { });
          $rootScope.$on('reallyDelete', function (event, successFunction) {
-            modalFunction(event, 'reallyDelete', { onSuccess: successFunction});
+            dialogFunction(event, 'reallyDelete', { onSuccess: successFunction});
          });
 
          // @example: $scope.$emit('confirm', function () { });
@@ -34,10 +34,10 @@ app.directive('rfConfirm', ['$timeout', 'langFactory', '$rootScope', function ($
             } else {
                opts = successFunction;
             }
-            modalFunction(event, message, opts);
+            dialogFunction(event, message, opts);
          });
 
-         function modalFunction (event, message, forwardObject) {
+         function dialogFunction (event, message, forwardObject) {
             // use keys in forwardObject:
             // onSuccess
             // beforeQuit
@@ -45,30 +45,30 @@ app.directive('rfConfirm', ['$timeout', 'langFactory', '$rootScope', function ($
             // console.log(forwardObject);
             message = message || 'reallyContinue';
             forwardObject = forwardObject || {};
-            $scope.rfModal = forwardObject;
-            $scope.rfModal.message = langFactory.translate(message) || '';
-            $scope.rfModal.headerText = forwardObject.headerText || '';
-            $scope.rfModal.quit = function (callback) {
+            $scope.rfDialog = forwardObject;
+            $scope.rfDialog.message = langFactory.translate(message) || '';
+            $scope.rfDialog.headerText = forwardObject.headerText || '';
+            $scope.rfDialog.quit = function (callback) {
                callback = callback || function () {};
-               if ($scope.rfModal.beforeQuit) {
-                  $scope.rfModal.beforeQuit();
+               if ($scope.rfDialog.beforeQuit) {
+                  $scope.rfDialog.beforeQuit();
                }
-               $scope.rfModal.close(function () {
+               $scope.rfDialog.close(function () {
                   callback();
-                  if ($scope.rfModal.afterQuit) {
-                     $scope.rfModal.afterQuit();
+                  if ($scope.rfDialog.afterQuit) {
+                     $scope.rfDialog.afterQuit();
                   }
                });
             };
 
-            // press "ESC" to close modal
+            // press "ESC" to close dialog
             document.onkeydown = function (event) {
                if (event.which === 27) {
-                  $scope.rfModal.quit();
+                  $scope.rfDialog.quit();
                }
             };
 
-            $scope.rfModal.close = function (callback) {
+            $scope.rfDialog.close = function (callback) {
                callback = callback || function () {};
                $scope.fade = false;
                $timeout(function () {

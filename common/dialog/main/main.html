@@ -1,0 +1,23 @@
+<div class="rf-dialog" ng-class="rfDialog.type">
+   <div class="active" ng-show="visible" ng-class="{'dialog-child': (mode !== 'main') }">
+
+     <div class="grey-layer" ng-click="greyLayerClick()"></div>
+
+     <div class="box" ng-class="rfDialog.size">
+       <div class="header">
+         {{rfDialog.headerText}}
+         <div class="actions">
+            <span ng-show="showClosingInfo">{{lang.closeHere || 'Close here'}}</span>
+            <button class="rf-btn rf-btn-inverted rf-btn-transparent" ng-click="rfDialog.quit()"><i class="fa fa-times-circle"></i></button>
+         </div>
+       </div>
+
+       <div class="dialog-container row">
+         <dialog-body class="col-xs-12" data-cy="rf-dialog-body">
+           <!-- child directives are added here -->
+         </dialog-body>
+       </div>
+     </div>
+
+   </div>
+</div>

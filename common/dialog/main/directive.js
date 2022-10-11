@@ -5,16 +5,16 @@
  * @version 0.3.0
  *
  * place this in the index html:
- * <rf-modal></rf-modal>
- * <rf-modal mode="child"></rf-modal>
+ * <rf-dialog></rf-dialog>
+ * <rf-dialog mode="child"></rf-dialog>
  *
  * @example simple
  *  //                          type
- * $scope.$broadcast('modal', "about");
+ * $scope.$broadcast('dialog', "about");
  *
  * @example complex
- *     //                       type        arg1      obj put in $scope.rfModal
- *     $scope.$emit('modal', "confirm", {onSuccess: function() {
+ *     //                       type        arg1      obj put in $scope.rfDialog
+ *     $scope.$emit('dialog', "confirm", {onSuccess: function() {
  *              http.post('removedrawing', {
  *                  'data': $scope.drawing._id
  *              }, function(response) {
@@ -28,19 +28,19 @@
  *
  * @todo
  * own child scope for childeren, that can be destroyed
- * multiple modals
+ * multiple dialogs
  */
 
-app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'langFactory', 'eventFactory', function ($compile, $timeout, $rootScope, langFactory, eventFactory) {
+app.directive('rfDialog', ['$compile', '$timeout', '$rootScope', 'langFactory', 'eventFactory', function ($compile, $timeout, $rootScope, langFactory, eventFactory) {
    // the eventFactory is only here so it is initialised
    return {
       restrict: 'E', // attribute or element
-      templateUrl: 'global/common/modal/mainModal/main.html',
+      templateUrl: 'global/common/dialog/main/main.html',
       scope: true,
       link: function ($scope, elem, attr, ctrl) {
 
          $scope.mode = attr.mode || 'main';
-         $scope.visible = false; // init: hide modal
+         $scope.visible = false; // init: hide dialog
 
          // refesh language in scope
          $scope.lang = langFactory.getTranslations();
@@ -48,8 +48,8 @@ app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'langFactory', '
             $scope.lang = langFactory.getTranslations();
          });
 
-         var childName = 'modal-child';
-         var eventName = ($scope.mode === 'main') ? 'modal' : childName;
+         var childName = 'dialog-child';
+         var eventName = ($scope.mode === 'main') ? 'dialog' : childName;
          $rootScope.$on(eventName, function (event, type, forwardObject) {
 
             // use keys in forwardObject:
@@ -66,40 +66,40 @@ app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'langFactory', '
                return;
             }
 
-            $scope.rfModal = forwardObject || {};
-            var modal = $scope.rfModal;
-            modal.message = langFactory.translate(modal.message) || '';
-            modal.headerText = langFactory.translate(modal.headerText) || '';
-            modal.type = type || 'confirm';
-            modal.quit = function (callback) {
+            $scope.rfDialog = forwardObject || {};
+            var dialog = $scope.rfDialog;
+            dialog.message = langFactory.translate(dialog.message) || '';
+            dialog.headerText = langFactory.translate(dialog.headerText) || '';
+            dialog.type = type || 'confirm';
+            dialog.quit = function (callback) {
                callback = callback || function () {};
-               if (modal.beforeQuit) {
-                  modal.beforeQuit();
+               if (dialog.beforeQuit) {
+                  dialog.beforeQuit();
                }
                close(function () {
                   callback();
-                  if (modal.afterQuit) {
-                     modal.afterQuit();
+                  if (dialog.afterQuit) {
+                     dialog.afterQuit();
                   }
                });
             };
 
             $scope.greyLayerClick = function () {
-               if (modal.disableGreyLayerClose) {
+               if (dialog.disableGreyLayerClose) {
                   $scope.showClosingInfo = true;
                   $timeout(function () {
                      $scope.showClosingInfo = false;
                   }, 1200);
                } else {
-                  modal.quit();
+                  dialog.quit();
                }
             };
 
             $scope.$on('escape', function () {
-               var isModalChildActive = document.getElementsByClassName('modal-child active').length === 1;
-               if (($scope.mode === 'main' && !isModalChildActive) ||
-               ($scope.mode !== 'main' && isModalChildActive)) {
-                  modal.quit();
+               var isDialogChildActive = document.getElementsByClassName('dialog-child active').length === 1;
+               if (($scope.mode === 'main' && !isDialogChildActive) ||
+               ($scope.mode !== 'main' && isDialogChildActive)) {
+                  dialog.quit();
                }
             });
 
@@ -111,8 +111,8 @@ app.directive('rfModal', ['$compile', '$timeout', '$rootScope', 'langFactory', '
                }, 160);
             }
 
-            var modalBody = elem.find('modal-body');
-            modalBody.html('<rf-modal-' + modal.type + ' lang="lang" modal="rfModal"></rf-modal-' + modal.type + '>');
+            var dialogBody = elem.find('dialog-body');
+            dialogBody.html('<rf-dialog-' + dialog.type + ' lang="lang" dialog="rfDialog"></rf-dialog-' + dialog.type + '>');
             $compile(elem.contents())($scope);
 
             // show dialog

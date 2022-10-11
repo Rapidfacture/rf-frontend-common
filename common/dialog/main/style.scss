@@ -1,6 +1,6 @@
-.rf-modal {
+.rf-dialog {
 
-   .modal-container {
+   .dialog-container {
       overflow-y: auto;
       width: 100%;
       margin: 0;
@@ -48,7 +48,7 @@
       opacity: 0.8;
    }
 
-   .modal-child{
+   .dialog-child{
       .box {
          z-index: 9500;
       }
@@ -99,7 +99,7 @@
          width: 60%;
          left: 20%;
          top: 5vh;
-         .modal-container{
+         .dialog-container{
             max-height: 90vh;
          }
          @media (max-width: 1399px) {
@@ -116,7 +116,7 @@
          width: 90%;
          left: 5%;
          top: 3vh;
-         .modal-container{
+         .dialog-container{
             max-height: 90vh;
          }
       }
@@ -127,7 +127,7 @@
          left: 0;
          top: 0;
 
-         modal-body {
+         dialog-body {
             background: white;
             bottom: 0;
             position: fixed;
@@ -137,7 +137,7 @@
             padding: 10px;
          }
 
-         &.header-hidden modal-body {
+         &.header-hidden dialog-body {
             top: 0;
             // padding might be done individual in a sub container
             padding: 0;
@@ -152,7 +152,7 @@
 }
 
 @media (min-width: 100px) and (max-width: 768px){
-   .rf-modal .active .box{
+   .rf-dialog .active .box{
       width: 100%;
       height: 100%;
       left: 0;

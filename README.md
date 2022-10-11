@@ -1,6 +1,6 @@
 # rf-frontend-common
 
-Common Frontend components like style, modal, images.
+Common Frontend components like style, dialog, images.
 JS Requires Angular (Factories, Directives)
 
 ## Installation

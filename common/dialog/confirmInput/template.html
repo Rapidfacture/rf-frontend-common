@@ -1,4 +1,4 @@
-<h3>{{modal.message}}</h3>
+<h3>{{dialog.message}}</h3>
 <br>
 <br>
 <div class="row">
@@ -21,14 +21,14 @@
 
 <div class="row">
    <div class="col-xs-6">
-      <button class="rf-btn rf-btn-background col-xs-12" ng-click="modal.quit();">{{lang.cancel}}</button>
+      <button class="rf-btn rf-btn-background col-xs-12" ng-click="dialog.quit();">{{lang.cancel}}</button>
    </div>
    <div class="col-xs-6">
       <div ng-if="userInputText !== confirmText">
          <button class="rf-btn rf-btn-disabled col-xs-12">{{lang.yes}}</button>
       </div>
       <div ng-show="userInputText === confirmText">
-         <button class="rf-btn rf-btn-red col-xs-12" ng-click="modal.quit(modal.onSuccess);">{{lang.yes}}</button>
+         <button class="rf-btn rf-btn-red col-xs-12" ng-click="dialog.quit(dialog.onSuccess);">{{lang.yes}}</button>
       </div>
    </div>
 </div>

@@ -1,0 +1,11 @@
+<h3>{{dialog.message}}</h3>
+<br>
+<br>
+<div class="row">
+    <div class="col-xs-6">
+        <div class="rf-btn rf-btn-red rf-btn-background" ng-click="dialog.quit(dialog.onSuccess);" data-cy="rf-dialog-confirm-success-btn">{{lang.yes}}</div>
+    </div>
+    <div class="col-xs-6">
+        <div class="rf-btn rf-btn-background" ng-click="dialog.quit(dialog.onFailure);">{{lang.no}}</div>
+    </div>
+</div>

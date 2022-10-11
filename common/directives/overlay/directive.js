@@ -1,5 +1,5 @@
 /** rf-overlay
- * @desc spinner waiting symbold in a modal => show the user, that the application is working
+ * @desc spinner waiting symbold in a dialog => show the user, that the application is working
  *
  * @example further options
     $scope.$emit('overlay', 'open', 'backupRunning');
@@ -18,7 +18,7 @@ app.directive('rfOverlay', ['$timeout', '$rootScope', 'langFactory', function ($
       templateUrl: 'global/common/directives/overlay/template.html',
       scope: true,
       link: function ($scope, elem, attr, ctrl) {
-         $scope.visible = false; // init: hide modal
+         $scope.visible = false; // init: hide dialog
          // var size;
 
          $rootScope.$on('overlay', function (event, action, message) {

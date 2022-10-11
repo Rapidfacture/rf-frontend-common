@@ -95,7 +95,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'lang
 
 
    function removeFile (endPointUrl, file, successFunc, opts) {
-      var modalData = {
+      confirmDelete(opts, {
          onSuccess: function () {
             http.post(endPointUrl, file.fileId,
                function (response) {
@@ -106,32 +106,27 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'lang
                });
          },
          onFailure: function () {}
-      };
+      });
+   }
 
+   function confirmDelete (opts, dialogData) {
       opts = opts || {};
       if (opts.confirmText) {
-         modalData.confirmText = opts.confirmText;
-         $rootScope.$emit('modal', 'confirm-input', 'removeFile', modalData);
+         dialogData.confirmText = opts.confirmText;
+         dialogData.message = 'removeFile';
+         $rootScope.$emit('dialog', 'confirm-input', dialogData);
       } else {
-         $rootScope.$emit('confirm', 'removeFile', modalData);
+         $rootScope.$emit('confirm', 'removeAllFiles', dialogData);
       }
    }
 
    function removeAllFiles (endPointUrl, files, successFunc, opts) {
-      var modalData = {
+      confirmDelete(opts, {
          onSuccess: function () {
             deleteRecursiveFiles(endPointUrl, files, successFunc);
          },
          onFailure: function () {}
-      };
-
-      opts = opts || {};
-      if (opts.confirmText) {
-         modalData.confirmText = opts.confirmText;
-         $rootScope.$emit('modal', 'confirm-input', 'removeAllFiles', modalData);
-      } else {
-         $rootScope.$emit('confirm', 'removeAllFiles', modalData);
-      }
+      });
    }
 
    function deleteRecursiveFiles (endPointUrl, files, successFunc) {
@@ -158,7 +153,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'lang
    function openFileIframe (endPointUrl, file, metaDoc, successFunc) { // open in an iframe
       var url = getFileUrl(endPointUrl, file, metaDoc, false);
       if (url) { // only if it can be opened
-         $rootScope.$broadcast('modal', 'file-viewer', null, {data:
+         $rootScope.$broadcast('dialog', 'file-viewer', null, {data:
             {endPointUrl: endPointUrl, file: file, metaDoc: metaDoc}});
       }
    }
