@@ -153,8 +153,14 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'lang
    function openFileIframe (endPointUrl, file, metaDoc, successFunc) { // open in an iframe
       var url = getFileUrl(endPointUrl, file, metaDoc, false);
       if (url) { // only if it can be opened
-         $rootScope.$broadcast('dialog', 'file-viewer', null, {data:
-            {endPointUrl: endPointUrl, file: file, metaDoc: metaDoc}});
+         $rootScope.$broadcast('dialog', 'file-viewer', {
+            data:
+               {
+                  endPointUrl: endPointUrl,
+                  file: file,
+                  metaDoc: metaDoc
+               }
+         });
       }
    }
 
