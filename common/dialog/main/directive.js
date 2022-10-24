@@ -68,8 +68,11 @@ app.directive('rfDialog', ['$compile', '$timeout', '$rootScope', 'langFactory', 
 
             $scope.rfDialog = forwardObject || {};
             var dialog = $scope.rfDialog;
-            dialog.message = langFactory.translate(dialog.message) || '';
-            dialog.headerText = langFactory.translate(dialog.headerText) || '';
+            // force a refresh of the scope for translations
+            $timeout(function () {
+               dialog.message = langFactory.translate(dialog.message) || '';
+               dialog.headerText = langFactory.translate(dialog.headerText) || '';
+            }, 1);
             dialog.type = type || 'confirm';
             dialog.quit = function (callback) {
                callback = callback || function () {};
