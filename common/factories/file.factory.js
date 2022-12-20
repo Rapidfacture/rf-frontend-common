@@ -113,14 +113,18 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'lang
       opts = opts || {};
       if (opts.confirmText) {
          dialogData.confirmText = opts.confirmText;
-         dialogData.message = 'removeFile';
+         dialogData.message = opts.message || 'removeFile';
          $rootScope.$emit('dialog', 'confirm-input', dialogData);
+
       } else {
-         $rootScope.$emit('confirm', 'removeAllFiles', dialogData);
+         $rootScope.$emit('confirm', opts.label || 'removeFile', dialogData);
       }
    }
 
    function removeAllFiles (endPointUrl, files, successFunc, opts) {
+      opts = opts || {};
+      opts.label = 'removeAllFiles';
+
       confirmDelete(opts, {
          onSuccess: function () {
             deleteRecursiveFiles(endPointUrl, files, successFunc);
