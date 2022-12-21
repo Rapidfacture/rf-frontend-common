@@ -92,39 +92,3 @@
       color: $color;
    }
 }
-
-
-
-/* rf-cut: used for navigation */
-
-@mixin rf-cut-before($c1) {
-  width: 0;
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -30px;
-  border-left: 30px solid rgba(0,0,0,0);
-  border-bottom: 40px solid $c1;
-  z-index: 999;
-}
-
-@mixin rf-cut-after($c1) {
-  width: 0;
-  content: '';
-  position: absolute;
-  top: 0;
-  right: -30px;
-  border-left: 30px solid $c1;
-  border-bottom: 40px solid rgba(0,0,0,0);
-  margin-right: 0;
-}
-
-@mixin rf-no-cut {
-  width: 0;
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  border: 0;
-  margin-right: 0;
-}
