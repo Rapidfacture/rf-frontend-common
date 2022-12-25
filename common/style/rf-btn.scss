@@ -8,7 +8,7 @@
   margin: 5px 0;
   cursor: pointer;
   user-select: none;
-  @include noselect;
+  user-select: none;
   text-align: center;
 
   &.rf-btn-border {
@@ -45,10 +45,6 @@
     & > * {
       margin: 3px;
       float: right;
-    }
-
-    &:after {
-      @include clear;
     }
   }
 }

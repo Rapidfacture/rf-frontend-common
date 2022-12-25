@@ -25,7 +25,7 @@
       background: none;
 
       &:hover {
-         @include box-shadow(0, 0, 3px, 0px, var(--main_color_light));
+         box-shadow: 0 0 3px 0px var(--main_color_light);
       }
    }
 
@@ -46,21 +46,6 @@
          opacity: 0.6;
       }
    }
-
-   // rather confusing - better not show the pencil icon
-   // &:before {
-   //    z-index: 1;
-   //    display: block;
-   //    content: "";
-   //    font-family: "FontAwesome";
-   //    color: #ddd;
-   //    position: absolute;
-   //    background: #fff;
-   //    padding: 0 2px;
-   //    right: 2px;
-   //    top: 7px;
-   //    font-size: 85%;
-   // }
 
    &.rf-label {
       label {
@@ -90,7 +75,7 @@
       select,
       textarea {
          &:hover {
-            @include box-shadow(0, 0, 0, 0, #fff);
+            box-shadow: 0 0 0 0 #fff;
          }
       }
    }
