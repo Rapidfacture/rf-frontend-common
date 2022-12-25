@@ -60,6 +60,7 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', 'helperFactory', fun
             });
 
             if (attr.hasOwnProperty('dynamicWidth')) {
+               var minWidth = 150;
                var pixelMultiplier = 8;
                var widths = $scope.ngModel.map(function (item) {
                   return item.translation.length * pixelMultiplier;
@@ -68,6 +69,8 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', 'helperFactory', fun
                var maxItemWidth = Math.max.apply(null, widths);
                var firstItemWidth = widths[0];
                var paddingOffset = 45;
+
+               if (maxItemWidth < minWidth) maxItemWidth = minWidth;
 
                $scope.dynamicWidthDropDown = maxItemWidth + 'px';
                $scope.dynamicWidth = (firstItemWidth + paddingOffset) + 'px';

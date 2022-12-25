@@ -1,6 +1,23 @@
 rf-action-select {
    display: block;
 
+   &.dark {
+      .select-row {
+         background: var(--main_color_contrast_ultra_dark);
+         color: white;
+         &:hover {
+            color: var(--main_color);
+         }
+      }
+      .select-row.first {
+         border-color: var(--main_color_contrast_ultra_dark);
+      }
+      .select-btn {
+         background: white;
+         color: var(--main_color);
+      }
+   }
+
    &.inverted {
       .select-row {
          background: var(--main_color);
@@ -84,7 +101,6 @@ rf-action-select {
       width: 100%;
       min-height: 20px;
       padding: 5px 5px;
-      border: 1px solid var(--main_color);
       background: white;
       color: var(--main_color);
       float: left;
@@ -98,6 +114,7 @@ rf-action-select {
          width: calc(100% - 30px);
          border-bottom-left-radius: 5px;
          border-top-left-radius: 5px;
+         border: 1px solid var(--main_color);
       }
       &.first.full{
          border-radius: 5px;
@@ -116,6 +133,7 @@ rf-action-select {
       background: white;
       color: var(--main_color);
       text-align: center;
+      border: 1px solid var(--main_color);
       &:hover {
          margin: 0 0 0 0 !important;
          border-color: var(--main_color) !important;
@@ -128,8 +146,26 @@ rf-action-select {
       position: absolute;
       right: 0;
       top: 30px;
+      overflow: auto;
+      background: white;
+      border-radius: 10px;
+      border: 1px solid var(--midgrey);
       .inner-select-container {
          width: 100%;
+      }
+   }
+
+   .lower-select-row{
+      width: 100%;
+      min-height: 20px;
+      padding: 5px 15px;
+      color: var(--grey);
+      float: left;
+      cursor: pointer;
+
+      &:hover {
+         background: var(--darkwhite);
+         color: var(--main_color);
       }
    }
 

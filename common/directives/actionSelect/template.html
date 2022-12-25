@@ -12,9 +12,9 @@
          <i class="fa fa-caret-down"></i>
       </div>
    </div>
-   <div class="lower-select-container">
-      <div ng-if="showOptions" class="inner-select-container" ng-style="{'width': dynamicWidthDropDown}">
-         <div class="select-row pointer" ng-repeat="item in otherFunctions" ng-click="selectFunction(item)" ng-class="{disabled: item.status == 'disabled'}">
+   <div class="lower-select-container" ng-if="showOptions">
+      <div class="inner-select-container" ng-style="{'width': dynamicWidthDropDown}">
+         <div class="lower-select-row" ng-repeat="item in otherFunctions" ng-click="selectFunction(item)" ng-class="{disabled: item.status == 'disabled'}">
             {{item.translation}}
          </div>
       </div>
