@@ -28,6 +28,10 @@
     border-color: #fff;
   }
 
+  &.rf-btn-grey {
+     background: var(--lightgrey);
+  }
+
   &.rf-btn-disabled {
     color: white;
     background: var(--lightgrey);
@@ -53,7 +57,7 @@
 .rf-btn:hover {
   @extend .rf-btn;
   color: var(--main_color);
-  background: #fff;
+  background: none;
   border-color: var(--main_color);
   margin: 5px 0;
 
@@ -75,76 +79,11 @@
     border-color: var(--grey);
   }
 
-  &.rf-btn-transparent {
-    background: none;
-  }
-
   &.rf-btn-background {
-    background: var(--darkwhite);
+     background: #fff;
   }
 }
 
-.rf-btn-vertical-list {
-  .rf-btn,
-  .rf-btn.rf-btn-inverted:hover {
-    border-bottom: 1px solid;
-    display: block;
-    margin: 0;
-  }
-
-  .rf-btn.rf-btn-inverted,
-  .rf-btn:hover {
-    border-bottom: 1px solid;
-    margin: 0;
-  }
-
-  .rf-btn.last {
-    border-bottom: 0;
-  }
-}
-
-.rf-btn-horizontal-list {
-  .rf-btn,
-  .rf-btn.rf-btn-inverted:hover {
-    float: left;
-    border-right: 1px solid;
-    margin: 0;
-  }
-
-  .rf-btn.rf-btn-inverted,
-  .rf-btn:hover {
-    border-right: 1px solid;
-    margin: 0;
-  }
-
-  .rf-btn.last {
-    border-right: 0;
-  }
-
-  &:after {
-    content: '';
-    display: block;
-    clear: both;
-  }
-}
-
-.rf-btn-list-labeled {
-  margin: 5px 0;
-  border: 1px solid var(--main_color);
-
-  label {
-    float: left;
-    margin: 0;
-    padding: 5px;
-  }
-
-  & > div {
-    float: right;
-  }
-
-  &:after {
-    clear: both;
-    display: block;
-    content: '';
-  }
+.rf-btn-round {
+   border-radius: 20px;
 }
