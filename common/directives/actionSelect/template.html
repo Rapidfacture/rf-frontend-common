@@ -1,8 +1,8 @@
-<div class="rf-btn rf-btn-inverted hidden-sm hidden-md hidden-lg action-select-xs-handler" ng-click="toggle()" ng-show="ngModel[0]">
+<div class="rf-btn rf-btn-inverted hidden-sm hidden-md hidden-lg action-select-xs-handler" ng-click="toggle()" ng-show="ngModel[0] && responsive">
    <i class="fa fa-ellipsis-v"></i>
 </div>
 <div class="select-container" style="position: relative" ng-class="{'hidden': !ngModel[0]}">
-   <div class="upper-select-container hidden-xs" ng-style="{ 'width': dynamicWidth }">
+   <div class="upper-select-container" ng-style="{ 'width': dynamicWidth }" ng-class="{ 'hidden-xs': responsive }">
       <div
          class="select-row pointer first"
          ng-class="{'full': otherFunctions.length == 0, 'disabled': mainFunction.status == 'disabled'}"

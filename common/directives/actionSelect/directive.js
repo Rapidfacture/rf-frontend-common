@@ -8,6 +8,8 @@
  *
  *     <rf-action-select ng-model="functions" data="order"></rf-tag-select>
  *
+ *    <rf-action-select ng-model="functions" data="order" responsive="true"></rf-tag-select>
+ *
  *     <rf-action-select ng-model="functions" callback="callbackFunktion" show-options="option"></rf-tag-select>
  *
  **/
@@ -26,6 +28,7 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', 'helperFactory', fun
          $scope.mainFunction = null;
          $scope.otherFunctions = [];
          $scope.ngModel = $scope.ngModel || [];
+         $scope.responsive = !!attr.responsive; ;
 
          $scope.$on('languageSet', function (meta, lang) { // reload on change
             refreshFunctions();
