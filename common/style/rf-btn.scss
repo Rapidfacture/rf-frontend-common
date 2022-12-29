@@ -11,6 +11,10 @@
   user-select: none;
   text-align: center;
 
+  &:hover {
+     background: #fff;
+  }
+
   &.rf-btn-border {
     border-width: 1px;
     border-style: solid;
@@ -53,11 +57,14 @@
   }
 }
 
+.rf-btn.rf-btn-inverted{
+   background: none;
+}
+
 .rf-btn.rf-btn-inverted,
 .rf-btn:hover {
   @extend .rf-btn;
   color: var(--main_color);
-  background: none;
   border-color: var(--main_color);
   margin: 5px 0;
 
