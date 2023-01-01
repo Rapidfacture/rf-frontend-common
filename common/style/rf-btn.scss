@@ -80,6 +80,11 @@
     border-color: var(--darkred);
   }
 
+  &.rf-btn-grey {
+     color: var(--grey);
+     background: #fff;
+  }
+
   &.rf-btn-disabled {
     color: white;
     background: var(--lightgrey);
