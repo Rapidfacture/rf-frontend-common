@@ -153,8 +153,19 @@ rf-action-select {
       background: white;
       border-radius: 10px;
       border: 1px solid var(--midgrey);
+
+      &.inverted{
+         top: auto;
+         bottom: 28px;
+      }
+
       .inner-select-container {
          width: 100%;
+      }
+
+      .bold{
+         font-size: 110%;
+         font-weight: bold;
       }
    }
 
@@ -169,6 +180,26 @@ rf-action-select {
       &:hover {
          background: var(--darkwhite);
          color: var(--main_color);
+      }
+   }
+
+   .lower-select-row-icons{
+      width: 100%;
+      min-height: 20px;
+      padding: 10px;
+      float: left;
+      border-bottom: 1px solid var(--lightgrey);
+      .rf-btn{
+         font-size: 20px;
+         width: min-content;
+         float: left;
+         margin: 0;
+         &:hover{
+            margin: 0;
+         }
+      }
+      .right{
+         float: right;
       }
    }
 

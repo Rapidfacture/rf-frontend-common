@@ -8,7 +8,7 @@
  *
  *     <rf-action-select ng-model="functions" data="order"></rf-tag-select>
  *
- *    <rf-action-select ng-model="functions" data="order" responsive="true"></rf-tag-select>
+ *     <rf-action-select ng-model="functions" data="order" responsive="true"></rf-tag-select>
  *
  *     <rf-action-select ng-model="functions" callback="callbackFunktion" show-options="option"></rf-tag-select>
  *
@@ -26,6 +26,7 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', 'helperFactory', fun
       templateUrl: 'global/common/directives/actionSelect/template.html',
       link: function ($scope, elem, attr, ctrl) {
          $scope.mainFunction = null;
+         $scope.iconFunctions = [];
          $scope.otherFunctions = [];
          $scope.ngModel = $scope.ngModel || [];
          $scope.responsive = !!attr.responsive; ;
@@ -49,14 +50,21 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', 'helperFactory', fun
                if (a.status === 'disabled' && b.status !== 'disabled') return 1;
                return 0;
             });
-            $scope.otherFunctions = [];
 
-            options.forEach(function (item, $index) {
+            $scope.iconFunctions = [];
+            $scope.otherFunctions = [];
+            $scope.mainFunction = {};
+            var mainItemIndex = 0;
+
+            options.forEach(function (item, index) {
                item.translation = langFactory.translate(item.label);
                if (item.elemNumber) item.translation += item.elemNumber;
 
-               if ($index === 0) {
+               if (item.icon) {
+                  $scope.iconFunctions.push(item);
+               } else if (Object.keys($scope.mainFunction).length === 0) {
                   $scope.mainFunction = item;
+                  mainItemIndex = index;
                } else {
                   $scope.otherFunctions.push(item);
                }
@@ -70,15 +78,43 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', 'helperFactory', fun
                });
 
                var maxItemWidth = Math.max.apply(null, widths);
-               var firstItemWidth = widths[0];
+               var mainItemWidth = widths[mainItemIndex];
                var paddingOffset = 45;
 
                if (maxItemWidth < minWidth) maxItemWidth = minWidth;
 
                $scope.dynamicWidthDropDown = maxItemWidth + 'px';
-               $scope.dynamicWidth = (firstItemWidth + paddingOffset) + 'px';
+               $scope.dynamicWidth = (mainItemWidth + paddingOffset) + 'px';
             }
+
          }
+
+         $scope.toggle = function () {
+            $scope.showOptions = !$scope.showOptions;
+            if ($scope.onToggle) $scope.onToggle();
+            // console.log(getSpaceToBottom(), calculateMenuHeight());
+            $scope.verticalDirection = (getSpaceToBottom() < calculateMenuHeight()) ? 'inverted' : 'regular';
+         };
+
+         function closeDropdown () {
+            $timeout(function () { $scope.showOptions = false; });
+         }
+
+         function calculateMenuHeight () {
+            var height = 0, rowHeight = 30;
+            if ($scope.iconFunctions.length > 0) height += 60;
+            $scope.otherFunctions.forEach(function () { height += rowHeight; });
+            return height;
+         }
+
+         function getSpaceToBottom () {
+            var uppercontainer = elem[0];
+            return window.innerHeight - uppercontainer.getBoundingClientRect().top;
+         }
+
+         var removeListener = new helperFactory.elemOutsideClickListener(elem[0], closeDropdown);
+         $scope.$on('$destroy', removeListener);
+
 
          ctrl.$formatters.unshift(function (value) { // ngModel set external from code => refresh
             // checks if not undefined to prevent showing current date
@@ -87,19 +123,6 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', 'helperFactory', fun
 
          // if there is no change - force refresh; needed in e2e on server
          $timeout(refreshFunctions, 1000);
-
-         $scope.toggle = function () {
-            $scope.showOptions = !$scope.showOptions;
-            if ($scope.onToggle) $scope.onToggle();
-         };
-
-         function closeDropdown () {
-            $timeout(function () { $scope.showOptions = false; });
-         }
-
-         var removeListener = new helperFactory.elemOutsideClickListener(elem[0], closeDropdown);
-         $scope.$on('$destroy', removeListener);
-
       }
    };
 }]);

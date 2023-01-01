@@ -15,12 +15,31 @@
          <i class="fa fa-caret-down"></i>
       </div>
    </div>
-   <div class="lower-select-container" ng-if="showOptions">
+   <div class="lower-select-container" ng-if="showOptions" ng-class="verticalDirection">
       <div class="inner-select-container" ng-style="{'width': dynamicWidthDropDown}">
-         <div class="lower-select-row hidden-sm hidden-md hidden-lg" ng-click="selectFunction(mainFunction)">
+         <div class="lower-select-row-icons" ng-if="iconFunctions.length > 0">
+            <div
+               class="rf-btn rf-btn-inverted rf-btn-grey"
+               title="{{iconFunc.translation}}"
+               data-cy="action-select-icon-func-{{iconFunc.icon}}"
+               ng-repeat="iconFunc in iconFunctions track by $index"
+               ng-click="selectFunction(iconFunc)"
+               ng-class="{'right': iconFunc.right}">
+               <i ng-class="iconFunc.icon"></i>
+            </div>
+         </div>
+         <div
+            class="lower-select-row hidden-sm hidden-md hidden-lg"
+            ng-click="selectFunction(mainFunction)"
+            ng-class="{'bold': mainFunction.bold}">
             {{mainFunction.translation}}
          </div>
-         <div class="lower-select-row" ng-repeat="item in otherFunctions" ng-click="selectFunction(item)" ng-class="{disabled: item.status == 'disabled'}">
+         <div
+            class="lower-select-row"
+            data-cy="action-select-menu-func-{{item.label}}"
+            ng-repeat="item in otherFunctions"
+            ng-click="selectFunction(item)"
+            ng-class="{disabled: item.status == 'disabled', 'bold': item.bold}">
             {{item.translation}}
          </div>
       </div>
