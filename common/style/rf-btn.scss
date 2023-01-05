@@ -1,5 +1,4 @@
-.rf-btn,
-.rf-btn.rf-btn-inverted:hover {
+.rf-btn {
   color: #fff;
   border: none;
   background: var(--main_color);
@@ -94,6 +93,10 @@
   &.rf-btn-background {
      background: #fff;
   }
+}
+
+.rf-btn.rf-btn-inverted:hover{
+   opacity: 0.65;
 }
 
 .rf-btn-round {
