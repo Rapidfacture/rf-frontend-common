@@ -29,7 +29,8 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', 'helperFactory', fun
          $scope.iconFunctions = [];
          $scope.otherFunctions = [];
          $scope.ngModel = $scope.ngModel || [];
-         $scope.responsive = !!attr.responsive; ;
+         $scope.responsive = !!attr.responsive;
+         var rowHeight = 30;
 
          $scope.$on('languageSet', function (meta, lang) { // reload on change
             refreshFunctions();
@@ -101,7 +102,7 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', 'helperFactory', fun
          }
 
          function calculateMenuHeight () {
-            var height = 0, rowHeight = 30;
+            var height = 0;
             if ($scope.iconFunctions.length > 0) height += 60;
             $scope.otherFunctions.forEach(function () { height += rowHeight; });
             return height;
@@ -109,7 +110,8 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', 'helperFactory', fun
 
          function getSpaceToBottom () {
             var uppercontainer = elem[0];
-            return window.innerHeight - uppercontainer.getBoundingClientRect().top;
+            var menuStartY = uppercontainer.getBoundingClientRect().top + rowHeight;
+            return window.innerHeight - menuStartY;
          }
 
          var removeListener = new helperFactory.elemOutsideClickListener(elem[0], closeDropdown);
