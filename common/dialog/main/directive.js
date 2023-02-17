@@ -121,6 +121,13 @@ app.directive('rfDialog', ['$compile', '$timeout', '$rootScope', 'langFactory', 
             // show dialog
             $scope.visible = true;
          });
+
+         $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
+            if ($scope.visible && $scope.mode === 'main') {
+               event.preventDefault();
+               alert('Please close the dialog first.');
+            }
+         });
       }
    };
 }]);
