@@ -1,7 +1,7 @@
 /**
  * @module helperFactory
  * @desc common functions
- * @version 0.1.7carefulMerge
+ * @version 0.1.8carefulMerge
  */
 
 app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootScope) {
@@ -18,6 +18,7 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
       eachSeries: eachSeries,
       elemOutsideClickListener: elemOutsideClickListener,
       createLazySave: createLazySave,
+      createLazySaveMulti: createLazySaveMulti,
       carefulMerge: carefulMerge
    };
 
@@ -278,22 +279,48 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
             if (waitingTime < 2 * opts.defaultTimeout) waitingTime += opts.defaultTimeout;
          } else {
             saveRunning = true;
-            countDown(function () {
+            countDown(opts.countingInterval, waitingTime, function () {
                saveRunning = false;
                waitingTime = opts.defaultTimeout;
                if (saveFunction) saveFunction();
             });
          }
+      };
+   }
 
-         function countDown (callback) {
-            if (waitingTime > 0) {
-               setTimeout(function () {
-                  waitingTime = waitingTime - opts.countingInterval;
-                  countDown(callback);
-               }, opts.countingInterval);
-            } else {
-               if (callback) callback();
-            }
+   function countDown (countingInterval, waitingTime, callback) {
+      if (waitingTime > 0) {
+         setTimeout(function () {
+            waitingTime = waitingTime - countingInterval;
+            countDown(countingInterval, waitingTime, callback);
+         }, countingInterval);
+      } else {
+         if (callback) callback();
+      }
+   }
+
+   function createLazySaveMulti (opts) {
+      opts = Object.assign({
+         defaultTimeout: 600,
+         countingInterval: 100
+      }, (opts || {}));
+      var waitingTime = opts.defaultTimeout;
+      var saveRunningList = [];
+
+      return function controlLazySave (id, saveFunction) {
+         if (!saveRunningList.includes(id)) {
+            saveRunningList.push(id);
+            lazySave(saveFunction);
+         }
+
+         function lazySave (saveFunction) {
+            countDown(opts.countingInterval, waitingTime, function () {
+               waitingTime = opts.defaultTimeout;
+               if (saveFunction) {
+                  saveFunction();
+                  saveRunningList = saveRunningList.filter(function (pushedId) { return pushedId !== id; });
+               };
+            });
          }
       };
    }
