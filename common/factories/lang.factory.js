@@ -1,120 +1,85 @@
 /**
  * @module langFactory
  * @desc fetch language as json data from server, provide current language
- * @version 1.0.2
+ * @version 2.0.0
  *
  */
 
 app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($http, $q, $rootScope, config) {
-
    config.globalSettings = config.globalSettings || {};
-
-   var translations = {};
 
    var Services = {
 
       // translate one key
-      translate: _translate,
+      translate: translate,
       // translate word in current language:    translate("wordToTranslate")
       // translate in other language:           translate("wordToTranslate", "en")
 
-      parseTemplateString: _parseTemplateString,
-      // parseTemplateString('Hello ${(gender == "m") ? "Mr." : "Ms."} Schmitz', {gender: 'm'})
-
       // get translation keys
       getTranslations: getTranslations,
-      // getTranslations() => current translations
-      // getTranslations('de') => specific translations
+      // getTranslations() => current translation object
+      // getTranslations('de') => specific translation object
 
-      getFirstBrowserLanguage: _getFirstBrowserLanguage,
+      // set translations
+      setLanguage: setLanguage, // setLanguage("de")
+      initLanguage: initLanguage, // load all languages
 
-      // legacyCode - TODO: remove in 2021 or 2022; currently used in thermorouter, cad, maybe srs
-      getCurrentDictionary: getTranslations,
-      getDictionary: getTranslations,
-
+      getFirstBrowserLanguage: getFirstBrowserLanguage,
 
       // variables
       supportedLang: config.globalSettings.availableLanguages || ['en', 'de'],
       defaultLanguage: 'en',
       currentLang: null,
-
-      // set translations
-      setLanguage: _setLanguage, // setLanguage("de")
-      initLanguage: _initLanguage, // load all languages
-      languageSet: false // true after a language was set the first item
+      languageSet: false, // true after a language was set the first item
+      allTranslations: { } // all translations stored by language
    };
 
 
-   function _translate (key, data, opts) {
+   function translate (key, data, opts) {
       opts = opts || {};
       var lang = opts.language || Services.currentLang;
+      var t = Services.allTranslations;
 
       if (!languageSupported(lang)) {
          return getBestOtherTranslation(key, data);
 
       // translation available
-      } else if (translations[lang] && translations[lang][key]) {
-         return _parseTemplateString(translations[lang][key], data);
+      } else if (t[lang] && t[lang][key]) {
+         return parseTemplateString(t[lang][key], data);
 
       // lang there, but not key
-      } else if (translations[lang] && key) {
+      } else if (t[lang] && key) {
          // show missing translation
          console.log("error: lang key '" + key + "' does not exist");
          return getBestOtherTranslation(key, data);
 
       // translation not fetched yet
       } else if (!translationFetched(lang)) {
-         _fetch(lang);
+         fetch(lang);
          console.log("error: translation for lang.'" + lang + "' was not fetched yet");
          return getBestOtherTranslation(key, data);
       }
    }
 
 
-   function _parseTemplateString (string, data) {
-      string = string || '';
-
-      if (!data) return string;
-
-      // Advantage of this structure:
-      // - No globals
-      // - Replaces word by word
-      // - More reliable as no undefined could interrupt parsing
-
-      // 1. Find all string elements to replace
-      return string.replace(/\${(.*?)}/g, function (value, code) {
-         // 2. Find and extend all keys with scope. for parsing function
-         var scoped = code.replace(/(["'.\w\\$]+)/g, function (match) {
-            return /["'\\+]/.test(match[0]) ? match : 'scope.' + match;
-         });
-
-         // 3. Parse scoped
-         try {
-            /* eslint-disable-next-line */
-            return new Function('scope', 'return ' + scoped + ' || ""')(data);
-         } catch (e) { return ''; }
-      });
-   }
-
-
-
    function getTranslations (lang, callback) {
       callback = callback || function () {};
+      var t = Services.allTranslations;
       lang = lang || Services.currentLang; // current language if unset
       if (translationFetched(lang)) {
-         callback(translations[lang]);
-         return translations[lang];
+         callback(t[lang]);
+         return t[lang];
       } else {
-         _fetch(lang, function () {
-            callback(translations[lang]);
+         fetch(lang, function () {
+            callback(t[lang]);
          });
       }
    }
 
 
-   function _setLanguage (lang, callback) {
+   function setLanguage (lang, callback) {
       callback = callback || function () {};
-      _checkLanguage(lang, function (lang) {
+      checkLanguage(lang, function (lang) {
          Services.currentLang = lang;
          Services.languageSet = true;
          $rootScope.$broadcast('languageSet', lang);
@@ -123,8 +88,8 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
    }
 
 
-   function _initLanguage (lang) {
-      // console.log('_initLanguage', lang);
+   function initLanguage (lang) {
+      // console.log('initLanguage', lang);
 
       var otherLangIndex = 0;
       var activeLangIndex = Services.supportedLang.indexOf(lang);
@@ -132,14 +97,14 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
       otherLanguages.splice(activeLangIndex, 1); // remove current lang
 
       // 1. load main language
-      _setLanguage(lang, function () {
+      setLanguage(lang, function () {
 
          // 2. now fetch other languages
          loadNextLang();
       });
 
       function loadNextLang () {
-         _checkLanguage(otherLanguages[otherLangIndex], function () {
+         checkLanguage(otherLanguages[otherLangIndex], function () {
             otherLangIndex++;
             if (otherLanguages[otherLangIndex]) {
                setTimeout(function () {
@@ -151,7 +116,7 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
    }
 
 
-   function _getFirstBrowserLanguage () {
+   function getFirstBrowserLanguage () {
       var nav = window.navigator,
          browserLanguagePropertyKeys = ['language', 'browserLanguage', 'systemLanguage', 'userLanguage'],
          i,
@@ -192,11 +157,14 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
       return language;
    }
 
-   function _fetch (langKey, callback) {
+
+   /* -------------------- fetch language file function ---------------------------- */
+   function fetch (langKey, callback) {
       if (!langKey) return;
       var split = langKey.split('-');
       var lang = split[0];
       var locale = split[1];
+      var translations = Services.allTranslations;
 
       var newLang = {};
 
@@ -275,12 +243,37 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
    }
 
    /* -------------------- helper functions ---------------------------- */
+   function parseTemplateString (string, data) {
+      string = string || '';
+
+      if (!data) return string;
+
+      // Advantage of this structure:
+      // - No globals
+      // - Replaces word by word
+      // - More reliable as no undefined could interrupt parsing
+
+      // 1. Find all string elements to replace
+      return string.replace(/\${(.*?)}/g, function (value, code) {
+         // 2. Find and extend all keys with scope. for parsing function
+         var scoped = code.replace(/(["'.\w\\$]+)/g, function (match) {
+            return /["'\\+]/.test(match[0]) ? match : 'scope.' + match;
+         });
+
+         // 3. Parse scoped
+         try {
+            /* eslint-disable-next-line */
+            return new Function('scope', 'return ' + scoped + ' || ""')(data);
+         } catch (e) { return ''; }
+      });
+   }
+
    function getDefaultTranslations (lang) {
-      return translations[Services.defaultLanguage];
+      return Services.allTranslations[Services.defaultLanguage];
    }
 
    function translationFetched (lang) {
-      return translations[lang];
+      return Services.allTranslations[lang];
    }
 
    function languageSupported (lang) {
@@ -290,13 +283,13 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
    function getBestOtherTranslation (key, data) {
       var defaultTrans = getDefaultTranslations();
       if (defaultTrans && defaultTrans[key]) {
-         return _parseTemplateString(translations.en[key], data);
+         return parseTemplateString(Services.allTranslations.en[key], data);
       } else {
          return key;
       }
    }
 
-   function _checkLanguage (lang, callback) {
+   function checkLanguage (lang, callback) {
       callback = callback || function () {};
 
       if (translationFetched(lang)) {
@@ -304,12 +297,12 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
 
       } else if (languageSupported(lang)) {
          // console.log("no data for " + lang + " in factory  =>  fetch from server");
-         _fetch(lang, callback);
+         fetch(lang, callback);
 
       // unsupported language => guess
       } else {
 
-         var guessedLang = _getFirstBrowserLanguage();
+         var guessedLang = getFirstBrowserLanguage();
 
          // available or take default?
          guessedLang = languageSupported(guessedLang) ? guessedLang : Services.defaultLanguage;
