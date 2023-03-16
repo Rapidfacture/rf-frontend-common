@@ -14,6 +14,7 @@ app.factory('eventFactory', ['$document', '$rootScope', function ($document, $ro
 
    var events = {
       escape: 27,
+      ctrl: 17,
       enter: 13,
       tab: 9
    };
@@ -22,14 +23,24 @@ app.factory('eventFactory', ['$document', '$rootScope', function ($document, $ro
    for (var key in events) keysToListen.push(events[key]);
 
    $document.bind('keydown', function (event) {
+      broadcast(event);
+   });
+
+   $document.bind('keyup', function (event) {
+      broadcast(event, 'keyup-');
+   });
+
+   function broadcast (event, prefix) {
+      prefix = prefix || '';
       var which = event.which;
       // console.log('event.which', which);
       if (keysToListen.indexOf(which) === -1) return;
 
       for (var key in events) {
-         if (events[key] === which) $rootScope.$broadcast(key);
+         var msg = prefix + key;
+         if (events[key] === which) $rootScope.$broadcast(msg);
       }
-   });
+   }
 
    return {};
 }]);
