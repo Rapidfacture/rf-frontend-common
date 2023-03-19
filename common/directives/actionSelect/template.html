@@ -3,6 +3,9 @@
 </div>
 <div class="select-container" style="position: relative" ng-class="{'hidden': !ngModel[0]}">
    <div class="upper-select-container" ng-style="{ 'width': dynamicWidth }" ng-class="{ 'hidden-xs': responsive }">
+      <div class="select-row select-btn" ng-click="toggle()" ng-hide="otherFunctions.length == 0">
+         <i class="rf-icon rf-bars"></i>
+      </div>
       <div
          class="select-row pointer first"
          ng-class="{'full': otherFunctions.length == 0, 'disabled': mainFunction.status == 'disabled'}"
@@ -10,9 +13,6 @@
          ng-attr-data-cy="{{ mainFunction ? 'rf-action-main-function-btn' : ''}}">
          <!-- we use data-cy here over "ng-attr-data-cy" to make sure the function is there, before cypress clicks the btn -->
          {{mainFunction.translation}}
-      </div>
-      <div class="select-row select-btn" ng-click="toggle()" ng-hide="otherFunctions.length == 0">
-         <i class="fa fa-caret-down"></i>
       </div>
    </div>
    <div class="lower-select-container" ng-if="showOptions" ng-class="verticalDirection">

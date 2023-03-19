@@ -68,8 +68,9 @@ rf-action-select {
          min-height: 24px;
          padding: 2px 5px;
          &.first {
-            border-top-left-radius: 10px;
-            border-bottom-left-radius: 10px;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            border-color: var(--lightgrey);
          }
          &.first.full{
             border-radius: 10px;
@@ -77,8 +78,13 @@ rf-action-select {
       }
 
       .select-btn {
-         border-top-right-radius: 10px;
-         border-bottom-right-radius: 10px;
+         border-top-left-radius: 10px;
+         border-bottom-left-radius: 10px;
+         border-color: var(--lightgrey);
+
+         .rf-bars{
+            font-size: 7px;
+         }
       }
 
       .lower-select-container {
@@ -106,7 +112,7 @@ rf-action-select {
       padding: 5px 5px;
       background: white;
       color: var(--main_color);
-      float: left;
+      float: right;
       border-radius: 0;
 
       &:hover {
@@ -115,8 +121,8 @@ rf-action-select {
 
       &.first {
          width: calc(100% - 30px);
-         border-bottom-left-radius: 5px;
-         border-top-left-radius: 5px;
+         border-bottom-right-radius: 5px;
+         border-top-right-radius: 5px;
          border: 1px solid var(--main_color);
       }
       &.first.full{
@@ -129,9 +135,9 @@ rf-action-select {
       width: 30px;
       min-height: 32px;
       margin: 0 0 0 0;
-      float: right;
-      border-bottom-right-radius: 5px;
-      border-top-right-radius: 5px;
+      float: left;
+      border-bottom-left-radius: 5px;
+      border-top-left-radius: 5px;
       cursor: pointer;
       background: white;
       color: var(--main_color);
@@ -140,6 +146,9 @@ rf-action-select {
       &:hover {
          margin: 0 0 0 0 !important;
          border-color: var(--main_color) !important;
+      }
+      .rf-bars{
+         font-size: 8px;
       }
    }
 
