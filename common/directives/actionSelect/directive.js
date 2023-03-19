@@ -72,10 +72,10 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', 'helperFactory', fun
             });
 
             if (attr.hasOwnProperty('dynamicWidth')) {
-               var minWidth = 150;
-               var pixelMultiplier = 8;
+               var minWidth = 220;
+
                var widths = $scope.ngModel.map(function (item) {
-                  return item.translation.length * pixelMultiplier;
+                  return getTextWidth(item.translation.length);
                });
 
                var maxItemWidth = Math.max.apply(null, widths);
@@ -88,6 +88,30 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', 'helperFactory', fun
                $scope.dynamicWidth = (mainItemWidth + paddingOffset) + 'px';
             }
 
+         }
+
+         function getTextWidth (charLength) {
+            var fontSize = getFontSize();
+            var pixelMultiplier;
+
+            switch (fontSize) {
+               case '12px':
+                  pixelMultiplier = 5.7;
+                  break;
+
+               default:
+                  pixelMultiplier = 6.7;
+                  break;
+            }
+
+            return charLength * pixelMultiplier;
+         }
+
+         function getFontSize () {
+            var div = elem[0].querySelector('.select-row.pointer.first');
+            var computedFontSize = window.getComputedStyle(div).fontSize;
+            console.log(computedFontSize);
+            return computedFontSize;
          }
 
          $scope.toggle = function () {
