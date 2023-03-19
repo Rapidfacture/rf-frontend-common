@@ -96,7 +96,7 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', 'helperFactory', fun
 
             switch (fontSize) {
                case '12px':
-                  pixelMultiplier = 5.7;
+                  pixelMultiplier = 5.9;
                   break;
 
                default:
