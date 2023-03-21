@@ -109,9 +109,7 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', 'helperFactory', fun
 
          function getFontSize () {
             var div = elem[0].querySelector('.select-row.pointer.first');
-            var computedFontSize = window.getComputedStyle(div).fontSize;
-            console.log(computedFontSize);
-            return computedFontSize;
+            return window.getComputedStyle(div).fontSize;
          }
 
          $scope.toggle = function () {
