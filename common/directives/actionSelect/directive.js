@@ -80,7 +80,7 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', 'helperFactory', fun
 
                var maxItemWidth = Math.max.apply(null, widths);
                var mainItemWidth = widths[mainItemIndex];
-               var paddingOffset = 45;
+               var paddingOffset = 50;
 
                if (maxItemWidth < minWidth) maxItemWidth = minWidth;
 
