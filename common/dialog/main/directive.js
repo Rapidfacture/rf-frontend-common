@@ -123,7 +123,10 @@ app.directive('rfDialog', ['$compile', '$timeout', '$rootScope', 'langFactory', 
          });
 
          $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
-            if ($scope.visible && $scope.mode === 'main') {
+            var size = '';
+            if ($scope.rfDialog && $scope.rfDialog.size) size = $scope.rfDialog.size;
+
+            if ($scope.visible && $scope.mode === 'main' && (size.includes('large') || size.includes('max'))) {
                event.preventDefault();
                alert('Please close the dialog first.');
             }
