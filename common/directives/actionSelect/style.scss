@@ -1,6 +1,10 @@
 rf-action-select {
    display: block;
 
+   // use those two variables for changin the size
+   --height: 30px;
+   font-size: 12px;
+
    &.dark {
       .select-row {
          background: var(--main_color_contrast_ultra_dark);
@@ -37,29 +41,12 @@ rf-action-select {
          min-height: 20px;
          padding: 1px 5px;
       }
-
-      .select-btn {
-         height: 20px;
-      }
-
-      .lower-select-container {
-         top: 20px;
-      }
    }
 
    &.small-btn {
       .select-row {
          min-height: 20px;
          padding: 1px 5px
-      }
-
-      .select-btn {
-         height: 24px;
-         padding-top: 1px;
-      }
-
-      .lower-select-container {
-         top: 22px;
       }
    }
 
@@ -81,14 +68,9 @@ rf-action-select {
          border-top-left-radius: 10px;
          border-bottom-left-radius: 10px;
          border-color: var(--lightgrey);
-
-         .rf-bars{
-            font-size: 7px;
-         }
       }
 
       .lower-select-container {
-         top: 25px;
          width: max-content;
       }
    }
@@ -103,11 +85,13 @@ rf-action-select {
 
    .upper-select-container{
       width: 100%;
-      overflow: auto;
+      // overflow: auto;
+      position: relative;
+      min-height: var(--height);
+      min-width: 50px;
    }
 
    .select-row {
-      width: 100%;
       min-height: 20px;
       padding: 5px 5px;
       background: white;
@@ -120,35 +104,49 @@ rf-action-select {
       }
 
       &.first {
-         width: calc(100% - 30px);
          border-bottom-right-radius: 5px;
          border-top-right-radius: 5px;
          border: 1px solid var(--main_color);
+         display: flex;
+         justify-content: start;
+         align-items: center;
+         position: absolute;
+         top: 0;
+         left: var(--height);
+         right: 0;
+         bottom: 0;
+         font-size: 100%;
       }
       &.first.full{
          border-radius: 5px;
-         width: 100%;
+         left: 0;
       }
    }
 
    .select-btn {
-      width: 30px;
-      min-height: 32px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: var(--height);
+      height: 100%;
       margin: 0 0 0 0;
       float: left;
       border-bottom-left-radius: 5px;
       border-top-left-radius: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       cursor: pointer;
       background: white;
       color: var(--main_color);
-      text-align: center;
       border: 1px solid var(--main_color);
       &:hover {
          margin: 0 0 0 0 !important;
          border-color: var(--main_color) !important;
       }
       .rf-bars{
-         font-size: 8px;
+         font-size: 65%;
       }
    }
 
@@ -157,7 +155,7 @@ rf-action-select {
       z-index: 99;
       position: absolute;
       right: 0;
-      top: 30px;
+      top: var(--height);
       overflow: auto;
       background: white;
       border-radius: 10px;
@@ -173,7 +171,6 @@ rf-action-select {
       }
 
       .bold{
-         font-size: 110%;
          font-weight: bold;
       }
    }
@@ -199,7 +196,7 @@ rf-action-select {
       float: left;
       border-bottom: 1px solid var(--lightgrey);
       .rf-btn{
-         font-size: 20px;
+         font-size: 150%;
          width: min-content;
          float: left;
          margin: 0;
