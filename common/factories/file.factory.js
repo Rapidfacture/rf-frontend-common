@@ -408,6 +408,13 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'lang
    }
 
    var fileTypeComparison = {
+      csv: {
+         mimetype: ['text/csv'],
+         extension: ['csv']
+      },
+      image: {
+         mimeRegex: /image/
+      },
       json: {
          mimetype: ['application/json'],
          extension: ['json', 'JSON']
@@ -416,15 +423,19 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'lang
          mimetype: ['application/pdf', 'application/x-download'],
          extension: ['pdf', 'PDF']
       },
-      image: {
-         mimeRegex: /image/
-      },
       step: {
          extension: ['step', 'STEP', 'stp', 'STP']
       },
       stl: {
          mimetype: ['model/stl', 'model/x.stl-binary', 'application/sla'],
          extension: 'stl'
+      },
+      table: {
+         mimeType: [
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+         ],
+         extension: ['xls', 'XLS', 'xlsx', 'XLSX']
       },
       text: {
          mimeRegex: /text/,
