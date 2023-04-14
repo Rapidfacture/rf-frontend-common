@@ -432,6 +432,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'lang
       },
       table: {
          mimeType: [
+            'application/zip',
             'application/vnd.ms-excel',
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
          ],
@@ -440,6 +441,10 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'lang
       text: {
          mimeRegex: /text/,
          extension: ['txt', 'cnc']
+      },
+      zip: {
+         mimetype: ['application/zip', 'application/x-zip-compressed'],
+         extension: ['zip', 'ZIP']
       }
    };
 

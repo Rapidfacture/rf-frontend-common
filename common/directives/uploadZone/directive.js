@@ -50,7 +50,6 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
       },
       link: function ($scope, elem, attr) {
          $scope.lang = langFactory.getTranslations();
-         // console.log('uploadZone');
 
          // html elements
          var uploadZone = elem[0];
@@ -193,12 +192,28 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
           *  })
           */
          var listenToEvents = false;
-         function initializeDragAndDrop (elem, callback) {
+
+         // Saves if drag was started in this element
+         var dragStarted = false;
+
+         function initializeDragAndDrop (elem, onDrop) {
+            elem.classList.add('show-drop');
+
+            elem.addEventListener('dragstart', function () {
+               dragStarted = true;
+            });
+
+            elem.addEventListener('dragend', function () {
+               dragStarted = false;
+            });
 
             // dragenter => add class 'show-drop'
             elem.addEventListener('dragenter', function (event) {
+               if (dragStarted) return;
+
                preventDefault(event);
-               setDropMode(true);
+               hiddenDropLayer.style.display = 'block';
+
                setTimeout(function () {
                   listenToEvents = true;
                }, 100);
@@ -207,27 +222,24 @@ app.directive('rfUploadZone', ['langFactory', function (langFactory) {
             // dragleave => remove class 'show-drop'
             elem.addEventListener('dragleave', function (event) {
                preventDefault(event);
-               if (listenToEvents) {
-                  listenToEvents = false;
-                  setDropMode(false);
-               }
+               if (!listenToEvents) return;
+
+               listenToEvents = false;
+               hiddenDropLayer.style.display = 'none';
+
             }, false);
 
             // drop: get the file
             elem.addEventListener('drop', function (event) {
                preventDefault(event);
-               setDropMode(false);
-               callback(event.dataTransfer.files);
+               hiddenDropLayer.style.display = 'none';
+               if (!dragStarted) onDrop(event.dataTransfer.files);
+
             }, false);
 
             // not in use, we just prevent things
             elem.addEventListener('dragover', preventDefault, false);
             elem.addEventListener('dragdrop', preventDefault, false);
-
-            function setDropMode (state) {
-               hiddenDropLayer.style.display = state ? 'block' : 'none';
-               elem.classList.add((state ? 'show-drop' : 'show-drop'));
-            }
 
             function preventDefault (event) {
                event.stopPropagation();
