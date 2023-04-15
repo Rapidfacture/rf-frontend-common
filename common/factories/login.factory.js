@@ -71,7 +71,8 @@ app.factory('loginFactory', ['$rootScope', 'config', '$http', '$state', '$window
          refreshToken: _refreshToken,
 
          getLanguage: function () {
-            return config.language || 'en';
+            console.error('loginFactory.getLanguage() is deprecated. Use langFactory.currentLang instead.');
+            // return config.language || 'en';
          },
 
          // rights
