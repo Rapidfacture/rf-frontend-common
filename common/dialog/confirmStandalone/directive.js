@@ -77,10 +77,11 @@ app.directive('rfConfirm', ['$timeout', 'langFactory', '$rootScope', function ($
                }, 160);
             };
 
-            // show dialohttpg
+            // show dialog
             $scope.visible = true;
             $timeout(function () {
                $scope.fade = true;
+               if ($scope.autofocus) $scope.autofocus();
             }, 40);
          }
 

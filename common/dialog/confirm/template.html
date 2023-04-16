@@ -3,9 +3,20 @@
 <br>
 <div class="row">
     <div class="col-xs-6">
-        <div class="rf-btn rf-btn-red rf-btn-background" ng-click="dialog.quit(dialog.onSuccess);" data-cy="rf-dialog-confirm-success-btn">{{lang.yes}}</div>
+        <button 
+            id="dialog-confirm-no-btn" 
+            class="rf-btn rf-btn-border rf-btn-background" 
+            ng-click="dialog.quit(dialog.onFailure);">
+            {{lang.no}}
+        </button>
     </div>
     <div class="col-xs-6">
-        <div class="rf-btn rf-btn-background" ng-click="dialog.quit(dialog.onFailure);">{{lang.no}}</div>
+        <button 
+            id="dialog-confirm-yes-btn" 
+            class="rf-btn rf-btn-border rf-btn-inverted" 
+            ng-click="dialog.quit(dialog.onSuccess);" 
+            data-cy="rf-dialog-confirm-success-btn">
+            {{lang.yes}}
+        </button>
     </div>
 </div>
