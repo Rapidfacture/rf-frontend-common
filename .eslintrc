@@ -29,7 +29,10 @@
     "saveAs": true,
     "Blob": true,
     "marked": true,
-    "THREE": true
+    "THREE": true,
+
+    // own libs
+    "rfFileFactory": false
   },
 
   "rules": {

@@ -1,6 +1,7 @@
 /** fileFactory
  * @desc deal with attached files to json meta data and file types
- * @version 0.5.10
+ * @version 1.0.0
+ * Requires: global rfFileFactory
  */
 
 app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'langFactory', 'dateFactory', function (http, $http, loginFactory, $rootScope, langFactory, dateFactory) {
@@ -32,8 +33,6 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'lang
       unit8ToArray: unit8ToArray,
 
       getFirstUsableFile: getFirstUsableFile,
-
-      is: is, // fileFactory.is(file, 'pdf') or fileFactory.is(file, ['pdf', 'image'])
 
       getSubCategoryFromSection: getSubCategoryFromSection,
 
@@ -226,13 +225,13 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'lang
       // remove data binding, as we don't want to change anything here
       file = JSON.parse(JSON.stringify(file));
 
-      if (is(file, 'json')) {
+      if (rfFileFactory.is(file, 'json')) {
          if (metaDoc) {
             return getCadUrl(JSON.parse(JSON.stringify(metaDoc)));
          } else {
             return true;
          }
-      } if (is(file, ['stl', 'step'])) {
+      } if (rfFileFactory.is(file, ['stl', 'step'])) {
          if (forceDownload) {
             return getFileDownloadUrl('drawing-file', file, true);
          } else { // Not force download
@@ -241,7 +240,7 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'lang
             return getFileDownloadUrl('3d.html', file, false).replace('/api', '');
          }
       } else {
-         if (forceDownload || is(file, ['pdf', 'image', 'text'])) {
+         if (forceDownload || rfFileFactory.is(file, ['pdf', 'image', 'text'])) {
             return getFileDownloadUrl(endPointUrl, file, forceDownload);
          } else {
             if (!noWarning) $rootScope.$emit('note_alert', 'Cannot open fileType ' + file.mimetype);
@@ -262,11 +261,9 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'lang
       var i = 0;
       var files = meta.files || [];
       var firstUsableFile = null;
-      // console.log('getFirstUsableFile', meta);
 
       // see if one of the file can be opened
       while (i < files.length && !fileCanBeOpened(firstUsableFile)) {
-         // console.log('iteration', i, files[i]);
          firstUsableFile = files[i];
          i++;
       }
@@ -284,22 +281,11 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'lang
       var selected = {};
 
       files.forEach(function (file) {
-         if (is(file, fileType)) selected = file;
+         if (rfFileFactory.is(file, fileType)) selected = file;
       });
 
       return selected;
    }
-
-   /*
-   // Returns first option
-   function fileFromFiles (files, type) {
-      files = files || [];
-      for (var i = 0; i < files.length; i++) {
-         if (is(files[i], type)) return files[i];
-      }
-      return {};
-   }
-   */
 
    function getCadUrl (drawing) {
       var urls = loginFactory.getAppUrls('rf-app-cad');
@@ -313,8 +299,6 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'lang
       var text = '';
       var len = uint.byteLength;
 
-      // console.log('uint', uint);
-
       if (len < chuck) {
          text = String.fromCharCode.apply(null, uint);
       } else {
@@ -323,7 +307,6 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'lang
             text += String.fromCharCode.apply(null, arr);
          }
       }
-      // console.log('text', text);
 
       // conversion is necessary; nodemailer seems to handle only simple arrays
       var content = []; // normal array
@@ -331,69 +314,6 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'lang
          content.push((text[i]).charCodeAt(0));
       }
       return content;
-   }
-
-   function is (file, type) {
-      // console.log(file);
-      // housekeeping
-      if (!file) {
-         console.log('file is missing');
-         return false;
-      }
-      if (!type) {
-         console.log('type is missing');
-         return false;
-      }
-
-      if (typeof type === 'string') {
-         return is(file, type);
-      } else if (Array.isArray(type)) {
-         for (var i = 0; i < type.length; i++) {
-            if (is(file, type[i])) return true;
-         }
-         return false;
-      }
-
-      function is (file, type) {
-
-         if (!fileTypeComparison[type]) {
-            console.log('type ', type, ' not found in ', fileTypeComparison);
-            return false;
-         }
-
-         // start with the checks
-         var compare = fileTypeComparison[type];
-         var fileMatches = false;
-
-         // 1. check mimetype
-         if (file.mimetype && compare.mimeRegex) {
-            fileMatches = !!file.mimetype.match(compare.mimeRegex);
-         }
-
-
-         if (!fileMatches && compare.mimetype) {
-            fileMatches = fileMetaCompare(file, 'mimetype', compare.mimetype);
-         }
-
-         // 2. try file extension
-         if (!fileMatches && compare.extension) {
-            fileMatches = fileMetaCompare(file, 'extension', compare.extension);
-         }
-
-         return fileMatches;
-      }
-   }
-
-   function fileMetaCompare (file, fileKey, checkValues) {
-      file = file || {};
-      fileKey = fileKey || 'mimetype'; // or 'extension'
-      if (typeof checkValues === 'string') checkValues = [checkValues];
-      var value = file[fileKey];
-      if (!value || !checkValues) return false;
-      for (var i = 0; i < checkValues.length; i++) {
-         if (checkValues[i] === value) return true;
-      }
-      return false;
    }
 
    function getSubCategoryFromSection (section) {
@@ -406,47 +326,6 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'lang
          sale: 'otherSale'
       }[section] || 'other';
    }
-
-   var fileTypeComparison = {
-      csv: {
-         mimetype: ['text/csv'],
-         extension: ['csv']
-      },
-      image: {
-         mimeRegex: /image/
-      },
-      json: {
-         mimetype: ['application/json'],
-         extension: ['json', 'JSON']
-      },
-      pdf: {
-         mimetype: ['application/pdf', 'application/x-download'],
-         extension: ['pdf', 'PDF']
-      },
-      step: {
-         extension: ['step', 'STEP', 'stp', 'STP']
-      },
-      stl: {
-         mimetype: ['model/stl', 'model/x.stl-binary', 'application/sla'],
-         extension: 'stl'
-      },
-      table: {
-         mimeType: [
-            'application/zip',
-            'application/vnd.ms-excel',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-         ],
-         extension: ['xls', 'XLS', 'xlsx', 'XLSX']
-      },
-      text: {
-         mimeRegex: /text/,
-         extension: ['txt', 'cnc']
-      },
-      zip: {
-         mimetype: ['application/zip', 'application/x-zip-compressed'],
-         extension: ['zip', 'ZIP']
-      }
-   };
 
    function getFileName (nameKey, ending) {
       var filename = langFactory.translate(nameKey).replaceAll(' ', '-');
