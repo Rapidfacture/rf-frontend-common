@@ -13,6 +13,7 @@
 app.factory('eventFactory', ['$document', '$rootScope', function ($document, $rootScope) {
 
    var events = {
+      delete: 46,
       escape: 27,
       ctrl: 17,
       enter: 13,
