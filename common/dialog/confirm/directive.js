@@ -13,7 +13,7 @@ app.directive('rfDialogConfirm', ['$timeout', function ($timeout) {
 
          function autofocus () {
             var btn = document.getElementById('dialog-confirm-no-btn');
-            console.log(btn);
+            // console.log(btn);
             btn.focus({ focusVisible: true });
          }
 
