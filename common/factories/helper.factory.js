@@ -208,7 +208,7 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
          i++;
          var nextItem = items[i];
          if (nextItem) {
-            eachCallback(nextItem, processNext);
+            eachCallback(nextItem, processNext, i);
 
          } else { // last run
             mainCallback();
@@ -217,10 +217,10 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
 
       // start the process
       if (Array.isArray(items) && items.length) {
-         eachCallback(items[i], processNext);
+         eachCallback(items[i], processNext, i);
 
       } else {
-         console.log('empty tasklist or invalid tasks ', items);
+         console.log('function eachSeries: empty array ', items);
          mainCallback();
       }
    }
