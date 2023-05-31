@@ -116,6 +116,7 @@ rf-action-select {
          right: 0;
          bottom: 0;
          font-size: 100%;
+         min-width: max-content;
       }
       &.first.full{
          border-radius: 5px;
