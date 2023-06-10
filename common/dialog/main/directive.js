@@ -131,6 +131,14 @@ app.directive('rfDialog', ['$compile', '$timeout', '$rootScope', 'langFactory', 
                alert('Please close the dialog first.');
             }
          });
+
+         // request from outside if dialog is open
+         // useful to prevent key events in the background
+         $rootScope.$on('isDialogOpen', function (event, callback) {
+            if ($scope.mode === 'main') {
+               callback($scope.visible);
+            }
+         });
       }
    };
 }]);
