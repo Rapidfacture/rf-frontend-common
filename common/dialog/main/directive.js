@@ -2,7 +2,7 @@
  * @desc Gloabal dialog box. Can be triggered from anywhere by event.
  * manages animated box and quit function
  *
- * @version 0.3.0
+ * @version 0.3.1
  *
  * place this in the index html:
  * <rf-dialog></rf-dialog>
@@ -41,6 +41,7 @@ app.directive('rfDialog', ['$compile', '$timeout', '$rootScope', 'langFactory', 
 
          $scope.mode = attr.mode || 'main';
          $scope.visible = false; // init: hide dialog
+         var isClosing = false; // the closing animation needs some time, but we need to know when the closing has started
 
          // refesh language in scope
          $scope.lang = langFactory.getTranslations();
@@ -51,6 +52,8 @@ app.directive('rfDialog', ['$compile', '$timeout', '$rootScope', 'langFactory', 
          var childName = 'dialog-child';
          var eventName = ($scope.mode === 'main') ? 'dialog' : childName;
          $rootScope.$on(eventName, function (event, type, forwardObject) {
+
+            isClosing = false; // dialog just opened
 
             // use keys in forwardObject:
             // onSuccess
@@ -107,6 +110,7 @@ app.directive('rfDialog', ['$compile', '$timeout', '$rootScope', 'langFactory', 
             });
 
             function close (callback) {
+               isClosing = true;
                callback = callback || function () {};
                $timeout(function () {
                   $scope.visible = false;
@@ -125,6 +129,8 @@ app.directive('rfDialog', ['$compile', '$timeout', '$rootScope', 'langFactory', 
          $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
             var size = '';
             if ($scope.rfDialog && $scope.rfDialog.size) size = $scope.rfDialog.size;
+
+            if (isClosing) return; // ignore state changes after we started the closing action
 
             if ($scope.visible && $scope.mode === 'main' && (size.includes('maxheader') || size.includes('max'))) {
                event.preventDefault();
