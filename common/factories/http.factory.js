@@ -225,7 +225,7 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
       handleErrorResponse: function (data, status, headers, conf) {
          var self = this;
          return $q(function (resolve, reject) {
-            if (status === 401 && $http.defaults.headers.common['x-access-token']) { // if 401 and a token was presented then its exired
+            if ((status === 401 || status === 403) && $http.defaults.headers.common['x-access-token']) { // if 401 and a token was presented then its exired
                if (self.retryCount <= 3) { // Retry refresh token
                   console.log('Token expired! Try refresh');
                   self.retryCount++; // Increment retry counter
