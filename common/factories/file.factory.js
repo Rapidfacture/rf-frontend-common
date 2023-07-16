@@ -4,40 +4,34 @@
  * Requires: global rfFileFactory
  */
 
-app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'langFactory', 'dateFactory', function (http, $http, loginFactory, $rootScope, langFactory, dateFactory) {
+app.factory('fileFactory', function (
+   http,
+   $http,
+   loginFactory,
+   $rootScope,
+   langFactory,
+   dateFactory
+) {
    var Services = {
       saveFile: saveFile, // fileFactory.saveFile(endPointUrl, file, metaDoc, subCategory, successFunc)
-
       removeFile: removeFile, // fileFactory.removeFile(endPointUrl, file, successFunc)
-
       removeAllFiles: removeAllFiles, // fileFactory.removeAllFiles(endPointUrl, files, successFunc)
-
       downloadFile: downloadFile, // fileFactory.downloadFile(endPointUrl, file)
 
       openFileIframe: openFileIframe, // fileFactory.openFileIframe(endPointUrl, file, metaDoc, successFunc)
-
       openFileNewTab: openFileNewTab, // fileFactory.openFileNewTab(endPointUrl, file, metaDoc, successFunc)
-
       openFileNewWindow: openFileNewWindow, // fileFactory.openFileNewTab(endPointUrl, file, metaDoc, successFunc)
 
       getFiles: getFiles,
-
       getFileUrl: getFileUrl, // fileFactory.getFileUrl(endPointUrl, file, metaDoc, forceDownload)
-
       getFileDownloadUrl: getFileDownloadUrl,
 
       fileCanBeOpened: fileCanBeOpened, // fileFactory.fileCanBeOpened(file)
-
       fileFromFiles: fileFromFiles, // returns last file of specific type in files array
-
       unit8ToArray: unit8ToArray,
-
       getFirstUsableFile: getFirstUsableFile,
-
       getSubCategoryFromSection: getSubCategoryFromSection,
-
       getFileName: getFileName,
-
       getShortFileName: getShortFileName
    };
 
@@ -341,4 +335,4 @@ app.factory('fileFactory', ['http', '$http', 'loginFactory', '$rootScope', 'lang
 
    return Services;
 
-}]);
+});

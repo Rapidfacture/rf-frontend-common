@@ -1,4 +1,4 @@
-app.factory('historyFactory', ['$state', function ($state) {
+app.factory('historyFactory', function ($state) {
 
    var lastState = {
       state: {},
@@ -61,4 +61,4 @@ app.factory('historyFactory', ['$state', function ($state) {
       }
    };
 
-}]);
+});

@@ -10,7 +10,7 @@
        console.log('enter key pressed');
    });
 */
-app.factory('eventFactory', ['$document', '$rootScope', function ($document, $rootScope) {
+app.factory('eventFactory', function ($document, $rootScope) {
 
    var events = {
       delete: 46,
@@ -44,4 +44,4 @@ app.factory('eventFactory', ['$document', '$rootScope', function ($document, $ro
    }
 
    return {};
-}]);
+});

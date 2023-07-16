@@ -1,14 +1,13 @@
 /**
  * @module randomFactory
- * @version 0.2.0
+ * @version 1.0.0
  */
 
-app.factory('randomFactory', [function () {
+app.factory('randomFactory', function () {
    var Services = {
       generateObjectId: generateObjectId,
       generateId: generateId,
       getRandomColor: getRandomColor,
-      generateDrawingNumber: generateDrawingNumber,
       generatePassword: generatePassword
    };
 
@@ -37,16 +36,6 @@ app.factory('randomFactory', [function () {
          color += letters[Math.floor(Math.random() * 16)];
       }
       return color;
-   }
-
-   function generateDrawingNumber () {
-      var ID = '',
-         possible = '0123456789';
-
-      for (var i = 0; i < 4; i++) {
-         ID += possible.charAt(Math.floor(Math.random() * possible.length));
-      }
-      return ('RF - ' + ID);
    }
 
    function generatePassword (length) {
@@ -139,4 +128,4 @@ app.factory('randomFactory', [function () {
    }
 
    return Services;
-}]);
+});

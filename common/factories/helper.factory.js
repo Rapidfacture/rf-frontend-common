@@ -4,7 +4,7 @@
  * @version 0.1.8carefulMerge
  */
 
-app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootScope) {
+app.factory('helperFactory', function ($state, $rootScope) {
 
    var Services = {
       watch: watch,
@@ -348,4 +348,4 @@ app.factory('helperFactory', ['$state', '$rootScope', function ($state, $rootSco
    }
 
    return Services;
-}]);
+});

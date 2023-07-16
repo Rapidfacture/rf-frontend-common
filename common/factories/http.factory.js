@@ -16,7 +16,13 @@ function getQueryParameterByName (name, url) {
 }
 
 
-app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', function ($http, config, $rootScope, loginFactory, $q) {
+app.factory('http', function (
+   $http,
+   config,
+   $rootScope,
+   loginFactory,
+   $q
+) {
    var debugMode = false;
 
    function errorFunction (data, status, headers, conf, errFunc, url) {
@@ -250,4 +256,4 @@ app.factory('http', ['$http', 'config', '$rootScope', 'loginFactory', '$q', func
          });
       }
    };
-}]);
+});

@@ -3,7 +3,7 @@
  * @version 0.1.3
  */
 
-app.factory('dateFactory', [function () {
+app.factory('dateFactory', function () {
    function _formatDate (date) { // helper function to build date strings
       if (_isDate(date)) {
          date = new Date(date);
@@ -91,6 +91,4 @@ app.factory('dateFactory', [function () {
          return arr;
       }
    };
-}
-
-]);
+});

@@ -5,7 +5,7 @@
  *
  */
 
-app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($http, $q, $rootScope, config) {
+app.factory('langFactory', function ($http, $q, $rootScope, config) {
    config.globalSettings = config.globalSettings || {};
 
    var Services = {
@@ -313,4 +313,4 @@ app.factory('langFactory', ['$http', '$q', '$rootScope', 'config', function ($ht
 
 
    return Services;
-}]);
+});
