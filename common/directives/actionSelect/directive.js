@@ -1,7 +1,7 @@
 /** button with further options in select
  *
  *
- * @version 0.0.5
+ * @version 0.0.6
  *
  * @example ng-model holds array of objects with functions to call
  *     <rf-action-select ng-model="functions"></rf-tag-select>
@@ -84,8 +84,15 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', 'helperFactory', fun
 
                if (maxItemWidth < minWidth) maxItemWidth = minWidth;
 
-               $scope.dynamicWidthDropDown = maxItemWidth + 'px';
+               if ($scope.iconFunctions.length === 0) {
+                  $scope.dynamicWidthDropDown = '100%';
+               } else {
+                  $scope.dynamicWidthDropDown = mainItemWidth <= 185 ? minWidth + 'px' : maxItemWidth + 'px';
+               }
+
                $scope.dynamicWidth = (mainItemWidth + paddingOffset) + 'px';
+            } else {
+               $scope.dynamicWidthDropDown = '100%';
             }
 
          }
