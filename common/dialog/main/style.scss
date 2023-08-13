@@ -153,6 +153,16 @@ rf-dialog {
       }
    }
 
+   .no-header{
+      .header{
+         display: none;
+      }
+
+      .dialog-container{
+         border-radius: 10px;
+      }
+   }
+
    @media (min-width: 100px) and (max-width: 768px){
       .rf-dialog .active .box{
          width: 100%;
