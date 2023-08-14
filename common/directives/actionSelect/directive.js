@@ -1,7 +1,7 @@
 /** button with further options in select
  *
  *
- * @version 0.0.6
+ * @version 0.5.0
  *
  * @example ng-model holds array of objects with functions to call
  *     <rf-action-select ng-model="functions"></rf-tag-select>
@@ -12,6 +12,7 @@
  *
  *     <rf-action-select ng-model="functions" callback="callbackFunktion" show-options="option"></rf-tag-select>
  *
+ *     <rf-action-select ng-model="functions" default-direction="inverted"></rf-tag-select>
  **/
 app.directive('rfActionSelect', ['langFactory', '$timeout', 'helperFactory', function (langFactory, $timeout, helperFactory) { // save json drawing
    return {
@@ -123,7 +124,12 @@ app.directive('rfActionSelect', ['langFactory', '$timeout', 'helperFactory', fun
             $scope.showOptions = !$scope.showOptions;
             if ($scope.onToggle) $scope.onToggle();
             // console.log(getSpaceToBottom(), calculateMenuHeight());
-            $scope.verticalDirection = (getSpaceToBottom() < calculateMenuHeight()) ? 'inverted' : 'regular';
+
+            if (attr.defaultDirection) {
+               $scope.verticalDirection = attr.defaultDirection;
+            } else {
+               $scope.verticalDirection = (getSpaceToBottom() < calculateMenuHeight()) ? 'inverted' : 'regular';
+            }
          };
 
          function closeDropdown () {
