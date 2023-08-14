@@ -160,6 +160,7 @@ rf-dialog {
 
       .dialog-container{
          border-radius: 10px;
+         padding-bottom: 0; // we want the whole space inside
       }
    }
 
