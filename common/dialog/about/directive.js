@@ -14,6 +14,8 @@ app.directive('rfDialogAbout', ['config', '$http', function (config, $http) {
          $scope.dialog.size = 'medium';
 
          $scope.app = config.app;
+
+         $scope.year = new Date().getFullYear();
       }
    };
 }]);
