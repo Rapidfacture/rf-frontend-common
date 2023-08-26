@@ -72,6 +72,10 @@ rf-action-select {
 
       .lower-select-container {
          width: max-content;
+         min-width: min-content;
+         @media (max-width: 768px) {
+            top: 0;
+         }
       }
    }
 
