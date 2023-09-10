@@ -1,10 +1,10 @@
 /**
  * @module helperFactory
  * @desc common functions
- * @version 0.1.8carefulMerge
+ * @version 0.1.8
  */
 
-app.factory('helperFactory', function ($state, $rootScope) {
+app.factory('helperFactory', function ($state, $rootScope, $timeout) {
 
    var Services = {
       watch: watch,
@@ -23,28 +23,38 @@ app.factory('helperFactory', function ($state, $rootScope) {
    };
 
    /**
-    * @example var saveCheck = new helperFactory.saveCheck($scope, unsaved );
+    * @example var saveCheck = new helperFactory.saveCheck($scope);
     */
-   function saveCheck (scope) {
-      scope.unsaved = false;
+   function saveCheck (scope, initialTimeout) {
 
-      scope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
-         if (scope.unsaved === true) {
-            // If changing to child controller or from child to parent, do not ask for saving
-            if (toState.parent === fromState.name || fromState.parent === toState.name) {
-               $state.go(toState, toParams);
-            } else {
-               event.preventDefault();
-               scope.$emit('dialog', 'confirm', {
-                  message: 'unsavedChangesReallyLeave',
-                  onSuccess: function () {
-                     scope.unsaved = false;
-                     $state.go(toState, toParams);
-                  }
-               });
+      if (initialTimeout) {
+         $timeout(init, initialTimeout);
+      } else {
+         init();
+      }
+
+      function init () {
+         scope.unsaved = false;
+
+         scope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
+            if (scope.unsaved === true) {
+               // If changing to child controller or from child to parent, do not ask for saving
+               if (toState.parent === fromState.name || fromState.parent === toState.name) {
+                  $state.go(toState, toParams);
+               } else {
+                  event.preventDefault();
+                  scope.$emit('dialog', 'confirm', {
+                     message: 'unsavedChangesReallyLeave',
+                     onSuccess: function () {
+                        scope.unsaved = false;
+                        $state.go(toState, toParams);
+                     }
+                  });
+               }
             }
-         }
-      });
+         });
+      }
+
    }
 
    /**
