@@ -36,11 +36,15 @@ app.factory('fileFactory', function (
    };
 
    function saveFile (endPointUrl, files, metaDoc, subCategory, successFunc, errFunction) {
+
       var counter = 0;
       metaDoc = metaDoc || {};
       subCategory = subCategory || 'other';
 
       if (!Array.isArray(files)) files = [files];
+
+      // no files to save
+      if (files.length === 0) return successFunc(metaDoc);
 
       nextFile();
 
@@ -60,6 +64,7 @@ app.factory('fileFactory', function (
    }
 
    function saveSingleFile (endPointUrl, file, metaDoc, subCategory, successFunc, errFunction) {
+      if (!file) return console.log('No file to save'); successFunc();
       file.filename = file.filename || file.name; // try to prevent missing file.filename
       var headers = {
          fileId: metaDoc._id,
