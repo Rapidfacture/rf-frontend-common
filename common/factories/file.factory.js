@@ -64,7 +64,10 @@ app.factory('fileFactory', function (
    }
 
    function saveSingleFile (endPointUrl, file, metaDoc, subCategory, successFunc, errFunction) {
-      if (!file) return console.log('No file to save'); successFunc();
+      if (!file) {
+         console.log('No file to save');
+         return successFunc();
+      }
       file.filename = file.filename || file.name; // try to prevent missing file.filename
       var headers = {
          fileId: metaDoc._id,
