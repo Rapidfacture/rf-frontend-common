@@ -162,6 +162,10 @@ rf-dialog {
          border-radius: 10px;
          padding-bottom: 0; // we want the whole space inside
       }
+
+      dialog-body{
+         padding: 0;
+      }
    }
 
    @media (min-width: 100px) and (max-width: 768px){
