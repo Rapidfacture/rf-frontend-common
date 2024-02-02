@@ -151,8 +151,26 @@ app.factory('fileFactory', function (
    }
 
    function downloadFile (endPointUrl, data) {
-      var url = getFileDownloadUrl(endPointUrl, data, 'forceDownload');
-      window.open(url, '_blank');
+      data.forceDownload = true;
+      http.post(endPointUrl, data,
+         function (response) {
+            var arrayBufferView = new Uint8Array(response.buffer.data);
+            var file = new Blob([arrayBufferView], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+            var blobUrl = window.URL.createObjectURL(file);
+
+            var link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = response.filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(blobUrl);
+            if (callback) callback();
+         },
+         function (err) {
+            $rootScope.$emit('note_error', err);
+         });
    }
 
    function openFileIframe (endPointUrl, file, metaDoc, successFunc) { // open in an iframe
