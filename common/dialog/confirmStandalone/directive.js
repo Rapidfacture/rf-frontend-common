@@ -21,7 +21,7 @@ app.directive('rfConfirm', ['$timeout', 'langFactory', '$rootScope', function ($
 
          // @example: $scope.$emit('confirm', function () { });
          // @example: $scope.$emit('confirm', 'areYouSure', function () { });
-         $rootScope.$on('confirm', function (event, message, successFunction) {
+         $rootScope.$on('confirm', function (event, message, successFunction, failureFunction) {
             var opts = {};
 
             if (typeof message === 'function') {
@@ -30,10 +30,13 @@ app.directive('rfConfirm', ['$timeout', 'langFactory', '$rootScope', function ($
             }
 
             if (typeof successFunction === 'function') {
-               opts = { onSuccess: successFunction};
+               opts = { onSuccess: successFunction };
             } else {
                opts = successFunction;
             }
+
+            opts.onFailure = failureFunction;
+
             dialogFunction(event, message, opts);
          });
 
