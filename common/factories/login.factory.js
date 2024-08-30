@@ -313,7 +313,9 @@ app.factory('loginFactory', function ($rootScope, config, $http, $state, $window
          };
       }
 
-      $http.post(config.loginMainUrl + '/api/post-' + url, {
+      url = _getUrl('post-' + url);
+
+      $http.post(config.loginMainUrl + url, {
          data: data
       }, options)
       // {data: data} - always parse as json, prevent body-parser errors in node backend
@@ -325,6 +327,22 @@ app.factory('loginFactory', function ($rootScope, config, $http, $state, $window
             console.log('%c http error on url:' + url + ', status ' + status, 'background: red; color: white');
             callback(err, status, headers, config);
          });
+
+      function _getUrl (url) {
+         var apiPrefix = 'api';
+
+         if (url.startsWith('http')) {
+            console.log('WARNING: your url is not relative: ', url);
+         }
+
+         if (url[0] !== '/') url = '/' + url;
+
+         if (url.startsWith('/' + apiPrefix)) {
+            console.log('WARNING: your url for some reason already holds the apiPrefix', apiPrefix, url);
+         }
+
+         return config.serverURL + apiPrefix + url;
+      }
    }
 
    return Services;
