@@ -315,7 +315,7 @@ app.factory('loginFactory', function ($rootScope, config, $http, $state, $window
 
       url = _getUrl('post-' + url);
 
-      $http.post(config.loginMainUrl + url, {
+      $http.post(url, {
          data: data
       }, options)
       // {data: data} - always parse as json, prevent body-parser errors in node backend
