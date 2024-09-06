@@ -85,7 +85,7 @@ app.factory('http', function (
 
       post: function (url, data, successFunc, errFunc) {
          var self = this;
-         url = _getUrl('post-' + url);
+         var parsedUrl = _getUrl('post-' + url);
 
          // post without data argument
          if (typeof data === 'function' && !successFunc && !errFunc) {
@@ -101,7 +101,7 @@ app.factory('http', function (
          var internalToken = getQueryParameterByName('internal');
          var internalQueryPart = (internalToken ? '?internal=' + internalToken : '');
 
-         $http.post(url + internalQueryPart, {data: data})
+         $http.post(parsedUrl + internalQueryPart, {data: data})
          // {data: data} - always parse as json, prevent body-parser errors in node backend
             .success(function (response) {
                self.retryCount = 0; // Reset retry count on every request, ToDo: Maybe this is a problem if you make multiple invalid requests in a row
@@ -124,7 +124,7 @@ app.factory('http', function (
 
       get: function (url, data, successFunc, errFunc) {
          var self = this;
-         url = _getUrl('get-' + url);
+         var parsedUrl = _getUrl('get-' + url);
 
          data = data || null;
          // call without data, maximum tree arguments => skip parameter "data"
@@ -141,7 +141,7 @@ app.factory('http', function (
          var internalToken = getQueryParameterByName('internal');
          var internalQueryPart = (internalToken ? '?internal=' + internalToken : '');
 
-         var runningRequest = $http.post(url + internalQueryPart, {data: data})
+         var runningRequest = $http.post(parsedUrl + internalQueryPart, {data: data})
             .success(function (response) {
                self.retryCount = 0; // Reset retry count on every request, ToDo: Maybe this is a problem if you make multiple invalid requests in a row
                successFunction('GET', url, successFunc, response, requestId);
