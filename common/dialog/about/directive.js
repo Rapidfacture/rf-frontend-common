@@ -5,7 +5,7 @@
  *
  */
 
-app.directive('rfDialogAbout', ['config', '$http', function (config, $http) {
+app.directive('rfDialogAbout', function (config) {
    return {
       restrict: 'E',
       templateUrl: 'global/common/dialog/about/template.html',
@@ -18,4 +18,4 @@ app.directive('rfDialogAbout', ['config', '$http', function (config, $http) {
          $scope.year = new Date().getFullYear();
       }
    };
-}]);
+});
