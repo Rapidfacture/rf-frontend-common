@@ -151,12 +151,8 @@ app.factory('http', function (
                   .then(function () {
                      self.get(url, data, successFunc, errFunc);
                   })
-                  .catch(function (e) {
-                     if (e.message === 'login') {
-                        loginFactory.login();
-                     } else {
-                        errorFunction(data, status, headers, conf, errFunc, url);
-                     }
+                  .catch(function () {
+                     errorFunction(data, status, headers, conf, errFunc, url);
                   });
             });
 
