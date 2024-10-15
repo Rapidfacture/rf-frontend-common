@@ -46,9 +46,13 @@ function startAngularApp (preventLoggin, noACL) {
    function bootstrapApplication (baseConfig) {
       app.constant('config', baseConfig);
       angular.element(document).ready(function () {
-         angular.bootstrap(document, ['app']);
+         if (window.Angular && window.Angular.doBootstrap) {
+            // Bootstrap from app.module.ts
+            window.Angular.doBootstrap();
+
+         } else {
+            angular.bootstrap(document, ['app']);
+         }
       });
    }
 }
-
-// startAngularApp(null, true);
