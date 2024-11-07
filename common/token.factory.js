@@ -29,21 +29,17 @@ function initTokenFactory () {
       config: {},
 
       refreshConfig: function (baseConfig, callback, preventLoggin) {
-
-         // console.log('refreshConfig');
-         // console.log('baseConfig', baseConfig);
-
          var query = {data: ''};
          var urlToken = service.hasUrlToken();
          query.token = urlToken || window.localStorage.token || (baseConfig && baseConfig.token ? baseConfig.token : '');
 
 
-         var initInjector = angular.injector(['ng']),
-            $http = initInjector.get('$http');
+         var initInjector = angular.injector(['ng']);
+         var $http = initInjector.get('$http');
 
-         // console.log('query', query);
 
-         $http.post(baseConfig.serverURL + 'basic-config', query)
+         $http
+            .post(baseConfig.serverURL + 'basic-config', query)
             .success(function (response) {
 
                // transfer keys, but leave old ones
@@ -53,9 +49,6 @@ function initTokenFactory () {
 
                // store obj for internal use in service
                service.config = baseConfig;
-
-               // console.log(baseConfig.serverURL);
-               // console.log(service.config);
 
                // login app: store the token
                if (service.hasLogin() && service.config.token) {
@@ -72,7 +65,6 @@ function initTokenFactory () {
                   }
                }
 
-               // console.log('got everything', service.config );
                if (preventLoggin || urlToken || service.isInternal() || (baseConfig && baseConfig.token) || service.hasLogin()) {
                   if (callback) callback(baseConfig);
                } else {
@@ -102,12 +94,11 @@ function initTokenFactory () {
 
       getToken: function () {
          if (
-            (!window.localStorage.token ||
-           (typeof window.localStorage.token === 'string' &&
-           (window.localStorage.token === 'null' || window.localStorage.token === 'false' || window.localStorage.token === 'undefined'))) &&
-           (!service.config || !service.config.token)
+            (!window.localStorage.token || ['null', 'false', 'undefined'].indexOf(window.localStorage.token) !== -1) &&
+            (!service.config || !service.config.token)
          ) {
             return false;
+
          } else {
             return window.localStorage.token || (this.config && this.config.token ? this.config.token : '');
          }
@@ -119,10 +110,6 @@ function initTokenFactory () {
 
       deleteToken: function () {
          delete this.config.token;
-         window.localStorage.removeItem('token');
-      },
-
-      deleteStorageToken: function () {
          window.localStorage.removeItem('token');
       },
 
