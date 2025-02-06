@@ -35,7 +35,7 @@ app.directive('rfConfirm', ['$timeout', 'langFactory', '$rootScope', function ($
                opts = successFunction;
             }
 
-            opts.onFailure = failureFunction;
+            if (failureFunction) opts.onFailure = failureFunction;
 
             dialogFunction(event, message, opts);
          });
