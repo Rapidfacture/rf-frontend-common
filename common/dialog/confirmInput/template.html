@@ -24,10 +24,10 @@
       <button class="rf-btn rf-btn-background col-xs-12" ng-click="dialog.quit();">{{lang.cancel}}</button>
    </div>
    <div class="col-xs-6">
-      <div ng-if="userInputText !== confirmText">
+      <div ng-if="!isInputMatching()">
          <button class="rf-btn rf-btn-disabled col-xs-12">{{lang.yes}}</button>
       </div>
-      <div ng-show="userInputText === confirmText">
+      <div ng-if="isInputMatching()">
          <button class="rf-btn rf-btn-red col-xs-12" ng-click="dialog.quit(dialog.onSuccess);">{{lang.yes}}</button>
       </div>
    </div>

@@ -24,6 +24,12 @@ app.directive('rfDialogConfirmInput', ['langFactory', function (langFactory) {
          $scope.confirmText = $scope.dialog.confirmText || 'CONFIRM';
          $scope.dialog.message = $scope.dialog.message || langFactory.translate('reallyContinue');
          $scope.warningText = langFactory.translate($scope.dialog.warningText || 'cantBeUndone');
+
+         $scope.isInputMatching = function () {
+            var userInput = ($scope.userInputText || '').trim().replace(/\s+/g, ' ');
+            var confirmText = ($scope.confirmText || '').trim().replace(/\s+/g, ' ');
+            return userInput === confirmText;
+         };
       }
    };
 }]);
